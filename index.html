@@ -336,6 +336,96 @@ body.light-theme .source-popup,body.light-theme .floating-link-popup{background:
 /* EDIT NOTE MODAL */
 .wide-modal{width:620px;max-width:95vw}
 
+/* ═══ NEURO STATUS DOT ═══ */
+.neuro-status-dot{width:9px;height:9px;border-radius:50%;background:#00e5ff;box-shadow:0 0 8px #00e5ff;animation:neuro-pulse 1.8s ease-in-out infinite;flex-shrink:0;transition:background .6s,box-shadow .6s}
+@keyframes neuro-pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.45);opacity:.55}}
+.neuro-status-wrap{display:flex;align-items:center;gap:6px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text3);letter-spacing:1px;padding:4px 8px;border-radius:100px;border:1px solid var(--border);transition:all .5s}
+.neuro-status-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase}
+
+/* ═══ FOCUS SESSION TIMER ═══ */
+.focus-timer-wrap{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:400;background:var(--bg2);border:1px solid var(--border-accent);border-radius:20px;padding:10px 20px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 30px rgba(0,0,0,.5);transition:all .5s;min-width:300px;justify-content:center}
+.focus-timer-wrap.timer-focus{border-color:rgba(0,229,255,.4);box-shadow:0 8px 30px rgba(0,0,0,.5),0 0 20px rgba(0,229,255,.08)}
+.focus-timer-wrap.timer-breather{border-color:rgba(200,168,75,.4);box-shadow:0 8px 30px rgba(0,0,0,.5),0 0 20px rgba(200,168,75,.08)}
+.focus-timer-wrap.timer-deep{border-color:rgba(255,80,80,.4);box-shadow:0 8px 30px rgba(0,0,0,.5),0 0 20px rgba(255,80,80,.1)}
+.ft-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.ft-time{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;line-height:1;transition:color .5s}
+.timer-focus .ft-time{color:#4ade80}
+.timer-breather .ft-time{color:var(--gold2)}
+.timer-deep .ft-time{color:#ff6060}
+.ft-mode-dot{width:7px;height:7px;border-radius:50%;animation:pulse 1.5s infinite;transition:background .5s}
+.timer-focus .ft-mode-dot{background:#4ade80}
+.timer-breather .ft-mode-dot{background:var(--gold2)}
+.timer-deep .ft-mode-dot{background:#ff6060}
+.ft-divider{width:1px;height:22px;background:var(--border)}
+.ft-phase{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;transition:color .5s}
+.timer-focus .ft-phase{color:#4ade80}
+.timer-breather .ft-phase{color:var(--gold2)}
+.timer-deep .ft-phase{color:#ff6060}
+.ft-btn{background:none;border:1px solid var(--border);color:var(--text2);font-family:'Outfit',sans-serif;font-size:11px;padding:5px 12px;border-radius:8px;cursor:pointer;transition:all .2s}
+.ft-btn:hover{border-color:var(--border-accent);color:var(--text)}
+.ft-skip{background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;transition:color .2s;padding:3px 6px}
+.ft-skip:hover{color:var(--text2)}
+
+/* ═══ QUICK PRESETS ═══ */
+.presets-row{display:flex;gap:10px;margin-bottom:16px}
+.preset-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 10px;cursor:pointer;transition:all .3s;font-family:'Outfit',sans-serif}
+.preset-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.preset-icon{font-size:20px;line-height:1}
+.preset-name{font-size:12px;font-weight:600;color:var(--text);letter-spacing:.3px}
+.preset-desc{font-size:10px;color:var(--text3);text-align:center;line-height:1.4}
+.preset-btn.deep-research{border-color:rgba(0,229,255,.25)}
+.preset-btn.deep-research:hover{border-color:rgba(0,229,255,.5);background:rgba(0,229,255,.04)}
+.preset-btn.quick-review{border-color:rgba(200,168,75,.25)}
+.preset-btn.quick-review:hover{border-color:rgba(200,168,75,.5);background:rgba(200,168,75,.04)}
+.preset-btn.exam-mode{border-color:rgba(168,85,247,.25)}
+.preset-btn.exam-mode:hover{border-color:rgba(168,85,247,.5);background:rgba(168,85,247,.04)}
+.preset-btn.active-preset{box-shadow:inset 0 0 0 1.5px currentColor}
+
+/* ═══ EXAM MODE ═══ */
+body.exam-mode .topbar{opacity:0;pointer-events:none;height:0;overflow:hidden;border:none}
+body.exam-mode .section{padding:14px 20px}
+body.exam-mode .presets-row{display:none}
+body.exam-mode .stats-grid{grid-template-columns:1fr 1fr;gap:8px}
+body.exam-mode .dash-top-grid{grid-template-columns:1fr 1fr;gap:10px}
+.exam-exit-bar{display:none;position:fixed;top:0;left:0;right:0;z-index:600;background:rgba(168,85,247,.12);border-bottom:1px solid rgba(168,85,247,.3);padding:6px 20px;align-items:center;justify-content:space-between}
+body.exam-mode .exam-exit-bar{display:flex}
+.exam-exit-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#c084fc;font-family:'JetBrains Mono',monospace}
+.exam-exit-btn{background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.4);color:#c084fc;font-family:'Outfit',sans-serif;font-size:11px;padding:4px 14px;border-radius:7px;cursor:pointer}
+
+/* ═══ FILE PANEL (Nura Mind side panel) ═══ */
+.tutor-outer{display:flex;height:calc(100vh - 60px - 70px);gap:0;overflow:hidden}
+.file-side-panel{width:0;min-width:0;overflow:hidden;transition:width .35s cubic-bezier(.4,0,.2,1),min-width .35s,opacity .35s;opacity:0;border-right:1px solid var(--border);background:var(--bg2);display:flex;flex-direction:column;flex-shrink:0}
+.file-side-panel.open{width:260px;min-width:260px;opacity:1}
+.fsp-header{padding:14px 14px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.fsp-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent2);font-family:'JetBrains Mono',monospace;font-weight:600}
+.fsp-close{background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:2px 6px;border-radius:4px;transition:all .2s}
+.fsp-close:hover{color:var(--text)}
+.fsp-dropzone{margin:12px;border:1.5px dashed var(--border-accent);border-radius:var(--r);padding:20px 12px;text-align:center;cursor:pointer;transition:all .2s;background:var(--accent-glow);flex-shrink:0}
+.fsp-dropzone.drag-over{border-color:var(--accent);background:rgba(var(--accent-rgb),.12);transform:scale(1.02)}
+.fsp-drop-icon{font-size:22px;margin-bottom:6px}
+.fsp-drop-text{font-size:11px;color:var(--text2);line-height:1.5}
+.fsp-drop-sub{font-size:10px;color:var(--text3);margin-top:3px}
+.fsp-paste-btn{margin:0 12px 10px;display:flex;align-items:center;gap:7px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-family:'Outfit',sans-serif;font-size:11px;padding:7px 12px;border-radius:8px;cursor:pointer;transition:all .2s;width:calc(100% - 24px)}
+.fsp-paste-btn:hover{border-color:var(--border-accent);color:var(--text)}
+.fsp-files-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);padding:0 14px 6px;font-family:'JetBrains Mono',monospace}
+.fsp-files-list{flex:1;overflow-y:auto;padding:0 12px 12px;display:flex;flex-direction:column;gap:6px;min-height:0}
+.fsp-file-item{display:flex;align-items:center;gap:9px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 11px;transition:all .2s;position:relative}
+.fsp-file-item:hover{border-color:var(--border-accent)}
+.fsp-file-icon{font-size:15px;flex-shrink:0}
+.fsp-file-info{flex:1;min-width:0}
+.fsp-file-name{font-size:11px;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fsp-file-meta{font-size:9px;color:var(--text3);margin-top:1px;font-family:'JetBrains Mono',monospace}
+.fsp-file-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px 5px;border-radius:4px;transition:all .2s;flex-shrink:0}
+.fsp-file-del:hover{color:#ff8080;background:rgba(255,80,80,.1)}
+.fsp-empty{text-align:center;padding:20px 10px;color:var(--text3);font-size:11px;line-height:1.6}
+.tutor-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.tutor-topbar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg2)}
+.fsp-toggle-btn{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-family:'Outfit',sans-serif;font-size:11px;font-weight:500;padding:6px 12px;border-radius:8px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.fsp-toggle-btn:hover,.fsp-toggle-btn.active{border-color:var(--border-accent);color:var(--accent2);background:var(--accent-glow)}
+.fsp-file-count{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 4px;border-radius:100px;background:var(--accent);color:var(--bg);font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.tutor-chat-area{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding:14px 16px;min-height:0}
+.tutor-input-area{padding:12px 14px;border-top:1px solid var(--border);flex-shrink:0}
+
 /* NURA WATCH — topbar pill */
 .nura-watch-pill{display:flex;align-items:center;gap:6px;font-size:11px;font-family:'JetBrains Mono',monospace;padding:4px 11px;border-radius:100px;border:1px solid rgba(168,85,247,0.3);color:#c084fc;background:rgba(168,85,247,0.08);cursor:pointer;transition:all .3s;position:relative}
 .nura-watch-pill:hover{border-color:rgba(168,85,247,0.6);background:rgba(168,85,247,0.14)}
@@ -394,6 +484,12 @@ body.light-theme .source-popup,body.light-theme .floating-link-popup{background:
   </div>
 </div>
 
+<!-- EXAM MODE EXIT BAR -->
+<div class="exam-exit-bar">
+  <div class="exam-exit-label">⚡ EXAM MODE ACTIVE — MAXIMUM FOCUS</div>
+  <button class="exam-exit-btn" onclick="exitExamMode()">Exit Exam Mode</button>
+</div>
+
 <div class="app">
 
 <!-- TOPBAR -->
@@ -414,6 +510,11 @@ body.light-theme .source-popup,body.light-theme .floating-link-popup{background:
     </nav>
   </div>
   <div class="topbar-right">
+    <!-- Neuro Status Dot -->
+    <div class="neuro-status-wrap" id="neuro-status-wrap" title="Nura Watch hardware link">
+      <div class="neuro-status-dot" id="neuro-status-dot"></div>
+      <span class="neuro-status-label" id="neuro-status-label">RX</span>
+    </div>
     <div class="vital-pill focus-pill"><div class="vital-dot focus-dot"></div>Focus <span id="top-focus">84%</span></div>
     <div class="vital-pill stress-pill"><div class="vital-dot stress-dot"></div>Stress <span id="top-stress">12%</span></div>
     <div class="nura-watch-pill" onclick="toggleNuraWatchPanel()" title="Nura Watch — AI state monitor">
@@ -455,6 +556,25 @@ body.light-theme .source-popup,body.light-theme .floating-link-popup{background:
 <div class="section active" id="dashboard">
   <div class="page-header">
     <div><div class="page-title">Welcome Back</div><div class="page-sub">Live vitals, session control &amp; soundscape</div></div>
+  </div>
+
+  <!-- QUICK PRESETS -->
+  <div class="presets-row">
+    <button class="preset-btn deep-research" onclick="applyPreset('deep-research',this)">
+      <span class="preset-icon">🔬</span>
+      <span class="preset-name">Deep Research</span>
+      <span class="preset-desc">Dark theme · Rain audio · Pomodoro 25min</span>
+    </button>
+    <button class="preset-btn quick-review" onclick="applyPreset('quick-review',this)">
+      <span class="preset-icon">⚡</span>
+      <span class="preset-name">Quick Review</span>
+      <span class="preset-desc">Bright theme · Binaural · Sprint 15min</span>
+    </button>
+    <button class="preset-btn exam-mode" onclick="applyPreset('exam-mode',this)">
+      <span class="preset-icon">🎯</span>
+      <span class="preset-name">Exam Mode</span>
+      <span class="preset-desc">Minimal UI · Max focus · Ocean audio</span>
+    </button>
   </div>
 
   <div class="dash-top-grid">
@@ -637,39 +757,63 @@ body.light-theme .source-popup,body.light-theme .floating-link-popup{background:
 </div>
 
 <!-- TUTOR -->
-<div class="section" id="tutor">
-  <div class="page-header">
-    <div><div class="page-title">Nura Mind</div><div class="page-sub">Socratic teaching — guided discovery, never direct answers</div></div>
-  </div>
-  <div class="lecture-bar">
-    <span style="font-size:11px;font-weight:500;color:var(--accent2)">📚 Lecture Files:</span>
-    <label class="file-btn" for="lecture-uploader">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-      Open Files
-    </label>
-    <input type="file" id="lecture-uploader" accept=".pdf,.docx,.txt" multiple onchange="processLectureFiles(this)" style="display:none"/>
-    <span id="lecture-status" style="font-size:10px;color:var(--text3)">No files loaded</span>
-  </div>
-  <div class="tutor-layout">
-    <div class="mode-tag"><div class="mode-dot"></div>SOCRATIC TEACHING PROTOCOL ACTIVE</div>
-    <div class="chat-box" id="chat-box">
-      <div class="chat-welcome-container" id="chat-welcome-screen">
-        <h1 class="chat-welcome-title" id="welcome-user-text">What do you want to learn today?</h1>
-        <p style="color:var(--text2);font-size:13px;max-width:480px;margin:0 auto;line-height:1.7">Upload lecture files or ask anything. Nura guides you to understand — never just tells you the answer.</p>
+<div class="section" id="tutor" style="padding:0;height:calc(100vh - 60px);overflow:hidden">
+  <div class="tutor-outer">
+
+    <!-- FILE SIDE PANEL -->
+    <div class="file-side-panel" id="file-side-panel">
+      <div class="fsp-header">
+        <span class="fsp-title">📁 Reference Files</span>
+        <button class="fsp-close" onclick="toggleFileSidePanel()">✕</button>
+      </div>
+      <!-- Drop Zone -->
+      <div class="fsp-dropzone" id="fsp-dropzone" onclick="document.getElementById('fsp-file-input').click()">
+        <div class="fsp-drop-icon">📂</div>
+        <div class="fsp-drop-text">Drop files here or click to browse</div>
+        <div class="fsp-drop-sub">PDF · DOCX · TXT supported</div>
+      </div>
+      <input type="file" id="fsp-file-input" accept=".pdf,.docx,.txt" multiple style="display:none" onchange="handleFilePanelImport(this)"/>
+      <!-- Paste Button -->
+      <button class="fsp-paste-btn" onclick="handleFilePanelPaste()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+        Paste text from clipboard
+      </button>
+      <div class="fsp-files-label">LOADED FILES</div>
+      <div class="fsp-files-list" id="fsp-files-list">
+        <div class="fsp-empty" id="fsp-empty-state">No files loaded yet.<br>Upload notes or paste text to give Nura Mind context.</div>
       </div>
     </div>
-    <div>
-      <div class="chat-input-area">
-        <textarea class="chat-textarea" id="chat-input" placeholder="Ask a concept..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
-        <button class="ask-btn" id="ask-btn" onclick="sendMsg()">Send ↑</button>
+
+    <!-- MAIN TUTOR AREA -->
+    <div class="tutor-main">
+      <div class="tutor-topbar">
+        <button class="fsp-toggle-btn" id="fsp-toggle-btn" onclick="toggleFileSidePanel()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          Files <span class="fsp-file-count" id="fsp-file-count" style="display:none">0</span>
+        </button>
+        <div class="mode-tag"><div class="mode-dot"></div>SOCRATIC TEACHING PROTOCOL ACTIVE</div>
+        <div style="margin-left:auto;font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace" id="lecture-status">No files loaded</div>
       </div>
-      <div class="hints">
-        <div class="hint" onclick="useHint(this)">Why does mitosis produce identical cells?</div>
-        <div class="hint" onclick="useHint(this)">How do I solve for x in an equation?</div>
-        <div class="hint" onclick="useHint(this)">Explain Newton's 3rd law</div>
-        <div class="hint" onclick="useHint(this)">What caused WW1?</div>
+      <div class="tutor-chat-area" id="chat-box">
+        <div class="chat-welcome-container" id="chat-welcome-screen">
+          <h1 class="chat-welcome-title" id="welcome-user-text">What do you want to learn today?</h1>
+          <p style="color:var(--text2);font-size:13px;max-width:480px;margin:0 auto;line-height:1.7">Open the Files panel or paste text to give Nura context — then ask anything.</p>
+        </div>
+      </div>
+      <div class="tutor-input-area">
+        <div style="display:flex;gap:10px;align-items:flex-end">
+          <textarea class="chat-textarea" id="chat-input" placeholder="Ask a concept..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
+          <button class="ask-btn" id="ask-btn" onclick="sendMsg()">Send ↑</button>
+        </div>
+        <div class="hints" style="margin-top:8px">
+          <div class="hint" onclick="useHint(this)">Why does mitosis produce identical cells?</div>
+          <div class="hint" onclick="useHint(this)">How do I solve for x?</div>
+          <div class="hint" onclick="useHint(this)">Explain Newton's 3rd law</div>
+          <div class="hint" onclick="useHint(this)">What caused WW1?</div>
+        </div>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -778,6 +922,20 @@ body.light-theme .source-popup,body.light-theme .floating-link-popup{background:
       <button class="btn primary" onclick="commitSubjectEdit()">Rename</button>
     </div>
   </div>
+</div>
+
+<!-- FOCUS SESSION TIMER -->
+<div class="focus-timer-wrap timer-focus" id="focus-timer-wrap">
+  <div class="ft-mode-dot"></div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:1px">
+    <div class="ft-label" id="ft-label">FOCUS SESSION</div>
+    <div class="ft-time" id="ft-time">25:00</div>
+  </div>
+  <div class="ft-divider"></div>
+  <div class="ft-phase" id="ft-phase">FOCUS</div>
+  <div class="ft-divider"></div>
+  <button class="ft-btn" id="ft-play-btn" onclick="toggleFocusTimer()">▶ Start</button>
+  <button class="ft-skip" onclick="skipFocusPhase()" title="Skip phase">⏭</button>
 </div>
 
 <!-- NURA WATCH POPUP -->
@@ -1405,52 +1563,66 @@ function toggleSoundscape(){
   }
 }
 function adjustSoundscapeVolume(v){ if(soundNode&&soundNode.gainNodeRef) soundNode.gainNodeRef.gain.setValueAtTime(parseFloat(v),audioCtx.currentTime); if(liveAudioStream) liveAudioStream.volume=parseFloat(v); }
-function handleCustomAudioImport(inp){
-  const f=inp.files[0]; if(!f) return;
-  if(customAudioUrlObject) URL.revokeObjectURL(customAudioUrlObject);
-  // Show name immediately
-  const lbl=document.getElementById('audio-file-label');
-  if(lbl) lbl.textContent=f.name.length>26?f.name.substring(0,24)+'…':f.name;
-  // Inject into track selector
+// ── IndexedDB helpers for large audio files ──
+function openAudioDB(){
+  return new Promise((res,rej)=>{
+    const req=indexedDB.open('nura-audio-db',1);
+    req.onupgradeneeded=e=>e.target.result.createObjectStore('audio');
+    req.onsuccess=e=>res(e.target.result);
+    req.onerror=e=>rej(e.target.error);
+  });
+}
+async function saveAudioToDB(name,blob){
+  const db=await openAudioDB();
+  return new Promise((res,rej)=>{
+    const tx=db.transaction('audio','readwrite');
+    tx.objectStore('audio').put({name,blob},'custom-track');
+    tx.oncomplete=()=>res();
+    tx.onerror=e=>rej(e.target.error);
+  });
+}
+async function loadAudioFromDB(){
+  const db=await openAudioDB();
+  return new Promise((res,rej)=>{
+    const tx=db.transaction('audio','readonly');
+    const req=tx.objectStore('audio').get('custom-track');
+    req.onsuccess=e=>res(e.target.result||null);
+    req.onerror=e=>rej(e.target.error);
+  });
+}
+
+function _injectCustomTrackUI(name){
   const sel=document.getElementById('track-select');
   let opt=document.getElementById('custom-injected-audio-node');
   if(!opt){opt=document.createElement('option');opt.id='custom-injected-audio-node';opt.value='custom-imported-track';sel.appendChild(opt);}
-  opt.textContent=`📂 ${f.name.substring(0,22)}`; opt.selected=true;
-  // Persist as base64 (cap at 8MB to stay within localStorage limits)
-  if(f.size > 8*1024*1024){
-    if(lbl) lbl.textContent='⚠ File too large to save (>8MB)';
-    customAudioUrlObject=URL.createObjectURL(f); return;
-  }
-  const reader=new FileReader();
-  reader.onload=e=>{
-    try{
-      localStorage.setItem('nura-custom-audio', JSON.stringify({name:f.name, data:e.target.result}));
-    }catch(err){ console.warn('Audio too large for localStorage'); }
-    customAudioUrlObject=URL.createObjectURL(f);
-  };
-  reader.readAsDataURL(f);
+  opt.textContent=`📂 ${name.substring(0,22)}`; opt.selected=true;
+  const lbl=document.getElementById('audio-file-label');
+  if(lbl) lbl.textContent=name.length>26?name.substring(0,24)+'…':name;
 }
 
-function loadSavedAudio(){
+function handleCustomAudioImport(inp){
+  const f=inp.files[0]; if(!f) return;
+  if(customAudioUrlObject) URL.revokeObjectURL(customAudioUrlObject);
+  customAudioUrlObject=URL.createObjectURL(f);
+  _injectCustomTrackUI(f.name);
+  // Save the raw blob to IndexedDB — no size limit issues
+  const lbl=document.getElementById('audio-file-label');
+  saveAudioToDB(f.name, f).then(()=>{
+    if(lbl) lbl.textContent=(f.name.length>26?f.name.substring(0,24)+'…':f.name)+' ✓';
+  }).catch(err=>{
+    console.warn('IndexedDB save failed:',err);
+    if(lbl) lbl.textContent='⚠ Could not persist ('+f.name.substring(0,16)+')';
+  });
+}
+
+async function loadSavedAudio(){
   try{
-    const saved=JSON.parse(localStorage.getItem('nura-custom-audio')||'null');
+    const saved=await loadAudioFromDB();
     if(!saved) return;
-    // Convert base64 back to blob URL
-    const byteStr=atob(saved.data.split(',')[1]);
-    const mime=saved.data.split(',')[0].match(/:(.*?);/)[1];
-    const ab=new ArrayBuffer(byteStr.length);
-    const ia=new Uint8Array(ab);
-    for(let i=0;i<byteStr.length;i++) ia[i]=byteStr.charCodeAt(i);
-    const blob=new Blob([ab],{type:mime});
-    customAudioUrlObject=URL.createObjectURL(blob);
-    // Add option to selector
-    const sel=document.getElementById('track-select');
-    let opt=document.getElementById('custom-injected-audio-node');
-    if(!opt){opt=document.createElement('option');opt.id='custom-injected-audio-node';opt.value='custom-imported-track';sel.appendChild(opt);}
-    opt.textContent=`📂 ${saved.name.substring(0,22)}`;
-    const lbl=document.getElementById('audio-file-label');
-    if(lbl) lbl.textContent=saved.name.length>26?saved.name.substring(0,24)+'…':saved.name;
-  }catch(e){ localStorage.removeItem('nura-custom-audio'); }
+    if(customAudioUrlObject) URL.revokeObjectURL(customAudioUrlObject);
+    customAudioUrlObject=URL.createObjectURL(saved.blob);
+    _injectCustomTrackUI(saved.name);
+  }catch(e){ console.warn('Could not restore saved audio:',e); }
 }
 function changeSoundscapeTrack(){ if(audioPlaying){toggleSoundscape();toggleSoundscape();} }
 
@@ -1706,6 +1878,261 @@ function makeDraggable(popup, handle){
 }
 
 // ═══════════════════════════════════════════════
+// NEURO STATUS DOT — hardware link simulator
+// ═══════════════════════════════════════════════
+const NEURO_STATES = [
+  {color:'#00e5ff', shadow:'#00e5ff', label:'RX'},
+  {color:'#ffffff', shadow:'#aaaaff', label:'SYNC'},
+  {color:'#c8a84b', shadow:'#c8a84b', label:'CAL'},
+];
+let neuroStateIdx = 0;
+function cycleNeuroStatus(){
+  neuroStateIdx = (neuroStateIdx + 1) % NEURO_STATES.length;
+  const s = NEURO_STATES[neuroStateIdx];
+  const dot = document.getElementById('neuro-status-dot');
+  const lbl = document.getElementById('neuro-status-label');
+  if(dot){ dot.style.background=s.color; dot.style.boxShadow=`0 0 8px ${s.shadow}`; }
+  if(lbl) lbl.textContent=s.label;
+}
+// Cycle state every 4-8 seconds to simulate live headband packets
+setInterval(cycleNeuroStatus, 5500 + Math.random()*3000);
+// Brief "flash" on vitals update to show data coming in
+function neuroFlash(){
+  const dot = document.getElementById('neuro-status-dot');
+  if(!dot) return;
+  dot.style.transform='scale(1.8)'; dot.style.opacity='1';
+  setTimeout(()=>{ dot.style.transform=''; dot.style.opacity=''; }, 180);
+}
+
+// ═══════════════════════════════════════════════
+// FOCUS SESSION TIMER — Pomodoro style
+// ═══════════════════════════════════════════════
+const PHASES = [
+  {name:'FOCUS',   label:'FOCUS SESSION', minutes:25, cls:'timer-focus'},
+  {name:'BREATHER',label:'BREATHER',       minutes:5,  cls:'timer-breather'},
+  {name:'DEEP WORK',label:'DEEP WORK',     minutes:50, cls:'timer-deep'},
+  {name:'BREATHER',label:'BREATHER',       minutes:10, cls:'timer-breather'},
+];
+let ftPhaseIdx=0, ftSecsLeft=PHASES[0].minutes*60, ftRunning=false, ftInterval=null;
+
+function setFocusTimerPhase(idx){
+  ftPhaseIdx = idx % PHASES.length;
+  const p = PHASES[ftPhaseIdx];
+  ftSecsLeft = p.minutes * 60;
+  const wrap = document.getElementById('focus-timer-wrap');
+  wrap.className = 'focus-timer-wrap ' + p.cls;
+  document.getElementById('ft-phase').textContent = p.name;
+  document.getElementById('ft-label').textContent = p.label;
+  renderFtTime();
+}
+
+function renderFtTime(){
+  const m = String(Math.floor(ftSecsLeft/60)).padStart(2,'0');
+  const s = String(ftSecsLeft%60).padStart(2,'0');
+  document.getElementById('ft-time').textContent = m+':'+s;
+}
+
+function toggleFocusTimer(){
+  ftRunning = !ftRunning;
+  document.getElementById('ft-play-btn').textContent = ftRunning ? '⏸ Pause' : '▶ Resume';
+  if(ftRunning){
+    ftInterval = setInterval(()=>{
+      ftSecsLeft--;
+      renderFtTime();
+      if(ftSecsLeft <= 0){
+        clearInterval(ftInterval);
+        ftRunning = false;
+        setFocusTimerPhase(ftPhaseIdx + 1);
+        document.getElementById('ft-play-btn').textContent = '▶ Start';
+      }
+    }, 1000);
+  } else {
+    clearInterval(ftInterval);
+  }
+}
+
+function skipFocusPhase(){
+  clearInterval(ftInterval);
+  ftRunning = false;
+  document.getElementById('ft-play-btn').textContent = '▶ Start';
+  setFocusTimerPhase(ftPhaseIdx + 1);
+}
+
+// ═══════════════════════════════════════════════
+// QUICK PRESETS
+// ═══════════════════════════════════════════════
+let activePreset = null;
+function applyPreset(name, btn){
+  // Clear previous active state
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active-preset'));
+  if(activePreset === name){ activePreset=null; return; }
+  activePreset = name;
+  btn.classList.add('active-preset');
+
+  if(name === 'deep-research'){
+    if(document.body.classList.contains('light-theme')) toggleTheme();
+    // Switch to rain
+    const sel = document.getElementById('track-select');
+    if(sel){ sel.value='rain'; if(audioPlaying){ toggleSoundscape(); toggleSoundscape(); } }
+    // Set 25min focus timer
+    ftPhaseIdx = -1; setFocusTimerPhase(0);
+    if(ftRunning){ clearInterval(ftInterval); ftRunning=false; document.getElementById('ft-play-btn').textContent='▶ Start'; }
+    nav('dashboard', document.querySelector('.nav-btn'));
+  }
+  else if(name === 'quick-review'){
+    if(!document.body.classList.contains('light-theme')) toggleTheme();
+    const sel = document.getElementById('track-select');
+    if(sel){ sel.value='binaural'; if(audioPlaying){ toggleSoundscape(); toggleSoundscape(); } }
+    // 15min sprint
+    ftPhaseIdx = -1;
+    PHASES[0] = {...PHASES[0], minutes:15};
+    setFocusTimerPhase(0);
+    PHASES[0] = {...PHASES[0], minutes:25}; // restore default
+    if(ftRunning){ clearInterval(ftInterval); ftRunning=false; document.getElementById('ft-play-btn').textContent='▶ Start'; }
+    nav('dashboard', document.querySelector('.nav-btn'));
+  }
+  else if(name === 'exam-mode'){
+    if(document.body.classList.contains('light-theme')) toggleTheme();
+    const sel = document.getElementById('track-select');
+    if(sel){ sel.value='ocean'; }
+    document.body.classList.add('exam-mode');
+    nav('tutor', document.querySelectorAll('.nav-btn')[3]);
+  }
+}
+
+function exitExamMode(){
+  document.body.classList.remove('exam-mode');
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active-preset'));
+  activePreset = null;
+  nav('dashboard', document.querySelector('.nav-btn'));
+}
+
+// ═══════════════════════════════════════════════
+// FILE SIDE PANEL
+// ═══════════════════════════════════════════════
+let filePanelOpen = false;
+let loadedFiles = []; // {name, size, type, text}
+
+function toggleFileSidePanel(){
+  filePanelOpen = !filePanelOpen;
+  const panel = document.getElementById('file-side-panel');
+  const btn = document.getElementById('fsp-toggle-btn');
+  panel.classList.toggle('open', filePanelOpen);
+  btn.classList.toggle('active', filePanelOpen);
+}
+
+function updateFilePanelUI(){
+  const list = document.getElementById('fsp-files-list');
+  const empty = document.getElementById('fsp-empty-state');
+  const count = document.getElementById('fsp-file-count');
+  const status = document.getElementById('lecture-status');
+  if(loadedFiles.length === 0){
+    if(empty) empty.style.display='';
+    list.innerHTML = '';
+    list.appendChild(empty);
+    count.style.display='none';
+    status.textContent='No files loaded';
+  } else {
+    if(empty) empty.style.display='none';
+    count.textContent = loadedFiles.length;
+    count.style.display='inline-flex';
+    status.textContent=`✅ ${loadedFiles.length} file(s) loaded`;
+    list.innerHTML = loadedFiles.map((f,i)=>{
+      const icon = f.name.endsWith('.pdf') ? '📕' : f.name.endsWith('.docx') ? '📘' : f.name.startsWith('[Pasted]') ? '📋' : '📄';
+      const sizeStr = f.size > 1024*1024 ? (f.size/1024/1024).toFixed(1)+'MB' : Math.round(f.size/1024)+'KB';
+      const preview = f.text ? f.text.substring(0,60).replace(/\n/g,' ')+'…' : '';
+      return `<div class="fsp-file-item">
+        <span class="fsp-file-icon">${icon}</span>
+        <div class="fsp-file-info">
+          <div class="fsp-file-name" title="${f.name}">${f.name.length>28?f.name.substring(0,26)+'…':f.name}</div>
+          <div class="fsp-file-meta">${sizeStr} · ${f.type||'text'}</div>
+        </div>
+        <button class="fsp-file-del" onclick="removeLoadedFile(${i})" title="Remove">✕</button>
+      </div>`;
+    }).join('');
+  }
+  // Rebuild context
+  parsedLecturesContext = loadedFiles.map(f=>`[FILE: ${f.name}]\n${f.text}`).join('\n\n');
+}
+
+function removeLoadedFile(idx){
+  loadedFiles.splice(idx, 1);
+  updateFilePanelUI();
+}
+
+async function handleFilePanelImport(inp){
+  const files = inp.files; if(!files.length) return;
+  for(let file of files){
+    const status = document.getElementById('lecture-status');
+    status.textContent = 'Processing…';
+    let text = '';
+    try{
+      if(file.name.endsWith('.txt')) text = await file.text();
+      else if(file.name.endsWith('.docx')){
+        const ab = await file.arrayBuffer();
+        const out = await mammoth.extractRawText({arrayBuffer:ab});
+        text = out.value;
+      } else if(file.name.endsWith('.pdf')){
+        const ab = await file.arrayBuffer();
+        pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        const doc = await pdfjsLib.getDocument({data:ab}).promise;
+        let pdf='';
+        for(let i=1;i<=doc.numPages;i++){const pg=await doc.getPage(i);const c=await pg.getTextContent();pdf+=c.items.map(x=>x.str).join(' ')+'\n';}
+        text = pdf;
+      }
+      loadedFiles.unshift({name:file.name, size:file.size, type:file.type||'document', text});
+      // Keep max 10 files
+      if(loadedFiles.length > 10) loadedFiles = loadedFiles.slice(0,10);
+    } catch(err){ console.error(err); }
+  }
+  inp.value='';
+  updateFilePanelUI();
+}
+
+async function handleFilePanelPaste(){
+  try{
+    const text = await navigator.clipboard.readText();
+    if(!text.trim()){ alert('Clipboard is empty or contains no text.'); return; }
+    const name = `[Pasted] ${new Date().toLocaleTimeString()}`;
+    loadedFiles.unshift({name, size:text.length, type:'text', text});
+    if(loadedFiles.length > 10) loadedFiles = loadedFiles.slice(0,10);
+    updateFilePanelUI();
+  } catch(e){
+    // Fallback prompt if clipboard API denied
+    const text = prompt('Paste your text below:');
+    if(text && text.trim()){
+      const name = `[Pasted] ${new Date().toLocaleTimeString()}`;
+      loadedFiles.unshift({name, size:text.length, type:'text', text});
+      updateFilePanelUI();
+    }
+  }
+}
+
+// Drag-and-drop on file side panel dropzone
+window.addEventListener('DOMContentLoaded', ()=>{
+  const dz = document.getElementById('fsp-dropzone');
+  if(!dz) return;
+  dz.addEventListener('dragover', e=>{ e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', ()=>dz.classList.remove('drag-over'));
+  dz.addEventListener('drop', e=>{
+    e.preventDefault(); dz.classList.remove('drag-over');
+    const dt = e.dataTransfer;
+    if(dt.files.length){
+      // inject into our handler
+      handleFilePanelImport({files: dt.files, value:''});
+    } else if(dt.getData('text')){
+      const text = dt.getData('text');
+      const name = `[Dropped text] ${new Date().toLocaleTimeString()}`;
+      loadedFiles.unshift({name, size:text.length, type:'text', text});
+      updateFilePanelUI();
+    }
+  });
+});
+
+// ─── keep old processLectureFiles wired so nothing breaks ───
+async function processLectureFiles(inp){ await handleFilePanelImport(inp); }
+
+// ═══════════════════════════════════════════════
 // NURA WATCH — AI State Monitor
 // ═══════════════════════════════════════════════
 const NuraWatch = (() => {
@@ -1901,14 +2328,14 @@ function dismissNuraWatch() { NuraWatch.dismiss(); }
 function snoozeNuraWatch() { NuraWatch.snooze(); }
 function toggleNuraWatchPanel() { NuraWatch.togglePanel(); }
 
-function initApp(){
+async function initApp(){
   renderSubjectFilters();
   renderNotes('all');
   buildWeek();
   startClock();
   updateVitals();
   loadLinkHub();
-  loadSavedAudio();
+  await loadSavedAudio();
 }
 
 // Boot — no login required
