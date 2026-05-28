@@ -1,0 +1,1925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nura — Focus · Learn · Glow</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<!-- Google Sign-In -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#06060e;--bg2:#0c0c18;--bg3:#12121f;--bg4:#1a1a2a;--bg5:#222235;
+  --gold:#c8a84b;--gold2:#e4c96a;--gold-glow:rgba(200,168,75,0.1);
+  --accent:#00e5ff;--accent2:#80f0ff;--accent-glow:rgba(0,229,255,0.08);
+  --accent-rgb:0,229,255;
+  --purple:#7c3aed;--purple2:#a855f7;
+  --text:#eeeeff;--text2:#777799;--text3:#3a3a55;
+  --border:rgba(255,255,255,0.05);--border-accent:rgba(0,229,255,0.15);--border-gold:rgba(200,168,75,0.2);
+  --r:12px;--r2:18px;
+  --invert-val:0;
+}
+*{scrollbar-width:thin;scrollbar-color:var(--bg5) transparent}
+*::-webkit-scrollbar{width:3px}*::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:2px}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow:hidden;transition:background .4s,color .4s,box-shadow .4s}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(var(--accent-rgb),0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--accent-rgb),0.02) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;z-index:0;transition:background .5s}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(124,58,237,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(var(--accent-rgb),0.04) 0%,transparent 60%);pointer-events:none;z-index:0}
+
+/* DYNAMIC GLOW BORDER ON BODY */
+body.glow-active{box-shadow:inset 0 0 80px rgba(var(--accent-rgb),0.06),inset 0 0 0 1px rgba(var(--accent-rgb),0.08)}
+
+.app{display:flex;flex-direction:column;height:100vh;position:relative;z-index:1}
+
+/* LOGIN SCREEN — hidden, no longer used */
+.login-screen{display:none!important}
+
+/* CUSTOM FILE INPUT */
+.file-btn{display:inline-flex;align-items:center;gap:7px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;padding:7px 14px;border-radius:9px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.file-btn:hover{border-color:var(--border-accent);color:var(--accent2);background:var(--accent-glow)}
+.file-btn svg{flex-shrink:0;opacity:.7}
+.file-btn:hover svg{opacity:1}
+
+/* NOTEPAD MODAL — big full-screen style */
+.notepad-overlay{position:fixed;inset:0;background:rgba(6,6,14,.9);z-index:300;align-items:center;justify-content:center;display:none;animation:fadeIn .2s ease}
+.notepad-overlay.open{display:flex}
+.notepad-window{background:var(--bg2);border:1px solid var(--border-accent);border-radius:var(--r2);width:min(820px,96vw);height:min(640px,92vh);display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.7);overflow:hidden}
+.notepad-titlebar{background:var(--bg3);border-bottom:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.notepad-title-text{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent2)}
+.notepad-win-btns{display:flex;gap:7px;align-items:center}
+.notepad-win-btn{width:13px;height:13px;border-radius:50%;border:none;cursor:pointer;transition:opacity .15s}
+.notepad-win-btn:hover{opacity:.8}
+.notepad-close-btn{background:#ff5f57}
+.notepad-body{flex:1;display:flex;flex-direction:column;padding:22px 24px;gap:14px;overflow-y:auto;min-height:0}
+.notepad-field{display:flex;flex-direction:column;gap:6px}
+.notepad-label{font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase}
+.notepad-input,.notepad-select{background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;padding:10px 14px;border-radius:9px;outline:none;transition:border .2s;width:100%}
+.notepad-input:focus,.notepad-select:focus{border-color:var(--border-accent)}
+.notepad-textarea{flex:1;min-height:280px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;padding:14px 16px;border-radius:9px;outline:none;resize:none;line-height:1.8;transition:border .2s;width:100%}
+.notepad-textarea:focus{border-color:var(--border-accent)}
+.notepad-textarea::placeholder{color:var(--text3)}
+.notepad-footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;gap:10px;justify-content:flex-end;flex-shrink:0;background:var(--bg2)}
+
+/* EDIT SUBJECT MODAL */
+.edit-subj-overlay{position:fixed;inset:0;background:rgba(6,6,14,.85);z-index:400;display:none;align-items:center;justify-content:center}
+.edit-subj-overlay.open{display:flex}
+.edit-subj-box{background:var(--bg2);border:1px solid var(--border-accent);border-radius:var(--r2);padding:28px;width:340px;max-width:94vw}
+
+/* SUBJECT CHIP EDIT BTN */
+.chip-edit{background:none;border:none;color:var(--text3);cursor:pointer;font-size:9px;padding:0 2px;line-height:1;transition:color .2s;margin-left:1px}
+.chip-edit:hover{color:var(--accent2)}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:60px;border-bottom:1px solid var(--border);background:rgba(6,6,14,0.97);backdrop-filter:blur(20px);flex-shrink:0;z-index:100;transition:border-color .5s}
+.topbar-left{display:flex;align-items:center;gap:20px}
+.logo-wrap{display:flex;align-items:center;gap:10px}
+.logo-img{height:26px;width:auto;filter:invert(var(--invert-val))}
+.logo-text-box{display:flex;flex-direction:column}
+.logo-mark{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--accent2);line-height:1;transition:color .5s}
+.logo-sub{font-size:9px;letter-spacing:3px;color:var(--text3);font-weight:300}
+.nav{display:flex;gap:2px}
+.nav-btn{background:none;border:none;color:var(--text2);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;padding:7px 14px;border-radius:8px;cursor:pointer;transition:all .2s;position:relative}
+.nav-btn:hover{color:var(--text);background:rgba(255,255,255,0.04)}
+.nav-btn.active{color:var(--accent2);background:var(--accent-glow)}
+.nav-btn.active::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:18px;height:1px;background:var(--accent);transition:background .5s}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.vital-pill{display:flex;align-items:center;gap:5px;font-size:11px;font-family:'JetBrains Mono',monospace;padding:4px 10px;border-radius:100px;border:1px solid var(--border);transition:border-color .5s,color .5s,background .5s}
+.vital-pill.focus-pill{border-color:rgba(var(--accent-rgb),0.2);color:var(--accent2);background:var(--accent-glow)}
+.vital-pill.stress-pill{border-color:rgba(200,168,75,0.2);color:var(--gold2);background:var(--gold-glow)}
+.vital-dot{width:5px;height:5px;border-radius:50%;animation:pulse 2s infinite}
+.focus-dot{background:var(--accent)}
+.stress-dot{background:var(--gold2)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.timer-badge{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);background:var(--bg3);border:1px solid var(--border);padding:4px 10px;border-radius:8px;display:flex;align-items:center;gap:5px}
+.timer-label{font-size:9px;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;font-family:'Outfit',sans-serif}
+
+/* LIGHT THEME */
+body.light-theme{
+  --bg:#f2f2fa;--bg2:#ffffff;--bg3:#eaeaf5;--bg4:#dcdcee;--bg5:#c8c8de;
+  --text:#1a1a30;--text2:#55557a;--text3:#9898b8;
+  --border:rgba(0,0,0,0.07);--border-accent:rgba(0,150,200,0.3);--border-gold:rgba(150,110,20,0.25);
+  --gold:#a07820;--gold2:#b08830;--gold-glow:rgba(150,110,20,0.08);
+  --invert-val:1;
+}
+body.light-theme .topbar{background:rgba(242,242,250,0.97)}
+body.light-theme .msg.ai .msg-bubble{background:var(--bg3)}
+body.light-theme .notepad-input,body.light-theme .notepad-select,body.light-theme .notepad-textarea,
+body.light-theme .modal-input,body.light-theme .modal-select,body.light-theme .modal-textarea,
+body.light-theme .chat-textarea,body.light-theme .add-subject-input{background:var(--bg3);color:var(--text)}
+body.light-theme .track-selector{background:var(--bg3);color:var(--text)}
+body.light-theme .hint{background:var(--bg3)}
+body.light-theme .source-popup,body.light-theme .floating-link-popup{background:var(--bg2)}
+
+/* USER BADGE */
+.user-menu-container{position:relative}
+.user-badge{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:0 12px;height:30px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500;transition:all .2s}
+.user-badge:hover{color:var(--text);border-color:var(--text3)}
+.user-badge-avatar{width:18px;height:18px;border-radius:50%;object-fit:cover;border:1px solid var(--accent2);display:none}
+.user-dropdown{position:absolute;top:36px;right:0;width:260px;background:var(--bg2);border:1px solid var(--border-accent);border-radius:var(--r);padding:14px;box-shadow:0 10px 25px rgba(0,0,0,0.4);display:none;flex-direction:column;gap:10px;z-index:210}
+.user-dropdown.open{display:flex}
+.ud-label{font-size:10px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;min-height:0}
+.section{display:none;padding:22px 28px;animation:fadeIn .25s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-end}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:3px;line-height:1}
+.page-sub{font-size:12px;color:var(--text2);margin-top:3px}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;position:relative;overflow:hidden;transition:border-color .5s}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);transition:background .5s}
+.stat-card.accent-card{border-color:var(--border-accent)}
+.stat-card.accent-card::before{background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.stat-card.gold-card{border-color:var(--border-gold)}
+.stat-card.gold-card::before{background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.s-label{font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.s-value{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;letter-spacing:1px}
+.accent-card .s-value{color:var(--accent2)}
+.gold-card .s-value{color:var(--gold2)}
+.stat-card:not(.accent-card):not(.gold-card) .s-value{color:var(--text)}
+.s-sub{font-size:11px;color:var(--text2);margin-top:5px}
+.s-bar{height:2px;background:var(--bg4);border-radius:100px;margin-top:10px;overflow:hidden}
+.s-bar-fill{height:100%;border-radius:100px;transition:width 1.5s ease}
+.accent-card .s-bar-fill{background:var(--accent)}
+.gold-card .s-bar-fill{background:var(--gold)}
+.s-bar-fill{background:rgba(255,255,255,0.15)}
+
+/* PANEL */
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:20px;margin-bottom:14px;position:relative;overflow:hidden;transition:border-color .5s}
+.panel.accent-panel{border-color:var(--border-accent)}
+.panel.accent-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent)50%,transparent);transition:background .5s}
+.panel-title{font-size:10px;color:var(--text3);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:14px}
+
+/* BTNS - Dynamic accent */
+.btn{font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;padding:8px 18px;border-radius:9px;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text2);transition:all .3s;letter-spacing:.3px}
+.btn:hover{border-color:rgba(var(--accent-rgb),0.3);color:var(--text)}
+.btn.primary{background:var(--accent-glow);border-color:rgba(var(--accent-rgb),0.4);color:var(--accent2);transition:all .3s}
+.btn.primary:hover{background:rgba(var(--accent-rgb),0.15)}
+.btn.danger{background:rgba(255,80,80,0.08);border-color:rgba(255,80,80,0.2);color:#ff8080}
+
+/* DASHBOARD COMPACT */
+.dash-top-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+.dash-vitals-card{background:var(--bg2);border:1px solid var(--border-accent);border-radius:var(--r2);padding:18px;position:relative;overflow:hidden;transition:border-color .5s,box-shadow .5s}
+.dash-vitals-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);transition:background .5s}
+.vitals-row{display:flex;gap:12px;margin-bottom:14px}
+.vital-big{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px;text-align:center;transition:border-color .5s}
+.vb-val{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1;transition:color .5s}
+.vb-lbl{font-size:10px;color:var(--text3);letter-spacing:1.5px;margin-top:3px}
+.vb-bar{height:3px;background:var(--bg4);border-radius:100px;margin-top:8px;overflow:hidden}
+.vb-bar-fill{height:100%;border-radius:100px;transition:width .8s,background .5s}
+.health-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px;font-size:12px;color:var(--text2);line-height:1.6;font-style:italic;transition:border-color .5s}
+
+/* CLOCK */
+.clock-widget{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.clock-time{font-family:'JetBrains Mono',monospace;font-size:38px;font-weight:500;letter-spacing:-1px;color:var(--accent2);transition:color .5s}
+.clock-date{font-size:11px;color:var(--text2);margin-top:5px;letter-spacing:1px;text-transform:uppercase}
+
+/* SESSION */
+.session-timer{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:4px;color:var(--text);line-height:1}
+.session-sub{font-size:10px;color:var(--text3);letter-spacing:2px;margin-top:4px;font-family:'JetBrains Mono',monospace}
+.session-btns{display:flex;gap:8px;margin-top:12px}
+.progress-track{height:3px;background:var(--bg4);border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold2));border-radius:100px;transition:width .5s,background .5s;width:0%}
+.week-bars{display:flex;gap:6px;align-items:flex-end;height:40px;margin-top:12px}
+.week-bar-col{flex:1;display:flex;flex-direction:column;align-items:center}
+.wbar{width:100%;border-radius:2px 2px 0 0;background:var(--bg4);min-height:2px;transition:all .3s}
+.wbar.today{background:var(--accent);transition:background .5s}
+.week-days{display:flex;gap:6px;margin-top:4px}
+.wday{flex:1;text-align:center;font-size:9px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.wday.today{color:var(--accent2);transition:color .5s}
+
+/* LIGHT ENGINE */
+.vital-slider-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px;transition:border-color .5s}
+.vs-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.vs-label{font-size:11px;color:var(--text2);letter-spacing:1px}
+.vs-val{font-family:'Bebas Neue',sans-serif;font-size:20px}
+.vs-val.ac{color:var(--accent2);transition:color .5s}
+.vs-val.gd{color:var(--gold2)}
+.vs-bar-track{height:6px;background:var(--bg4);border-radius:100px;overflow:hidden}
+.vs-bar-fill{height:100%;border-radius:100px;transition:width .8s}
+.focus-bar{background:linear-gradient(90deg,var(--purple2),var(--accent));transition:background .5s}
+.stress-bar{background:linear-gradient(90deg,var(--accent),var(--gold),#ff6060)}
+.cube-viz{width:80px;height:80px;position:relative;margin:0 auto}
+.cv-glow{position:absolute;inset:-8px;border-radius:12px;opacity:.5;transition:all .8s;filter:blur(14px)}
+.cv-front{position:absolute;top:14px;left:14px;width:52px;height:52px;border-radius:8px;border:1.5px solid;transition:all .8s}
+.cv-top{position:absolute;top:4px;left:14px;width:52px;height:14px;border-radius:4px 4px 0 0;transform:skewX(-22deg);border:1.5px solid;transition:all .8s}
+.cv-side{position:absolute;top:14px;right:4px;width:14px;height:52px;border-radius:0 4px 4px 0;transform:skewY(-22deg);border:1.5px solid;transition:all .8s}
+.light-status-bar{border-radius:8px;height:40px;display:flex;align-items:center;justify-content:center;font-size:11px;letter-spacing:2px;font-family:'JetBrains Mono',monospace;transition:all .8s}
+
+/* SOUNDSCAPE */
+.soundscape-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.track-selector{width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);font-family:'Outfit',sans-serif;font-size:12px;padding:8px 10px;border-radius:8px;outline:none;cursor:pointer;margin-bottom:10px}
+.audio-controls{display:flex;align-items:center;gap:10px}
+.volume-slider{flex:1;accent-color:var(--accent)}
+
+/* NOTES */
+.notes-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px}
+.filter-row{display:flex;gap:5px;flex-wrap:wrap;flex:1}
+.filter-chip{font-size:11px;padding:4px 11px;border-radius:100px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;transition:all .2s;font-family:'Outfit',sans-serif;display:flex;align-items:center;gap:4px}
+.filter-chip:hover{border-color:var(--border-accent);color:var(--text)}
+.filter-chip.active{border-color:rgba(var(--accent-rgb),0.5);background:var(--accent-glow);color:var(--accent2)}
+.chip-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:10px;padding:0 1px;line-height:1;transition:color .2s}
+.chip-del:hover{color:#ff8080}
+.add-subject-row{display:flex;gap:6px;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.add-subject-input{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Outfit',sans-serif;font-size:12px;padding:6px 10px;border-radius:8px;outline:none;transition:border .2s}
+.add-subject-input:focus{border-color:var(--border-accent)}
+.add-subject-input::placeholder{color:var(--text3)}
+.notes-grid{display:flex;flex-direction:column;gap:10px}
+.note-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:15px 16px;transition:all .35s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;display:flex;gap:12px;cursor:pointer}
+.note-card.deleting{opacity:0;transform:scale(.9) translateY(-20px);max-height:0!important;padding:0!important;margin:0!important;border:none!important}
+.note-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--accent);opacity:0;transition:opacity .2s,background .5s}
+.note-card:hover{border-color:var(--border-accent)}
+.note-card:hover::before{opacity:1}
+.note-body{flex:1;min-width:0}
+.note-subject-tag{display:inline-block;font-size:9px;letter-spacing:2px;padding:2px 8px;border-radius:100px;margin-bottom:7px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+.tag-math{color:#a78bfa;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2)}
+.tag-physics{color:var(--accent2);background:var(--accent-glow);border:1px solid var(--border-accent)}
+.tag-biology{color:#86efac;background:rgba(134,239,172,.1);border:1px solid rgba(134,239,172,.2)}
+.tag-chemistry{color:#fde68a;background:rgba(253,230,138,.1);border:1px solid rgba(253,230,138,.2)}
+.tag-english{color:#f472b6;background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.2)}
+.tag-history{color:#fb923c;background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.2)}
+.tag-geography{color:#6ee7b7;background:rgba(110,231,183,.1);border:1px solid rgba(110,231,183,.2)}
+.tag-general{color:var(--text2);background:var(--bg3);border:1px solid var(--border)}
+.note-q{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px;line-height:1.4}
+.note-a{font-size:12px;color:var(--text2);line-height:1.6;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.note-time{font-size:10px;color:var(--text3);margin-top:7px;font-family:'JetBrains Mono',monospace}
+.note-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px 6px;border-radius:6px;transition:all .2s;flex-shrink:0;align-self:flex-start}
+.note-del:hover{color:#ff8080;background:rgba(255,80,80,.1)}
+.empty-state{text-align:center;padding:50px 20px;color:var(--text3)}
+
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;background:rgba(6,6,14,.85);z-index:200;align-items:center;justify-content:center;display:none}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border-accent);border-radius:var(--r2);padding:28px;width:500px;max-width:92vw}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:20px;color:var(--accent2);transition:color .5s}
+.modal-field{margin-bottom:14px}
+.modal-label{font-size:11px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+.modal-input,.modal-select,.modal-textarea{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;padding:10px 14px;border-radius:9px;outline:none;transition:border .2s}
+.modal-input:focus,.modal-select:focus,.modal-textarea:focus{border-color:var(--border-accent)}
+.modal-select{cursor:pointer}
+.modal-select option{background:var(--bg3)}
+.modal-textarea{resize:vertical;min-height:80px;line-height:1.5}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+
+/* TUTOR */
+.tutor-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.tutor-layout{display:flex;flex-direction:column;height:calc(100vh - 60px - 108px)}
+.mode-tag{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:1.5px;color:var(--accent2);background:var(--accent-glow);border:1px solid var(--border-accent);padding:5px 12px;border-radius:100px;transition:color .5s,border-color .5s,background .5s}
+.mode-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;transition:background .5s}
+.chat-box{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding:2px 2px 16px;min-height:0}
+.chat-welcome-container{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;padding:40px 20px}
+.chat-welcome-title{font-size:30px;font-weight:700;color:var(--text);margin-bottom:10px}
+.msg{max-width:82%;animation:msgIn .2s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{align-self:flex-end}.msg.ai{align-self:flex-start}
+.msg-sender{font-size:9px;letter-spacing:1.5px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+.msg.user .msg-sender{text-align:right;color:rgba(var(--accent-rgb),.4)}
+.msg-bubble{padding:12px 16px;border-radius:14px;font-size:13px;line-height:1.8}
+.msg.user .msg-bubble{background:var(--accent-glow);border:1px solid rgba(var(--accent-rgb),.15);color:var(--text);border-bottom-right-radius:4px}
+.msg.ai .msg-bubble{background:var(--bg2);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:4px;white-space:pre-wrap}
+.typing-indicator{display:flex;gap:4px;padding:3px 0;align-items:center}
+.td{width:6px;height:6px;border-radius:50%;background:var(--text3);animation:tdot .9s infinite}
+.td:nth-child(2){animation-delay:.15s}.td:nth-child(3){animation-delay:.3s}
+@keyframes tdot{0%,100%{transform:translateY(0);opacity:.3}50%{transform:translateY(-5px);opacity:1}}
+.chat-input-area{border-top:1px solid var(--border);padding-top:14px;display:flex;gap:10px;align-items:flex-end;flex-shrink:0}
+.lecture-bar{display:flex;align-items:center;gap:10px;background:var(--bg2);padding:6px 12px;border:1px solid var(--border-accent);border-radius:8px;margin-bottom:10px;flex-wrap:wrap}
+.chat-textarea{flex:1;background:var(--bg2);border:1px solid var(--border);color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;padding:12px 16px;border-radius:12px;outline:none;resize:none;height:48px;max-height:120px;transition:border .2s;line-height:1.5}
+.chat-textarea:focus{border-color:rgba(var(--accent-rgb),.3)}
+.chat-textarea::placeholder{color:var(--text3)}
+.ask-btn{background:var(--accent-glow);border:1px solid rgba(var(--accent-rgb),.3);color:var(--accent2);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;padding:0 24px;height:48px;border-radius:12px;cursor:pointer;transition:all .3s;white-space:nowrap}
+.ask-btn:hover{background:rgba(var(--accent-rgb),.15)}
+.ask-btn:disabled{opacity:.3;cursor:not-allowed}
+.hints{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.hint{font-size:11px;color:var(--text3);background:var(--bg2);border:1px solid var(--border);padding:5px 12px;border-radius:100px;cursor:pointer;transition:all .2s}
+.hint:hover{color:var(--text2);border-color:var(--border-accent)}
+
+/* SOURCE POPUP */
+.source-popup{position:fixed;bottom:24px;right:24px;width:300px;background:var(--bg2);border:1px solid var(--border-accent);border-radius:var(--r2);box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:300;display:none;flex-direction:column;overflow:hidden;animation:popIn .25s ease}
+@keyframes popIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.source-popup.show{display:flex}
+.sp-header{background:var(--bg3);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);cursor:grab;user-select:none}
+.sp-header:active{cursor:grabbing}
+.sp-title{font-size:11px;font-weight:600;letter-spacing:1.5px;color:var(--accent2);transition:color .5s}
+.sp-close{background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:2px 6px;border-radius:4px;transition:all .2s}
+.sp-close:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.sp-body{padding:14px;display:flex;flex-direction:column;gap:10px}
+.sp-source-item{display:flex;flex-direction:column;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px}
+.sp-source-name{font-size:12px;font-weight:500;color:var(--text)}
+.sp-source-url{font-size:10px;color:var(--text2);font-family:'JetBrains Mono',monospace;word-break:break-all}
+.sp-open-btn{background:var(--accent-glow);border:1px solid rgba(var(--accent-rgb),.3);color:var(--accent2);font-family:'Outfit',sans-serif;font-size:11px;padding:5px 12px;border-radius:7px;cursor:pointer;transition:all .2s;text-decoration:none;text-align:center}
+.sp-open-btn:hover{background:rgba(var(--accent-rgb),.15)}
+.sp-no-source{font-size:12px;color:var(--text3);text-align:center;padding:8px}
+
+/* FLOATING LINK HUB */
+.floating-link-popup{position:fixed;bottom:24px;right:24px;width:290px;background:var(--bg2);border:1px solid var(--border-accent);border-radius:var(--r2);box-shadow:0 12px 35px rgba(0,0,0,.5);z-index:290;display:none;flex-direction:column;overflow:hidden}
+.floating-link-popup.show{display:flex}
+.floating-link-popup.minimized{height:40px;width:220px}
+.floating-link-popup.minimized .popup-content{display:none}
+.popup-header{background:var(--bg3);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);cursor:grab;user-select:none}
+.popup-header:active{cursor:grabbing}
+.popup-title{font-size:11px;font-weight:600;letter-spacing:1.5px;color:var(--accent2)}
+.popup-actions button{background:none;border:none;color:var(--text2);cursor:pointer;font-size:12px;padding:2px 6px;border-radius:4px;transition:all .2s}
+.popup-actions button:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.popup-content{padding:14px}
+.link-url-box{background:var(--bg3);border:1px solid var(--border);padding:8px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text2);word-break:break-all;margin-top:4px;max-height:44px;overflow-y:auto}
+.floating-popup-trigger{position:fixed;bottom:24px;right:24px;background:var(--accent-glow);border:1px solid var(--border-accent);color:var(--accent2);padding:9px 16px;border-radius:100px;cursor:pointer;font-weight:500;font-size:12px;box-shadow:0 4px 15px rgba(0,0,0,.4);z-index:289;display:none;transition:all .2s}
+.floating-popup-trigger:hover{background:rgba(var(--accent-rgb),.14);transform:translateY(-2px)}
+
+/* EDIT NOTE MODAL */
+.wide-modal{width:620px;max-width:95vw}
+
+/* NURA WATCH — topbar pill */
+.nura-watch-pill{display:flex;align-items:center;gap:6px;font-size:11px;font-family:'JetBrains Mono',monospace;padding:4px 11px;border-radius:100px;border:1px solid rgba(168,85,247,0.3);color:#c084fc;background:rgba(168,85,247,0.08);cursor:pointer;transition:all .3s;position:relative}
+.nura-watch-pill:hover{border-color:rgba(168,85,247,0.6);background:rgba(168,85,247,0.14)}
+.nw-dot{width:5px;height:5px;border-radius:50%;background:#a855f7;animation:pulse 2s infinite}
+.nw-alert-badge{position:absolute;top:-4px;right:-4px;width:10px;height:10px;border-radius:50%;background:#ff5050;border:2px solid var(--bg);display:none;animation:pulse .8s infinite}
+
+/* NURA WATCH — notification popup */
+.nw-popup{position:fixed;top:80px;right:24px;width:340px;background:var(--bg2);border:1px solid rgba(168,85,247,0.4);border-radius:var(--r2);box-shadow:0 16px 50px rgba(0,0,0,.65),0 0 30px rgba(168,85,247,0.12);z-index:500;display:none;flex-direction:column;overflow:hidden;animation:nwSlideIn .35s cubic-bezier(.34,1.56,.64,1)}
+.nw-popup.show{display:flex}
+@keyframes nwSlideIn{from{opacity:0;transform:translateX(30px) scale(.96)}to{opacity:1;transform:translateX(0) scale(1)}}
+.nw-popup-header{background:linear-gradient(135deg,rgba(168,85,247,0.15),rgba(124,58,237,0.08));padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(168,85,247,0.2)}
+.nw-popup-title{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:1.5px;color:#c084fc;text-transform:uppercase}
+.nw-popup-icon{font-size:16px;line-height:1}
+.nw-popup-close{background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:3px 7px;border-radius:5px;transition:all .2s}
+.nw-popup-close:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.nw-popup-vitals{display:flex;gap:8px;padding:12px 16px 0;font-family:'JetBrains Mono',monospace;font-size:11px}
+.nw-vchip{flex:1;padding:7px 10px;border-radius:8px;text-align:center}
+.nw-vchip.focus{background:rgba(var(--accent-rgb),0.08);border:1px solid rgba(var(--accent-rgb),0.2);color:var(--accent2)}
+.nw-vchip.stress{background:rgba(200,168,75,0.08);border:1px solid rgba(200,168,75,0.2);color:var(--gold2)}
+.nw-vchip-lbl{font-size:9px;letter-spacing:1.5px;opacity:.7;margin-bottom:2px}
+.nw-vchip-val{font-size:16px;font-weight:600}
+.nw-popup-body{padding:14px 16px;font-size:13px;color:var(--text2);line-height:1.75;font-style:italic;min-height:56px;position:relative}
+.nw-loading{display:flex;gap:4px;padding:6px 0;align-items:center}
+.nw-popup-tips{padding:0 16px 14px;display:flex;flex-direction:column;gap:7px}
+.nw-tip{display:flex;align-items:center;gap:9px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:9px 12px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .2s}
+.nw-tip:hover{border-color:rgba(168,85,247,0.4);color:var(--text);background:rgba(168,85,247,0.06)}
+.nw-tip-icon{font-size:14px;flex-shrink:0}
+.nw-popup-footer{border-top:1px solid var(--border);padding:10px 16px;display:flex;justify-content:flex-end;gap:8px}
+.nw-dismiss-btn{background:none;border:1px solid var(--border);color:var(--text2);font-family:'Outfit',sans-serif;font-size:11px;padding:6px 14px;border-radius:7px;cursor:pointer;transition:all .2s}
+.nw-dismiss-btn:hover{border-color:rgba(168,85,247,0.4);color:var(--text)}
+.nw-snooze-btn{background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.3);color:#c084fc;font-family:'Outfit',sans-serif;font-size:11px;padding:6px 14px;border-radius:7px;cursor:pointer;transition:all .2s}
+.nw-snooze-btn:hover{background:rgba(168,85,247,0.2)}
+
+/* NURA WATCH — dashboard comment box */
+.nw-dashboard-comment{background:linear-gradient(135deg,rgba(168,85,247,0.06),rgba(124,58,237,0.03));border:1px solid rgba(168,85,247,0.25);border-radius:var(--r);padding:12px 14px;margin-top:12px;position:relative;overflow:hidden;transition:all .5s}
+.nw-dashboard-comment::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(168,85,247,0.5),transparent)}
+.nwdc-header{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.nwdc-label{font-size:9px;letter-spacing:2px;color:#a855f7;text-transform:uppercase;font-family:'JetBrains Mono',monospace;font-weight:600}
+.nwdc-dot{width:4px;height:4px;border-radius:50%;background:#a855f7;animation:pulse 2s infinite}
+.nwdc-text{font-size:12px;color:var(--text2);line-height:1.7;font-style:italic;min-height:20px;transition:opacity .4s}
+.nwdc-text.fading{opacity:0}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">NURA</div>
+    <div class="login-sub">focus · learn · glow</div>
+    <div id="g_id_onload" data-client_id="1058365796413-sl3t1l707v8u74b3sap7ocgq77fqg2i9.apps.googleusercontent.com" data-callback="handleGoogleLogin" data-auto_prompt="false"></div>
+    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_black" data-text="sign_in_with" data-shape="pill" data-logo_alignment="left" style="display:flex;justify-content:center;margin-bottom:4px"></div>
+    <div class="login-divider">— or —</div>
+    <button class="login-local-btn" onclick="loginLocal()">Continue without sign-in (local only)</button>
+    <div class="login-note">Your API key is stored only in your browser.<br>No data is ever sent to any server except the AI API.</div>
+  </div>
+</div>
+
+<div class="app">
+
+<!-- TOPBAR -->
+<div class="topbar" id="main-topbar">
+  <div class="topbar-left">
+    <div class="logo-wrap">
+      <img src="Nura logo.png" alt="Nura" class="logo-img" onerror="this.style.display='none'"/>
+      <div class="logo-text-box">
+        <div class="logo-mark">NURA</div>
+        <div class="logo-sub">focus · learn · glow</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <button class="nav-btn active" onclick="nav('dashboard',this)">Dashboard</button>
+      <button class="nav-btn" onclick="nav('stats-panel',this)">Stats</button>
+      <button class="nav-btn" onclick="nav('notes',this)">Notes</button>
+      <button class="nav-btn" onclick="nav('tutor',this)">Nura Mind</button>
+    </nav>
+  </div>
+  <div class="topbar-right">
+    <div class="vital-pill focus-pill"><div class="vital-dot focus-dot"></div>Focus <span id="top-focus">84%</span></div>
+    <div class="vital-pill stress-pill"><div class="vital-dot stress-dot"></div>Stress <span id="top-stress">12%</span></div>
+    <div class="nura-watch-pill" onclick="toggleNuraWatchPanel()" title="Nura Watch — AI state monitor">
+      <div class="nw-dot"></div>Watch
+      <div class="nw-alert-badge" id="nw-alert-badge"></div>
+    </div>
+    <div class="timer-badge" id="top-timer"><span class="timer-label">Session</span><span id="top-timer-val">00:00</span></div>
+    <div class="user-menu-container">
+      <button class="user-badge" onclick="toggleUserDropdown(event)">
+        <img id="user-badge-img" src="" class="user-badge-avatar" alt=""/>
+        <span id="user-badge-text">Profile</span>
+      </button>
+      <div class="user-dropdown" id="userDropdown" onclick="event.stopPropagation()">
+        <div class="ud-label">Display Name</div>
+        <input type="text" class="modal-input" id="profile-name-input" value="Student" style="font-size:11px;padding:6px 10px" oninput="saveUserProfile()"/>
+        <div class="ud-label">Age</div>
+        <input type="number" class="modal-input" id="profile-age-input" value="17" style="font-size:11px;padding:6px 10px" oninput="saveUserProfile()"/>
+        <div class="ud-label">Profile Picture</div>
+        <label class="file-btn" for="profile-pfp-input" style="width:100%;justify-content:center;margin-bottom:4px">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          Upload Photo
+        </label>
+        <input type="file" id="profile-pfp-input" accept="image/*" onchange="handlePfpUpload(this)" style="display:none"/>
+        <button class="btn danger" id="remove-pfp-btn" onclick="removePfp()" style="width:100%;font-size:11px;padding:5px;margin-bottom:2px;display:none">✕ Remove Photo</button>
+        <div class="ud-label">API Key (stored locally only)</div>
+        <input type="password" class="modal-input" id="api-key-input" placeholder="gsk_..." style="font-size:11px;padding:6px 10px" oninput="saveApiKey()"/>
+        <div class="ud-label">Socratic Rigor (<span id="scale-indicator">5</span>/10)</div>
+        <input type="range" style="width:100%;accent-color:var(--accent)" id="profile-ai-scale" min="1" max="10" value="5" oninput="saveUserProfile()"/>
+        <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()" style="width:100%;font-size:11px;padding:6px;text-align:center;background:var(--bg3)">☀️  Switch to Light</button>
+        <button class="btn danger" onclick="logOut()" style="width:100%;font-size:11px;padding:6px;text-align:center">Sign Out</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- DASHBOARD -->
+<div class="section active" id="dashboard">
+  <div class="page-header">
+    <div><div class="page-title">Welcome Back</div><div class="page-sub">Live vitals, session control &amp; soundscape</div></div>
+  </div>
+
+  <div class="dash-top-grid">
+    <!-- VITALS CARD -->
+    <div class="dash-vitals-card">
+      <div class="panel-title">Live Neuro Vitals</div>
+      <div class="vitals-row">
+        <div class="vital-big">
+          <div class="vb-val" id="dash-focus" style="color:var(--accent2)">84%</div>
+          <div class="vb-lbl">FOCUS</div>
+          <div class="vb-bar"><div class="vb-bar-fill" id="focus-bar-fill" style="width:84%;background:var(--accent)"></div></div>
+        </div>
+        <div class="vital-big">
+          <div class="vb-val" id="dash-stress" style="color:var(--gold2)">12%</div>
+          <div class="vb-lbl">STRESS</div>
+          <div class="vb-bar"><div class="vb-bar-fill" id="stress-bar-fill" style="width:12%;background:var(--gold)"></div></div>
+        </div>
+      </div>
+      <div class="health-box" id="nura-health-text">Synchronizing neuro-metrics from headband...</div>
+      <!-- NURA WATCH COMMENT -->
+      <div class="nw-dashboard-comment" id="nw-dashboard-comment">
+        <div class="nwdc-header"><div class="nwdc-dot"></div><span class="nwdc-label">Nura Watch</span></div>
+        <div class="nwdc-text" id="nwdc-text">Initializing AI state analysis...</div>
+      </div>
+    </div>
+
+    <!-- SESSION CARD -->
+    <div class="panel" style="margin-bottom:0">
+      <div class="panel-title">Session Control</div>
+      <div class="session-timer" id="main-timer">00:00</div>
+      <div class="session-sub">ELAPSED STUDY TIME</div>
+      <div class="session-btns">
+        <button class="btn primary" id="start-btn" onclick="toggleSession()">Start Session</button>
+        <button class="btn" onclick="resetSession()">Reset</button>
+      </div>
+      <div style="margin-top:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div style="font-size:10px;color:var(--text3);letter-spacing:1.5px">DAILY GOAL</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--accent2)" id="prog-pct">0%</div>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+        <div class="week-bars" id="week-bars"></div>
+        <div class="week-days" id="week-days"></div>
+      </div>
+    </div>
+
+    <!-- CLOCK + SOUNDSCAPE -->
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="clock-widget">
+        <div class="clock-time" id="dash-clock-time">00:00:00</div>
+        <div class="clock-date" id="dash-clock-date">Loading...</div>
+      </div>
+      <div class="panel" style="margin-bottom:0;flex:1">
+        <div class="panel-title">Soundscape</div>
+        <div class="soundscape-box">
+          <select class="track-selector" id="track-select" onchange="changeSoundscapeTrack()">
+            <option value="binaural">Binaural Beats (Focus)</option>
+            <option value="rain">Cozy Rain</option>
+            <option value="ocean">Deep Ocean</option>
+            <option value="lofi">Lofi Radio</option>
+          </select>
+          <div style="margin-bottom:10px;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--bg2);display:flex;align-items:center;gap:8px">
+            <div class="modal-label" style="font-size:9px;margin-bottom:0;color:var(--text2);white-space:nowrap">Custom Track</div>
+            <label class="file-btn" for="local-audio-uploader" style="padding:5px 10px;font-size:10px">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              Browse
+            </label>
+            <input type="file" id="local-audio-uploader" accept="audio/*,video/*" onchange="handleCustomAudioImport(this)" style="display:none"/>
+            <span id="audio-file-label" style="font-size:10px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">No file</span>
+          </div>
+          <div class="audio-controls">
+            <button class="btn primary" id="play-audio-btn" onclick="toggleSoundscape()" style="padding:6px 14px;font-size:11px">Play Track</button>
+            <input type="range" class="volume-slider" id="volume-control" min="0" max="1" step="0.05" value="0.5" oninput="adjustSoundscapeVolume(this.value)"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="section" id="stats-panel">
+  <div class="page-header">
+    <div><div class="page-title">Telemetry &amp; Analysis</div><div class="page-sub">Biological signals, light engine &amp; study metrics</div></div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card accent-card">
+      <div class="s-label">Focus Score</div>
+      <div class="s-value" id="stats-focus">84%</div>
+      <div class="s-sub">Live headband feed</div>
+      <div class="s-bar"><div class="s-bar-fill" id="stats-focus-bar" style="width:84%"></div></div>
+    </div>
+    <div class="stat-card gold-card">
+      <div class="s-label">Stress Level</div>
+      <div class="s-value" id="stats-stress">12%</div>
+      <div class="s-sub">Low — optimal</div>
+      <div class="s-bar"><div class="s-bar-fill" style="background:var(--gold);width:12%" id="stats-stress-bar"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="s-label">Study Time</div>
+      <div class="s-value" id="dash-time">00:00</div>
+      <div class="s-sub">Current session</div>
+      <div class="s-bar"><div class="s-bar-fill" id="time-bar" style="width:0%"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="s-label">Notes Logged</div>
+      <div class="s-value" id="dash-q">0</div>
+      <div class="s-sub">Saved insights</div>
+      <div class="s-bar"><div class="s-bar-fill" id="q-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:14px">
+    <div class="panel">
+      <div class="panel-title">Smart Light Logic — Science Based</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px;border-top:2px solid #ffffff">
+          <div style="font-size:10px;color:#fff;font-weight:600;letter-spacing:1px;margin-bottom:6px">DEEP FOCUS</div>
+          <div style="font-size:11px;color:var(--text2);line-height:1.6">Focus 80–100% · Stress 0–30%<br><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#fff">6500K Cool White</span></div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px;border-top:2px solid var(--accent)">
+          <div style="font-size:10px;color:var(--accent2);font-weight:600;letter-spacing:1px;margin-bottom:6px">STABLE FOCUS</div>
+          <div style="font-size:11px;color:var(--text2);line-height:1.6">Focus 60–79% · Stress 0–40%<br><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent2)">4500K Neutral</span></div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px;border-top:2px solid var(--gold)">
+          <div style="font-size:10px;color:var(--gold2);font-weight:600;letter-spacing:1px;margin-bottom:6px">BREAK MODE</div>
+          <div style="font-size:11px;color:var(--text2);line-height:1.6">Focus &lt;60% · Any Stress<br><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold2)">3000K Warm</span></div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px;border-top:2px solid #a855f7">
+          <div style="font-size:10px;color:#c084fc;font-weight:600;letter-spacing:1px;margin-bottom:6px">CALM DOWN</div>
+          <div style="font-size:11px;color:var(--text2);line-height:1.6">Any Focus · Stress &gt;60%<br><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#c084fc">2200K Dim Warm</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel accent-panel">
+      <div class="panel-title">Cube Light Engine</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px">
+        <div class="vital-slider-wrap">
+          <div class="vs-top"><span class="vs-label">FOCUS</span><span class="vs-val ac" id="fe-focus">84%</span></div>
+          <div class="vs-bar-track"><div class="vs-bar-fill focus-bar" id="focus-slider" style="width:84%"></div></div>
+        </div>
+        <div class="vital-slider-wrap">
+          <div class="vs-top"><span class="vs-label">STRESS</span><span class="vs-val gd" id="fe-stress">12%</span></div>
+          <div class="vs-bar-track"><div class="vs-bar-fill stress-bar" id="stress-slider" style="width:12%"></div></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:20px;margin-bottom:14px">
+        <div class="cube-viz">
+          <div class="cv-glow" id="cv-glow"></div>
+          <div class="cv-top" id="cv-top"></div>
+          <div class="cv-side" id="cv-side"></div>
+          <div class="cv-front" id="cv-front"></div>
+        </div>
+        <div style="text-align:left">
+          <div id="lm-label" style="font-size:13px;font-weight:600;margin-bottom:4px;transition:color .8s">Deep Focus</div>
+          <div id="lm-k" style="font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace">6500K · Cool White</div>
+          <div id="lm-science" style="font-size:10px;color:var(--text3);margin-top:6px">Boosts alertness +18%</div>
+        </div>
+      </div>
+      <div class="light-status-bar" id="light-status-bar">DEEP FOCUS MODE ACTIVE</div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTES -->
+<div class="section" id="notes">
+  <div class="page-header">
+    <div><div class="page-title">Study Notes Log</div><div class="page-sub">Auto-saved from Nura Mind · Click to open editor</div></div>
+    <button class="btn primary" onclick="openAddModal()">+ Add Note</button>
+  </div>
+  <div class="notes-toolbar">
+    <div style="flex:1">
+      <div class="filter-row" id="filter-row"></div>
+      <div class="add-subject-row">
+        <input class="add-subject-input" id="new-subject-input" placeholder="Add subject..." maxlength="20"/>
+        <button class="btn primary" style="padding:5px 14px;font-size:12px" onclick="addCustomSubject()">+ Add</button>
+      </div>
+    </div>
+  </div>
+  <div class="notes-grid" id="notes-grid"></div>
+</div>
+
+<!-- TUTOR -->
+<div class="section" id="tutor">
+  <div class="page-header">
+    <div><div class="page-title">Nura Mind</div><div class="page-sub">Socratic teaching — guided discovery, never direct answers</div></div>
+  </div>
+  <div class="lecture-bar">
+    <span style="font-size:11px;font-weight:500;color:var(--accent2)">📚 Lecture Files:</span>
+    <label class="file-btn" for="lecture-uploader">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Open Files
+    </label>
+    <input type="file" id="lecture-uploader" accept=".pdf,.docx,.txt" multiple onchange="processLectureFiles(this)" style="display:none"/>
+    <span id="lecture-status" style="font-size:10px;color:var(--text3)">No files loaded</span>
+  </div>
+  <div class="tutor-layout">
+    <div class="mode-tag"><div class="mode-dot"></div>SOCRATIC TEACHING PROTOCOL ACTIVE</div>
+    <div class="chat-box" id="chat-box">
+      <div class="chat-welcome-container" id="chat-welcome-screen">
+        <h1 class="chat-welcome-title" id="welcome-user-text">What do you want to learn today?</h1>
+        <p style="color:var(--text2);font-size:13px;max-width:480px;margin:0 auto;line-height:1.7">Upload lecture files or ask anything. Nura guides you to understand — never just tells you the answer.</p>
+      </div>
+    </div>
+    <div>
+      <div class="chat-input-area">
+        <textarea class="chat-textarea" id="chat-input" placeholder="Ask a concept..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
+        <button class="ask-btn" id="ask-btn" onclick="sendMsg()">Send ↑</button>
+      </div>
+      <div class="hints">
+        <div class="hint" onclick="useHint(this)">Why does mitosis produce identical cells?</div>
+        <div class="hint" onclick="useHint(this)">How do I solve for x in an equation?</div>
+        <div class="hint" onclick="useHint(this)">Explain Newton's 3rd law</div>
+        <div class="hint" onclick="useHint(this)">What caused WW1?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end main -->
+</div><!-- end app -->
+
+<!-- SOURCE POPUP -->
+<div class="source-popup" id="source-popup">
+  <div class="sp-header">
+    <div class="sp-title">🔗 Sources</div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <button class="sp-close" onclick="minimizeSourcePopup()" id="sp-min-btn" title="Minimize">➖</button>
+      <button class="sp-close" onclick="closeSourcePopup()" title="Close">✕</button>
+    </div>
+  </div>
+  <div class="sp-body" id="source-popup-body"></div>
+</div>
+
+<!-- LINKS HUB -->
+<div class="floating-link-popup" id="linkPopup">
+  <div class="popup-header">
+    <div class="popup-title">🔗 Links Hub</div>
+    <div class="popup-actions" style="display:flex;gap:6px">
+      <button onclick="minimizeLinkPopup()" id="popup-min-btn">➖</button>
+      <button onclick="closeLinkPopup()">✕</button>
+    </div>
+  </div>
+  <div class="popup-content">
+    <div class="link-url-box" id="active-link-url">No active link</div>
+    <a href="#" target="_blank" id="launch-hub-btn" class="btn primary" style="display:none;text-align:center;margin-top:10px;text-decoration:none;padding:6px 10px;font-size:11px">Open Link ↗</a>
+    <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px">
+      <div class="modal-label" style="font-size:10px;margin-bottom:4px">Add Study Links</div>
+      <input type="text" class="modal-input" id="custom-link-input" placeholder="Paste URL..." style="margin-bottom:6px;font-size:11px;padding:6px 10px"/>
+      <button class="btn" onclick="addCustomHubLink()" style="padding:5px 10px;font-size:11px;width:100%">Add Link</button>
+      <div id="custom-links-list" style="margin-top:8px;max-height:85px;overflow-y:auto;display:flex;flex-direction:column;gap:4px"></div>
+    </div>
+  </div>
+</div>
+<button class="floating-popup-trigger" id="popupTrigger" onclick="openLinkPopup()">🔗 Links Hub</button>
+
+<!-- ADD NOTE — NOTEPAD WINDOW -->
+<div class="notepad-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="notepad-window">
+    <div class="notepad-titlebar">
+      <div class="notepad-title-text">📝 New Study Note</div>
+      <div class="notepad-win-btns">
+        <div class="notepad-win-btn notepad-close-btn" onclick="closeModal()" title="Close"></div>
+      </div>
+    </div>
+    <div class="notepad-body">
+      <div class="notepad-field">
+        <div class="notepad-label">Subject</div>
+        <select class="notepad-select" id="modal-subject"></select>
+      </div>
+      <div class="notepad-field">
+        <div class="notepad-label">Question / Topic</div>
+        <input class="notepad-input" id="modal-q" placeholder="What were you studying?"/>
+      </div>
+      <div class="notepad-field" style="flex:1;display:flex;flex-direction:column">
+        <div class="notepad-label">Notes</div>
+        <textarea class="notepad-textarea" id="modal-a" placeholder="Write your notes here... &#10;&#10;Tip: Use this space freely — jot down key ideas, worked examples, or questions to revisit."></textarea>
+      </div>
+    </div>
+    <div class="notepad-footer">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveManualNote()">Save Note</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT NOTE — NOTEPAD WINDOW -->
+<div class="notepad-overlay" id="edit-note-overlay" onclick="if(event.target===this)closeEditModal()">
+  <div class="notepad-window">
+    <div class="notepad-titlebar">
+      <div class="notepad-title-text" id="edit-note-title">Note Editor</div>
+      <div class="notepad-win-btns" style="gap:10px">
+        <button class="btn" id="edit-lock-toggle" onclick="toggleEditLock()" style="padding:4px 12px;font-size:11px;height:auto">✏️ Edit</button>
+        <div class="notepad-win-btn notepad-close-btn" onclick="closeEditModal()" title="Close"></div>
+      </div>
+    </div>
+    <div class="notepad-body">
+      <div class="notepad-field">
+        <div class="notepad-label">Question</div>
+        <input type="text" class="notepad-input" id="edit-workspace-q" readonly style="background:var(--bg4)"/>
+      </div>
+      <div class="notepad-field" style="flex:1;display:flex;flex-direction:column">
+        <div class="notepad-label">Notes</div>
+        <textarea class="notepad-textarea" id="edit-workspace-a" readonly style="background:var(--bg4)"></textarea>
+      </div>
+    </div>
+    <div class="notepad-footer">
+      <button class="btn" onclick="closeEditModal()">Close</button>
+      <button class="btn primary" id="edit-save-action" onclick="commitNoteEdit()" style="display:none">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT SUBJECT MODAL -->
+<div class="edit-subj-overlay" id="edit-subj-overlay" onclick="if(event.target===this)closeEditSubjModal()">
+  <div class="edit-subj-box">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--accent2);margin-bottom:18px">Rename Subject</div>
+    <div style="font-size:11px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">Subject Name</div>
+    <input class="modal-input" id="edit-subj-input" placeholder="New name..." maxlength="24" style="margin-bottom:18px"/>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn" onclick="closeEditSubjModal()">Cancel</button>
+      <button class="btn primary" onclick="commitSubjectEdit()">Rename</button>
+    </div>
+  </div>
+</div>
+
+<!-- NURA WATCH POPUP -->
+<div class="nw-popup" id="nw-popup">
+  <div class="nw-popup-header">
+    <div class="nw-popup-title"><span class="nw-popup-icon">🔮</span>Nura Watch</div>
+    <button class="nw-popup-close" onclick="dismissNuraWatch()">✕</button>
+  </div>
+  <div class="nw-popup-vitals">
+    <div class="nw-vchip focus"><div class="nw-vchip-lbl">FOCUS</div><div class="nw-vchip-val" id="nw-focus-val">—</div></div>
+    <div class="nw-vchip stress"><div class="nw-vchip-lbl">STRESS</div><div class="nw-vchip-val" id="nw-stress-val">—</div></div>
+  </div>
+  <div class="nw-popup-body" id="nw-popup-body">
+    <div class="nw-loading"><div class="td"></div><div class="td"></div><div class="td"></div></div>
+  </div>
+  <div class="nw-popup-tips" id="nw-popup-tips"></div>
+  <div class="nw-popup-footer">
+    <button class="nw-dismiss-btn" onclick="dismissNuraWatch()">Dismiss</button>
+    <button class="nw-snooze-btn" onclick="snoozeNuraWatch()">Snooze 5 min</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// API KEY — stored in localStorage, never hardcoded
+// ═══════════════════════════════════════════════
+function getApiKey(){ return localStorage.getItem('nura-api-key')||''; }
+function saveApiKey(){
+  const val = document.getElementById('api-key-input').value.trim();
+  if(val) localStorage.setItem('nura-api-key', val);
+}
+
+// ═══════════════════════════════════════════════
+// AUTH — Google or local
+// ═══════════════════════════════════════════════
+function handleGoogleLogin(response){
+  const payload = JSON.parse(atob(response.credential.split('.')[1]));
+  const profile = {
+    name: payload.name||payload.email.split('@')[0],
+    email: payload.email,
+    pfp: payload.picture||'',
+    age: localStorage.getItem('nura-user-profile') ? JSON.parse(localStorage.getItem('nura-user-profile')).age||'17' : '17',
+    aiScale: '5',
+    loggedIn: true,
+    loginType: 'google'
+  };
+  localStorage.setItem('nura-user-profile', JSON.stringify(profile));
+  enterApp();
+}
+
+function loginLocal(){
+  const existing = JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
+  existing.loggedIn = true;
+  existing.loginType = 'local';
+  localStorage.setItem('nura-user-profile', JSON.stringify(existing));
+  enterApp();
+}
+
+function logOut(){
+  const p = JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
+  p.loggedIn = false;
+  localStorage.setItem('nura-user-profile', JSON.stringify(p));
+  location.reload();
+}
+
+function enterApp(){
+  document.getElementById('login-screen').classList.add('hidden');
+  renderUserProfile();
+  initApp();
+}
+
+function checkAuth(){
+  const p = JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
+  if(p.loggedIn){ enterApp(); }
+}
+
+// ═══════════════════════════════════════════════
+// SUBJECTS (customizable, saved to localStorage)
+// ═══════════════════════════════════════════════
+const DEFAULT_SUBJECTS = ['Math','Physics','Biology','Chemistry','English','History','Geography','General'];
+
+function loadSubjects(){
+  try{ return JSON.parse(localStorage.getItem('nura-subjects'))||[...DEFAULT_SUBJECTS]; }
+  catch(e){ return [...DEFAULT_SUBJECTS]; }
+}
+function saveSubjects(arr){ localStorage.setItem('nura-subjects', JSON.stringify(arr)); }
+
+let subjects = loadSubjects();
+
+const TAG_CLASS_MAP = {
+  Math:'tag-math',Physics:'tag-physics',Biology:'tag-biology',Chemistry:'tag-chemistry',
+  English:'tag-english',History:'tag-history',Geography:'tag-geography',General:'tag-general'
+};
+function getTagClass(s){ return TAG_CLASS_MAP[s]||'tag-general'; }
+
+function renderSubjectFilters(){
+  const row = document.getElementById('filter-row');
+  row.innerHTML = `<div class="filter-chip active" onclick="filterNotes('all',this)">All</div>` +
+    subjects.map(s=>`<div class="filter-chip" onclick="filterNotes('${s}',this)" style="padding-right:6px">${s}<button class="chip-edit" onclick="event.stopPropagation();openEditSubjModal('${s}')" title="Rename">✎</button><button class="chip-del" onclick="event.stopPropagation();deleteSubject('${s}')" title="Remove">✕</button></div>`).join('');
+  // also update modals
+  ['modal-subject'].forEach(id=>{
+    const sel = document.getElementById(id);
+    if(sel) sel.innerHTML = subjects.map(s=>`<option>${s}</option>`).join('');
+  });
+}
+
+function addCustomSubject(){
+  const inp = document.getElementById('new-subject-input');
+  const val = inp.value.trim();
+  if(!val||subjects.includes(val)) return;
+  subjects.push(val);
+  saveSubjects(subjects);
+  inp.value='';
+  renderSubjectFilters();
+}
+
+function deleteSubject(s){
+  subjects = subjects.filter(x=>x!==s);
+  saveSubjects(subjects);
+  renderSubjectFilters();
+  renderNotes('all');
+}
+
+let editingSubject = null;
+function openEditSubjModal(s){
+  editingSubject = s;
+  document.getElementById('edit-subj-input').value = s;
+  document.getElementById('edit-subj-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('edit-subj-input').focus(),80);
+}
+function closeEditSubjModal(){
+  document.getElementById('edit-subj-overlay').classList.remove('open');
+  editingSubject = null;
+}
+function commitSubjectEdit(){
+  const newName = document.getElementById('edit-subj-input').value.trim();
+  if(!newName||!editingSubject) return;
+  if(subjects.includes(newName)&&newName!==editingSubject){ closeEditSubjModal(); return; }
+  const idx = subjects.indexOf(editingSubject);
+  if(idx>-1) subjects[idx] = newName;
+  // Update notes that used the old subject name
+  noteData.forEach(n=>{ if(n.subject===editingSubject) n.subject=newName; });
+  saveSubjects(subjects);
+  saveNotes(noteData);
+  closeEditSubjModal();
+  renderSubjectFilters();
+  renderNotes('all');
+}
+
+// ═══════════════════════════════════════════════
+// NOTES
+// ═══════════════════════════════════════════════
+function loadNotes(){ try{ return JSON.parse(localStorage.getItem('nura-notes')||'[]'); }catch(e){ return []; } }
+function saveNotes(n){ localStorage.setItem('nura-notes', JSON.stringify(n)); }
+
+let noteData = loadNotes();
+if(noteData.length===0){
+  noteData=[
+    {id:Date.now()-3,subject:'Biology',q:'Why does mitosis produce identical cells?',a:'What must happen to DNA before a cell can split? Imagine a factory copying blueprints...',time:'Today · 14:32'},
+    {id:Date.now()-2,subject:'Physics',q:"Newton's 3rd law",a:'Press your hand on a table. What does the table do back to your hand?',time:'Today · 13:10'},
+    {id:Date.now()-1,subject:'Math',q:'How does differentiation work?',a:'Think of differentiation as finding the slope at any point on a curve...',time:'Yesterday · 16:45'},
+  ];
+  saveNotes(noteData);
+}
+
+function renderNotes(filter='all'){
+  const grid = document.getElementById('notes-grid');
+  const filtered = filter==='all' ? noteData : noteData.filter(n=>n.subject===filter);
+  if(filtered.length===0){
+    grid.innerHTML=`<div class="empty-state"><div style="font-size:32px;opacity:.2;margin-bottom:12px">◈</div><div style="font-size:13px;color:var(--text3);line-height:1.7">No notes yet for this subject.<br>Ask Nura Assistant or add one manually.</div></div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map(n=>`
+    <div class="note-card" id="note-${n.id}" data-id="${n.id}" onclick="openNoteEditor(${n.id})">
+      <div class="note-body">
+        <div class="note-subject-tag ${getTagClass(n.subject)}">${n.subject}</div>
+        <div class="note-q">${n.q}</div>
+        <div class="note-a">${n.a}</div>
+        <div class="note-time">${n.time}</div>
+      </div>
+      <button class="note-del" onclick="event.stopPropagation();deleteNote(${n.id})" title="Delete">✕</button>
+    </div>`).join('');
+  updateQCount();
+}
+
+function deleteNote(id){
+  const el = document.querySelector(`[data-id="${id}"]`);
+  if(el){ el.classList.add('deleting'); setTimeout(()=>_doDelete(id),350); }
+  else _doDelete(id);
+}
+function _doDelete(id){
+  noteData = noteData.filter(n=>n.id!==id);
+  saveNotes(noteData);
+  const active = document.querySelector('.filter-chip.active');
+  const f = active ? active.textContent.replace('✕','').trim() : 'all';
+  renderNotes(f==='All'?'all':f);
+}
+
+function filterNotes(f,el){
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderNotes(f);
+}
+
+function updateQCount(){
+  document.getElementById('dash-q').textContent = noteData.length;
+  document.getElementById('q-bar').style.width = Math.min(100,noteData.length*8)+'%';
+}
+
+let openAddModal = ()=>{ document.getElementById('modal-overlay').classList.add('open'); };
+let closeModal = ()=>{ document.getElementById('modal-overlay').classList.remove('open'); };
+
+function saveManualNote(){
+  const subj = document.getElementById('modal-subject').value;
+  const q = document.getElementById('modal-q').value.trim();
+  const a = document.getElementById('modal-a').value.trim();
+  if(!q) return;
+  const note = {id:Date.now(),subject:subj,q,a:a||'No notes added.',time:'Just now'};
+  noteData.unshift(note);
+  saveNotes(noteData);
+  renderNotes('all');
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  document.querySelector('.filter-chip').classList.add('active');
+  closeModal();
+  document.getElementById('modal-q').value='';
+  document.getElementById('modal-a').value='';
+}
+
+// NOTE EDITOR
+let editingNoteId = null;
+function openNoteEditor(id){
+  const note = noteData.find(n=>n.id===id);
+  if(!note) return;
+  editingNoteId = id;
+  document.getElementById('edit-note-title').textContent = `${note.subject} — Note`;
+  document.getElementById('edit-workspace-q').value = note.q;
+  document.getElementById('edit-workspace-a').value = note.a;
+  document.getElementById('edit-workspace-q').readOnly = true;
+  document.getElementById('edit-workspace-a').readOnly = true;
+  document.getElementById('edit-lock-toggle').textContent = '✏️ Edit';
+  document.getElementById('edit-save-action').style.display = 'none';
+  document.getElementById('edit-note-overlay').classList.add('open');
+}
+function closeEditModal(){ document.getElementById('edit-note-overlay').classList.remove('open'); editingNoteId=null; }
+function toggleEditLock(){
+  const q=document.getElementById('edit-workspace-q'),a=document.getElementById('edit-workspace-a');
+  const locked=q.readOnly;
+  q.readOnly=!locked; a.readOnly=!locked;
+  document.getElementById('edit-lock-toggle').textContent=locked?'🔒 Lock':'✏️ Edit';
+  document.getElementById('edit-save-action').style.display=locked?'block':'none';
+}
+function commitNoteEdit(){
+  if(!editingNoteId) return;
+  const idx = noteData.findIndex(n=>n.id===editingNoteId);
+  if(idx===-1) return;
+  noteData[idx].q = document.getElementById('edit-workspace-q').value.trim();
+  noteData[idx].a = document.getElementById('edit-workspace-a').value.trim();
+  saveNotes(noteData);
+  renderNotes('all');
+  closeEditModal();
+}
+
+// ═══════════════════════════════════════════════
+// PROFILE
+// ═══════════════════════════════════════════════
+function saveUserProfile(){
+  const name = document.getElementById('profile-name-input').value.trim()||'Student';
+  const age = document.getElementById('profile-age-input').value.trim()||'17';
+  const scale = document.getElementById('profile-ai-scale').value||'5';
+  const cur = JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
+  cur.name=name; cur.age=age; cur.aiScale=scale;
+  localStorage.setItem('nura-user-profile', JSON.stringify(cur));
+  document.getElementById('scale-indicator').textContent=scale;
+  const w=document.getElementById('welcome-user-text');
+  if(w) w.textContent=`What do you want to learn today, ${name}?`;
+  renderUserProfile();
+}
+function handlePfpUpload(inp){
+  const file=inp.files[0]; if(!file) return;
+  const r=new FileReader();
+  r.onload=e=>{
+    const cur=JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
+    cur.pfp=e.target.result;
+    localStorage.setItem('nura-user-profile', JSON.stringify(cur));
+    renderUserProfile();
+  };
+  r.readAsDataURL(file);
+}
+function removePfp(){
+  const cur=JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
+  delete cur.pfp;
+  localStorage.setItem('nura-user-profile', JSON.stringify(cur));
+  document.getElementById('profile-pfp-input').value='';
+  renderUserProfile();
+}
+function renderUserProfile(){
+  const p=JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
+  const name=p.name||'Student';
+  document.getElementById('profile-name-input').value=name;
+  document.getElementById('profile-age-input').value=p.age||'17';
+  document.getElementById('profile-ai-scale').value=p.aiScale||'5';
+  document.getElementById('scale-indicator').textContent=p.aiScale||'5';
+  document.getElementById('user-badge-text').textContent=name;
+  const savedKey=getApiKey();
+  if(savedKey) document.getElementById('api-key-input').value=savedKey;
+  const badgeImg=document.getElementById('user-badge-img');
+  const removeBtn=document.getElementById('remove-pfp-btn');
+  if(p.pfp){
+    badgeImg.src=p.pfp; badgeImg.style.display='inline-block';
+    if(removeBtn) removeBtn.style.display='block';
+  } else {
+    badgeImg.style.display='none';
+    if(removeBtn) removeBtn.style.display='none';
+  }
+  const w=document.getElementById('welcome-user-text');
+  if(w) w.textContent=`What do you want to learn today, ${name}?`;
+  updateThemeBtn();
+}
+function toggleUserDropdown(e){
+  e.stopPropagation();
+  document.getElementById('userDropdown').classList.toggle('open');
+}
+document.addEventListener('click',()=>document.getElementById('userDropdown')?.classList.remove('open'));
+
+// ═══════════════════════════════════════════════
+// DYNAMIC UI COLOUR ENGINE
+// ═══════════════════════════════════════════════
+const COLOR_MODES = {
+  deep:   { r:255, g:255, b:255,  accent:'#ffffff', accent2:'#f0f0f0', glow:'rgba(255,255,255,0.6)', cubeBg:'#1a1a2a', cubeBorder:'rgba(255,255,255,0.4)', barBg:'rgba(255,255,255,0.06)', barText:'rgba(255,255,255,0.7)', barLabel:'DEEP FOCUS — 6500K COOL WHITE' },
+  stable: { r:0,   g:229, b:255,  accent:'#00e5ff', accent2:'#80f0ff', glow:'rgba(0,229,255,0.7)',   cubeBg:'#0a1a20', cubeBorder:'rgba(0,229,255,0.4)',   barBg:'rgba(0,229,255,0.06)',   barText:'rgba(0,229,255,0.7)',   barLabel:'STABLE FOCUS — 4500K NEUTRAL' },
+  break:  { r:255, g:176, b:96,   accent:'#ffb060', accent2:'#ffd090', glow:'rgba(255,176,96,0.7)',  cubeBg:'#201000', cubeBorder:'rgba(255,176,96,0.4)',  barBg:'rgba(255,176,96,0.06)',  barText:'rgba(255,176,96,0.7)',  barLabel:'BREAK MODE — 3000K WARM' },
+  calm:   { r:168, g:85,  b:247,  accent:'#a855f7', accent2:'#c084fc', glow:'rgba(168,85,247,0.7)', cubeBg:'#120820', cubeBorder:'rgba(168,85,247,0.4)', barBg:'rgba(168,85,247,0.06)', barText:'rgba(168,85,247,0.7)', barLabel:'CALM DOWN — 2200K DIM WARM' },
+};
+
+function getLightMode(f,s){ if(s>60)return'calm'; if(f>=80&&s<=30)return'deep'; if(f>=60)return'stable'; return'break'; }
+
+function applyColorMode(modeName){
+  const m = COLOR_MODES[modeName];
+  const root = document.documentElement;
+  root.style.setProperty('--accent', m.accent);
+  root.style.setProperty('--accent2', m.accent2);
+  root.style.setProperty('--accent-rgb', `${m.r},${m.g},${m.b}`);
+  root.style.setProperty('--accent-glow', `rgba(${m.r},${m.g},${m.b},0.08)`);
+  root.style.setProperty('--border-accent', `rgba(${m.r},${m.g},${m.b},0.15)`);
+  // cube
+  if(document.getElementById('cv-glow')){
+    document.getElementById('cv-glow').style.background=m.glow;
+    ['cv-top','cv-side','cv-front'].forEach(id=>{
+      document.getElementById(id).style.background=m.cubeBg;
+      document.getElementById(id).style.borderColor=m.cubeBorder;
+    });
+    const bar=document.getElementById('light-status-bar');
+    bar.style.background=m.barBg; bar.style.color=m.barText; bar.textContent=m.barLabel;
+    document.getElementById('lm-label').style.color=m.accent2;
+  }
+  document.body.classList.add('glow-active');
+}
+
+// ═══════════════════════════════════════════════
+// VITALS ENGINE
+// ═══════════════════════════════════════════════
+let focusPct=84,stressPct=12,focusDir=1,stressDir=1;
+
+function updateVitals(){
+  focusPct+=focusDir*(Math.random()*1.5);
+  stressPct+=stressDir*(Math.random()*0.8);
+  if(focusPct>=96||focusPct<=45) focusDir*=-1;
+  if(stressPct>=75||stressPct<=5) stressDir*=-1;
+  focusPct=Math.max(45,Math.min(96,focusPct));
+  stressPct=Math.max(5,Math.min(75,stressPct));
+  const f=Math.round(focusPct),s=Math.round(stressPct);
+
+  ['top-focus','dash-focus','stats-focus','fe-focus'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=f+'%'; });
+  ['top-stress','dash-stress','stats-stress','fe-stress'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=s+'%'; });
+  ['focus-bar-fill','stats-focus-bar','focus-slider'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.width=f+'%'; });
+  ['stress-bar-fill','stats-stress-bar','stress-slider'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.width=s+'%'; });
+
+  // health text
+  const ht=document.getElementById('nura-health-text');
+  if(ht){
+    if(s>55) ht.textContent="⚠️ High cortisol detected. Take slow abdominal breaths or activate Calm Down light mode.";
+    else if(f>80&&s<25) ht.textContent="🧠 Alpha brainwaves peaked. Optimal deep learning window — stay in the zone.";
+    else if(f<60) ht.textContent="📉 Attention dipping below baseline. Try a short stretch or switch to Break Mode lighting.";
+    else ht.textContent="✅ Vitals normalized. Steady homeostatic balance across neural clusters.";
+  }
+  applyColorMode(getLightMode(f,s));
+  NuraWatch.onVitalsUpdate(f,s);
+}
+setInterval(updateVitals,3000);
+
+// ═══════════════════════════════════════════════
+// SESSION TIMER
+// ═══════════════════════════════════════════════
+let sessionOn=false,secs=0,sessInt=null;
+function toggleSession(){
+  sessionOn=!sessionOn;
+  document.getElementById('start-btn').textContent=sessionOn?'Pause':'Resume';
+  if(sessionOn) sessInt=setInterval(tick,1000); else clearInterval(sessInt);
+}
+function resetSession(){
+  clearInterval(sessInt);sessionOn=false;secs=0;
+  document.getElementById('start-btn').textContent='Start Session';
+  setTimers('00:00');
+  document.getElementById('prog-fill').style.width='0%';
+  document.getElementById('prog-pct').textContent='0%';
+  document.getElementById('dash-time').textContent='00:00';
+  document.getElementById('time-bar').style.width='0%';
+}
+function tick(){
+  secs++;
+  const m=String(Math.floor(secs/60)).padStart(2,'0'),s2=String(secs%60).padStart(2,'0');
+  const t=m+':'+s2;
+  setTimers(t);
+  document.getElementById('dash-time').textContent=t;
+  const pct=Math.min(100,Math.round((secs/7200)*100));
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('time-bar').style.width=pct+'%';
+}
+function setTimers(t){ document.getElementById('main-timer').textContent=t; document.getElementById('top-timer-val').textContent=t; }
+
+const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const wH=[65,80,40,90,55,20,0];
+function buildWeek(){
+  document.getElementById('week-bars').innerHTML=days.map((d,i)=>`<div class="week-bar-col"><div class="wbar${i===6?' today':''}" style="height:${Math.max(2,wH[i]*.44)}px"></div></div>`).join('');
+  document.getElementById('week-days').innerHTML=days.map((d,i)=>`<div class="wday${i===6?' today':''}">${d}</div>`).join('');
+}
+
+// ═══════════════════════════════════════════════
+// CLOCK
+// ═══════════════════════════════════════════════
+function startClock(){
+  setInterval(()=>{
+    const now=new Date();
+    document.getElementById('dash-clock-time').textContent=now.toTimeString().split(' ')[0];
+    document.getElementById('dash-clock-date').textContent=now.toLocaleDateString('en-US',{weekday:'short',year:'numeric',month:'short',day:'numeric'});
+  },1000);
+}
+
+// ═══════════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════════
+function nav(id,el){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleTheme(){
+  const isLight = document.body.classList.toggle('light-theme');
+  localStorage.setItem('nura-theme', isLight ? 'light' : 'dark');
+  updateThemeBtn();
+}
+function updateThemeBtn(){
+  const btn = document.getElementById('theme-toggle-btn');
+  if(!btn) return;
+  const isLight = document.body.classList.contains('light-theme');
+  btn.textContent = isLight ? '🌙  Switch to Dark' : '☀️  Switch to Light';
+}
+function applyStoredTheme(){
+  if(localStorage.getItem('nura-theme')==='light') document.body.classList.add('light-theme');
+  updateThemeBtn();
+}
+
+// ═══════════════════════════════════════════════
+// SOUNDSCAPE — Layered Web Audio Engine
+// ═══════════════════════════════════════════════
+let audioCtx=null,activeSourceNodes=[],activeOscNodes=[],masterGainNode=null,soundNode=null,liveAudioStream=null,customAudioUrlObject=null,audioPlaying=false;
+
+function initAudioEngine(){
+  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+}
+
+function makeWhiteNoise(dur=8){
+  const sr=audioCtx.sampleRate,buf=audioCtx.createBuffer(1,sr*dur,sr),d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+  const src=audioCtx.createBufferSource(); src.buffer=buf; src.loop=true; return src;
+}
+
+function makePinkNoise(dur=8){
+  const sr=audioCtx.sampleRate,buf=audioCtx.createBuffer(1,sr*dur,sr),d=buf.getChannelData(0);
+  let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+  for(let i=0;i<d.length;i++){
+    const w=Math.random()*2-1;
+    b0=.99886*b0+w*.0555179;b1=.99332*b1+w*.0750759;b2=.969*b2+w*.153852;
+    b3=.8665*b3+w*.3104856;b4=.55*b4+w*.5329522;b5=-.7616*b5-w*.016898;
+    d[i]=(b0+b1+b2+b3+b4+b5+b6+w*.5362)*.11; b6=w*.115926;
+  }
+  const src=audioCtx.createBufferSource(); src.buffer=buf; src.loop=true; return src;
+}
+
+function makeFilter(type,freq,q){
+  const f=audioCtx.createBiquadFilter(); f.type=type; f.frequency.value=freq;
+  if(q!=null) f.Q.value=q; return f;
+}
+function makeLFO(freq,depth){
+  const osc=audioCtx.createOscillator(); osc.type='sine'; osc.frequency.value=freq;
+  const g=audioCtx.createGain(); g.gain.value=depth;
+  osc.connect(g); return {osc,out:g};
+}
+function makeGain(v){ const g=audioCtx.createGain(); g.gain.value=v; return g; }
+
+function stopProceduralNoise(){
+  activeSourceNodes.forEach(n=>{try{n.stop();}catch(e){}});
+  activeOscNodes.forEach(n=>{try{n.stop();}catch(e){}});
+  activeSourceNodes=[]; activeOscNodes=[];
+  if(masterGainNode){try{masterGainNode.disconnect();}catch(e){} masterGainNode=null;}
+  soundNode=null;
+  if(liveAudioStream){liveAudioStream.pause();liveAudioStream=null;}
+}
+
+function startProceduralNoise(type){
+  initAudioEngine(); stopProceduralNoise();
+  const vol=parseFloat(document.getElementById('volume-control').value);
+  masterGainNode=makeGain(vol);
+  masterGainNode.connect(audioCtx.destination);
+  // compat shim so adjustSoundscapeVolume still works
+  soundNode={gainNodeRef:masterGainNode};
+
+  if(type==='rain'){
+    // ── Layer A: Soft high-frequency hiss (fine rain droplets in air) ──
+    const hiss=makeWhiteNoise(9);
+    const hpf=makeFilter('highpass',2600,null);
+    const shelf=makeFilter('highshelf',6000,null); shelf.gain.value=-8; // tame harshness
+    const hissG=makeGain(0.18);
+    const lfo1=makeLFO(0.06,0.04); lfo1.osc.start();
+    lfo1.out.connect(hissG.gain);
+    hiss.connect(hpf); hpf.connect(shelf); shelf.connect(hissG); hissG.connect(masterGainNode);
+
+    // ── Layer B: Mid-frequency patter (drops hitting leaves/ground) ──
+    const patter=makeWhiteNoise(6);
+    const bpf=makeFilter('bandpass',1300,1.2);
+    const lp=makeFilter('lowpass',4000,null);
+    const patterG=makeGain(0.22);
+    const lfo2=makeLFO(0.11,0.07); lfo2.osc.start();
+    lfo2.out.connect(patterG.gain);
+    patter.connect(bpf); bpf.connect(lp); lp.connect(patterG); patterG.connect(masterGainNode);
+
+    // ── Layer C: Low rumble — rain on a surface, body of sound ──
+    const rumble=makePinkNoise(11);
+    const lpf=makeFilter('lowpass',520,null);
+    const rumbleG=makeGain(0.20);
+    const lfo3=makeLFO(0.04,0.05); lfo3.osc.start();
+    lfo3.out.connect(rumbleG.gain);
+    rumble.connect(lpf); lpf.connect(rumbleG); rumbleG.connect(masterGainNode);
+
+    // ── Layer D: Occasional swell (gust of heavier rain) ──
+    const swell=makePinkNoise(7);
+    const bpf2=makeFilter('bandpass',700,0.7);
+    const swellG=makeGain(0.0);
+    const lfo4=makeLFO(0.035,0.12); lfo4.osc.start();
+    lfo4.out.connect(swellG.gain);
+    swell.connect(bpf2); bpf2.connect(swellG); swellG.connect(masterGainNode);
+
+    hiss.start(); patter.start(); rumble.start(); swell.start();
+    activeSourceNodes.push(hiss,patter,rumble,swell);
+    activeOscNodes.push(lfo1.osc,lfo2.osc,lfo3.osc,lfo4.osc);
+
+  } else if(type==='ocean'){
+    // ── Layer A: Deep ocean bed (very lowpass pink noise) ──
+    const base=makePinkNoise(12);
+    const lpf=makeFilter('lowpass',600,null);
+    const baseG=makeGain(0.38);
+    // Slow wave swell LFO at ~0.08Hz (one wave every ~12 seconds)
+    const waveLfo=makeLFO(0.08,0.28); waveLfo.osc.start();
+    waveLfo.out.connect(baseG.gain);
+    base.connect(lpf); lpf.connect(baseG); baseG.connect(masterGainNode);
+
+    // ── Layer B: Shore foam / surf mid layer ──
+    const surf=makeWhiteNoise(8);
+    const bpf=makeFilter('bandpass',800,0.8);
+    const surfG=makeGain(0.0); // fully LFO-driven, peaks on each wave
+    const surfLfo=makeLFO(0.08,0.18); surfLfo.osc.start();
+    // slight phase offset so foam peaks just after swell
+    setTimeout(()=>{ try{ surfLfo.osc.frequency.setValueAtTime(0.08,audioCtx.currentTime); }catch(e){} },200);
+    surfLfo.out.connect(surfG.gain);
+    surf.connect(bpf); bpf.connect(surfG); surfG.connect(masterGainNode);
+
+    // ── Layer C: High airy spray on breakwater ──
+    const spray=makeWhiteNoise(5);
+    const hpf=makeFilter('highpass',2400,null);
+    const sprayG=makeGain(0.0);
+    const sprayLfo=makeLFO(0.075,0.08); sprayLfo.osc.start();
+    sprayLfo.out.connect(sprayG.gain);
+    spray.connect(hpf); hpf.connect(sprayG); sprayG.connect(masterGainNode);
+
+    base.start(); surf.start(); spray.start();
+    activeSourceNodes.push(base,surf,spray);
+    activeOscNodes.push(waveLfo.osc,surfLfo.osc,sprayLfo.osc);
+
+  } else { // binaural
+    // ── True binaural beat: two pure sine waves 8Hz apart (alpha focus) ──
+    // 196Hz left + 204Hz right → 8Hz alpha beat felt in the brain
+    const osc1=audioCtx.createOscillator(); osc1.type='sine'; osc1.frequency.value=196;
+    const osc2=audioCtx.createOscillator(); osc2.type='sine'; osc2.frequency.value=204;
+    const g1=makeGain(0.13), g2=makeGain(0.13);
+    osc1.connect(g1); g1.connect(masterGainNode);
+    osc2.connect(g2); g2.connect(masterGainNode);
+
+    // ── Soft pink noise underneath for comfort (keeps it from being stark) ──
+    const pink=makePinkNoise(6);
+    const lpf=makeFilter('lowpass',280,null);
+    const pinkG=makeGain(0.035);
+    pink.connect(lpf); lpf.connect(pinkG); pinkG.connect(masterGainNode);
+
+    // ── Very gentle amplitude tremolo to avoid listener fatigue ──
+    const tremoloLfo=makeLFO(8,0.02); tremoloLfo.osc.start();
+    tremoloLfo.out.connect(g1.gain); tremoloLfo.out.connect(g2.gain);
+
+    osc1.start(); osc2.start(); pink.start();
+    activeSourceNodes.push(pink);
+    activeOscNodes.push(osc1,osc2,tremoloLfo.osc);
+  }
+}
+
+function toggleSoundscape(){
+  const btn=document.getElementById('play-audio-btn'),type=document.getElementById('track-select').value;
+  if(audioPlaying){stopProceduralNoise();btn.textContent='Play Track';audioPlaying=false;}
+  else{
+    audioPlaying=true;btn.textContent='Stop Track';
+    if(['binaural','rain','ocean'].includes(type)) startProceduralNoise(type);
+    else if(type==='custom-imported-track'&&customAudioUrlObject){liveAudioStream=new Audio(customAudioUrlObject);liveAudioStream.volume=parseFloat(document.getElementById('volume-control').value);liveAudioStream.play().catch(()=>{});}
+    else{liveAudioStream=new Audio('https://stream.live.vc.bbcmedia.co.uk/bbc_radio_three');liveAudioStream.volume=parseFloat(document.getElementById('volume-control').value);liveAudioStream.play().catch(()=>{});}
+  }
+}
+function adjustSoundscapeVolume(v){ if(soundNode&&soundNode.gainNodeRef) soundNode.gainNodeRef.gain.setValueAtTime(parseFloat(v),audioCtx.currentTime); if(liveAudioStream) liveAudioStream.volume=parseFloat(v); }
+function handleCustomAudioImport(inp){
+  const f=inp.files[0]; if(!f) return;
+  if(customAudioUrlObject) URL.revokeObjectURL(customAudioUrlObject);
+  // Show name immediately
+  const lbl=document.getElementById('audio-file-label');
+  if(lbl) lbl.textContent=f.name.length>26?f.name.substring(0,24)+'…':f.name;
+  // Inject into track selector
+  const sel=document.getElementById('track-select');
+  let opt=document.getElementById('custom-injected-audio-node');
+  if(!opt){opt=document.createElement('option');opt.id='custom-injected-audio-node';opt.value='custom-imported-track';sel.appendChild(opt);}
+  opt.textContent=`📂 ${f.name.substring(0,22)}`; opt.selected=true;
+  // Persist as base64 (cap at 8MB to stay within localStorage limits)
+  if(f.size > 8*1024*1024){
+    if(lbl) lbl.textContent='⚠ File too large to save (>8MB)';
+    customAudioUrlObject=URL.createObjectURL(f); return;
+  }
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      localStorage.setItem('nura-custom-audio', JSON.stringify({name:f.name, data:e.target.result}));
+    }catch(err){ console.warn('Audio too large for localStorage'); }
+    customAudioUrlObject=URL.createObjectURL(f);
+  };
+  reader.readAsDataURL(f);
+}
+
+function loadSavedAudio(){
+  try{
+    const saved=JSON.parse(localStorage.getItem('nura-custom-audio')||'null');
+    if(!saved) return;
+    // Convert base64 back to blob URL
+    const byteStr=atob(saved.data.split(',')[1]);
+    const mime=saved.data.split(',')[0].match(/:(.*?);/)[1];
+    const ab=new ArrayBuffer(byteStr.length);
+    const ia=new Uint8Array(ab);
+    for(let i=0;i<byteStr.length;i++) ia[i]=byteStr.charCodeAt(i);
+    const blob=new Blob([ab],{type:mime});
+    customAudioUrlObject=URL.createObjectURL(blob);
+    // Add option to selector
+    const sel=document.getElementById('track-select');
+    let opt=document.getElementById('custom-injected-audio-node');
+    if(!opt){opt=document.createElement('option');opt.id='custom-injected-audio-node';opt.value='custom-imported-track';sel.appendChild(opt);}
+    opt.textContent=`📂 ${saved.name.substring(0,22)}`;
+    const lbl=document.getElementById('audio-file-label');
+    if(lbl) lbl.textContent=saved.name.length>26?saved.name.substring(0,24)+'…':saved.name;
+  }catch(e){ localStorage.removeItem('nura-custom-audio'); }
+}
+function changeSoundscapeTrack(){ if(audioPlaying){toggleSoundscape();toggleSoundscape();} }
+
+// ═══════════════════════════════════════════════
+// LECTURE FILE PROCESSING
+// ═══════════════════════════════════════════════
+let parsedLecturesContext='';
+async function processLectureFiles(inp){
+  const files=inp.files; if(!files.length)return;
+  const status=document.getElementById('lecture-status');
+  status.textContent='Processing ⏳';
+  let text='';
+  for(let file of files){
+    try{
+      if(file.name.endsWith('.txt')){ text+=`\n[FILE: ${file.name}]\n${await file.text()}\n`; }
+      else if(file.name.endsWith('.docx')){
+        const ab=await file.arrayBuffer();
+        const out=await mammoth.extractRawText({arrayBuffer:ab});
+        text+=`\n[DOCX: ${file.name}]\n${out.value}\n`;
+      }else if(file.name.endsWith('.pdf')){
+        const ab=await file.arrayBuffer();
+        pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        const doc=await pdfjsLib.getDocument({data:ab}).promise;
+        let pdf='';
+        for(let i=1;i<=doc.numPages;i++){const pg=await doc.getPage(i);const c=await pg.getTextContent();pdf+=c.items.map(x=>x.str).join(' ')+'\n';}
+        text+=`\n[PDF: ${file.name}]\n${pdf}\n`;
+      }
+    }catch(err){console.error(err);}
+  }
+  parsedLecturesContext+=text;
+  status.textContent=`✅ ${files.length} file(s) loaded`;
+}
+
+// ═══════════════════════════════════════════════
+// SOURCE POPUP
+// ═══════════════════════════════════════════════
+function showSourcePopup(sources){
+  const popup=document.getElementById('source-popup');
+  const body=document.getElementById('source-popup-body');
+  // un-minimize if previously minimized
+  popup.classList.remove('minimized');
+  document.getElementById('sp-min-btn').textContent='➖';
+  body.style.display='';
+
+  if(!sources||sources.length===0){
+    body.innerHTML=`<div class="sp-no-source">No specific sources cited for this response.</div>`;
+  } else {
+    body.innerHTML=sources.map(s=>`
+      <div class="sp-source-item">
+        <div class="sp-source-name">${s.title||'Source'}</div>
+        ${s.url?`<div class="sp-source-url">${s.url}</div><button class="sp-open-btn" onclick="openSourceLink('${s.url.replace(/'/g,'\\\'')}')" type="button">Open in new tab ↗</button>`:'<div class="sp-source-url">No URL available</div>'}
+      </div>`).join('');
+  }
+  popup.classList.add('show');
+}
+function openSourceLink(url){
+  try{ window.open(url,'_blank','noopener,noreferrer'); }catch(e){}
+}
+function closeSourcePopup(){ document.getElementById('source-popup').classList.remove('show'); }
+function minimizeSourcePopup(){
+  const popup=document.getElementById('source-popup');
+  const body=document.getElementById('source-popup-body');
+  const btn=document.getElementById('sp-min-btn');
+  const minimized=popup.classList.toggle('minimized');
+  body.style.display=minimized?'none':'';
+  btn.textContent=minimized?'🔲':'➖';
+}
+
+// ═══════════════════════════════════════════════
+// LINKS HUB
+// ═══════════════════════════════════════════════
+function openLinkPopup(){ document.getElementById('linkPopup').classList.add('show');document.getElementById('popupTrigger').style.display='none'; }
+function closeLinkPopup(){ document.getElementById('linkPopup').classList.remove('show');document.getElementById('popupTrigger').style.display='block'; }
+function minimizeLinkPopup(){ const p=document.getElementById('linkPopup');p.classList.toggle('minimized');document.getElementById('popup-min-btn').textContent=p.classList.contains('minimized')?'🔲':'➖'; }
+function addCustomHubLink(){
+  const inp=document.getElementById('custom-link-input');let url=inp.value.trim();if(!url)return;
+  if(!/^https?:\/\//i.test(url)) url='https://'+url;
+  appendLinkToHub(url); inp.value='';
+  saveLinkHub();
+}
+function appendLinkToHub(url){
+  const cont=document.getElementById('custom-links-list');
+  const item=document.createElement('div');
+  item.style='display:flex;justify-content:space-between;align-items:center;background:var(--bg3);padding:4px 8px;border-radius:6px;font-size:10px;border:1px solid var(--border);margin-top:2px';
+  let lbl=url.replace(/^https?:\/\/(www\.)?/i,'');if(lbl.length>22)lbl=lbl.substring(0,20)+'...';
+  item.innerHTML=`<a href="${url}" target="_blank" style="color:var(--accent2);text-decoration:none;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${url}">🔗 ${lbl}</a><button onclick="this.parentElement.remove();saveLinkHub()" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:0 2px;font-size:10px;margin-left:4px">✕</button>`;
+  cont.appendChild(item);
+}
+function saveLinkHub(){
+  const links=[...document.querySelectorAll('#custom-links-list a')].map(a=>({url:a.href}));
+  localStorage.setItem('nura-custom-links',JSON.stringify(links));
+}
+function loadLinkHub(){
+  try{const links=JSON.parse(localStorage.getItem('nura-custom-links')||'[]');links.forEach(l=>appendLinkToHub(l.url));}catch(e){}
+}
+
+// ═══════════════════════════════════════════════
+// AI TUTOR — improved Socratic + source popup
+// ═══════════════════════════════════════════════
+let chatHistory=[];
+const chatBox=document.getElementById('chat-box');
+
+async function detectSubject(question){
+  try{
+    const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+getApiKey()},body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:15,messages:[{role:'system',content:`Reply with ONLY one word from: ${subjects.join(', ')}, General. No other text.`},{role:'user',content:'Classify: '+question}]})});
+    const data=await res.json();
+    const raw=data.choices?.[0]?.message?.content?.trim()||'General';
+    return subjects.find(s=>raw.toLowerCase().includes(s.toLowerCase()))||'General';
+  }catch(e){return'General';}
+}
+
+function useHint(el){ document.getElementById('chat-input').value=el.textContent; nav('tutor',document.querySelectorAll('.nav-btn')[3]); document.getElementById('chat-input').focus(); }
+
+function addMsg(role,text){
+  const div=document.createElement('div');
+  div.className='msg '+role;
+  div.innerHTML=`<div class="msg-sender">${role==='user'?'You':'Nura Mind'}</div><div class="msg-bubble">${text}</div>`;
+  chatBox.appendChild(div);
+  chatBox.scrollTop=chatBox.scrollHeight;
+}
+
+async function sendMsg(){
+  const input=document.getElementById('chat-input');
+  const btn=document.getElementById('ask-btn');
+  const text=input.value.trim();
+  if(!text||btn.disabled) return;
+
+  if(!getApiKey()){ addMsg('ai','⚠️ No API key set. Open your profile menu (top right) and paste your Groq key.'); return; }
+
+  // dismiss welcome
+  const ws=document.getElementById('chat-welcome-screen');
+  if(ws){ ws.style.opacity='0'; setTimeout(()=>ws.remove(),400); }
+
+  addMsg('user',text);
+  input.value=''; btn.disabled=true;
+
+  const typing=document.createElement('div');
+  typing.className='msg ai';
+  typing.innerHTML=`<div class="msg-sender">Nura Mind</div><div class="msg-bubble"><div class="typing-indicator"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>`;
+  chatBox.appendChild(typing);
+  chatBox.scrollTop=chatBox.scrollHeight;
+
+  chatHistory.push({role:'user',content:text});
+
+  const p=JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
+  const scale=parseInt(p.aiScale||'5');
+  let rigorNote='Use a balanced level of depth — not too simple, not overwhelming.';
+  if(scale<=3) rigorNote='Keep it very simple. One short analogy and one guiding question max.';
+  if(scale>=8) rigorNote='Go deep — multi-step Socratic breakdown with technical vocabulary and layered questioning.';
+
+  const systemPrompt=`You are Nura Mind, an intelligent Socratic AI tutor for ${p.name||'a student'}, age ${p.age||'17'}.
+
+YOUR ABSOLUTE RULE: NEVER give the direct answer to any question. Instead, always guide the student to figure it out themselves.
+
+HOW TO TEACH (always follow these steps in order):
+1. Acknowledge what they're asking about in one sentence.
+2. Ask what they already know or think about it.
+3. Give a WORKED ANALOGY or SIMPLER PARALLEL EXAMPLE — e.g. if they ask "solve x+2-5=40", show an analogous simpler example like "imagine you have ? + 3 - 1 = 10, how would you isolate the unknown?" and walk through THAT example step by step.
+4. Then ask them to now try applying the same logic to their original question.
+5. End with ONE guiding follow-up question.
+
+NEVER: solve their actual problem, give the final answer, write their essay, or just define terms.
+
+Rigor level: ${rigorNote}
+
+${parsedLecturesContext?`The student has uploaded lecture notes. Use this content to inform your guidance:\n${parsedLecturesContext.substring(0,4000)}`:''}
+
+After your response, on a NEW LINE write exactly:
+SOURCES_JSON: followed by a JSON array of 1-3 relevant sources like [{"title":"Khan Academy — Algebra","url":"https://www.khanacademy.org/math/algebra"}]
+If no specific external source is relevant, write: SOURCES_JSON: []`;
+
+  try{
+    const [res,subject]=await Promise.all([
+      fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+getApiKey()},body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:1200,messages:[{role:'system',content:systemPrompt},...chatHistory]})}),
+      detectSubject(text)
+    ]);
+    const data=await res.json();
+    if(data.error) throw new Error(data.error.message);
+    let fullReply=data.choices?.[0]?.message?.content||'Please try again.';
+
+    // Extract sources
+    let sources=[];
+    const sourceSplit=fullReply.split('SOURCES_JSON:');
+    if(sourceSplit.length>1){
+      fullReply=sourceSplit[0].trim();
+      try{ sources=JSON.parse(sourceSplit[1].trim()); }catch(e){ sources=[]; }
+    }
+
+    if(chatBox.contains(typing)) chatBox.removeChild(typing);
+    addMsg('ai',fullReply);
+    chatHistory.push({role:'assistant',content:fullReply});
+
+    // Show source popup
+    showSourcePopup(sources);
+
+    const now=new Date();
+    const timeStr='Today · '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+    const note={id:Date.now(),subject,q:text,a:fullReply,time:timeStr};
+    noteData.unshift(note);
+    saveNotes(noteData);
+    renderNotes(document.querySelector('.filter-chip.active')?.textContent.replace('✕','').trim()||'all');
+  }catch(e){
+    if(chatBox.contains(typing)) chatBox.removeChild(typing);
+    addMsg('ai',`Error: ${e.message}. Check your Groq API key in the profile menu.`);
+  }
+  btn.disabled=false; input.focus();
+}
+
+// ═══════════════════════════════════════════════
+// DRAGGABLE POPUPS
+// ═══════════════════════════════════════════════
+function makeDraggable(popup, handle){
+  let dragging=false, startX=0, startY=0, origLeft=0, origTop=0;
+
+  function startDrag(cx, cy){
+    const rect=popup.getBoundingClientRect();
+    // Switch from bottom/right to top/left so we can freely reposition
+    popup.style.bottom='auto'; popup.style.right='auto';
+    popup.style.top=rect.top+'px'; popup.style.left=rect.left+'px';
+    origLeft=rect.left; origTop=rect.top;
+    startX=cx; startY=cy;
+    dragging=true;
+    document.body.style.userSelect='none';
+  }
+
+  function moveDrag(cx, cy){
+    if(!dragging) return;
+    const dx=cx-startX, dy=cy-startY;
+    const maxL=window.innerWidth-popup.offsetWidth;
+    const maxT=window.innerHeight-popup.offsetHeight;
+    popup.style.left=Math.max(0,Math.min(maxL,origLeft+dx))+'px';
+    popup.style.top=Math.max(0,Math.min(maxT,origTop+dy))+'px';
+  }
+
+  function endDrag(){ dragging=false; document.body.style.userSelect=''; }
+
+  handle.addEventListener('mousedown',e=>{
+    if(e.target.tagName==='BUTTON'||e.target.closest('button')) return;
+    startDrag(e.clientX,e.clientY); e.preventDefault();
+  });
+  document.addEventListener('mousemove',e=>moveDrag(e.clientX,e.clientY));
+  document.addEventListener('mouseup',endDrag);
+
+  handle.addEventListener('touchstart',e=>{
+    if(e.target.tagName==='BUTTON'||e.target.closest('button')) return;
+    const t=e.touches[0]; startDrag(t.clientX,t.clientY); e.preventDefault();
+  },{passive:false});
+  document.addEventListener('touchmove',e=>{
+    if(!dragging) return;
+    const t=e.touches[0]; moveDrag(t.clientX,t.clientY); e.preventDefault();
+  },{passive:false});
+  document.addEventListener('touchend',endDrag);
+}
+
+// ═══════════════════════════════════════════════
+// NURA WATCH — AI State Monitor
+// ═══════════════════════════════════════════════
+const NuraWatch = (() => {
+  let snoozedUntil = 0;
+  let lastAlertTime = 0;
+  let popupVisible = false;
+  let dashboardUpdateTimer = null;
+  const ALERT_COOLDOWN = 3 * 60 * 1000; // 3 minutes between alerts
+  const SNOOZE_DURATION = 5 * 60 * 1000; // 5 min snooze
+
+  // Build the prompt for Claude
+  function buildPrompt(f, s, mode) {
+    return `You are Nura Watch, an AI wellness monitor embedded in the Nura study app. You analyze a student's real-time biometric data from their EEG headband.
+
+Current vitals:
+- Focus: ${f}%
+- Stress: ${s}%
+- Light Mode: ${mode}
+
+${s > 60 && f < 55 ? `ALERT MODE: Both stress is critically high AND focus is critically low. This is a crisis state.` :
+  s > 60 ? `ALERT MODE: Stress is critically high (${s}%). Intervene.` :
+  f < 55 ? `ALERT MODE: Focus is critically low (${f}%). Intervene.` :
+  `MONITORING MODE: Vitals look ${f > 80 && s < 25 ? 'excellent' : 'acceptable'}.`}
+
+Write a SHORT, warm, first-person message (2 sentences max) that:
+1. Names what you're observing in their brain state RIGHT NOW
+2. Gives one specific, actionable micro-intervention
+
+Then on a new line starting with TIPS: write exactly 3 quick actions as a JSON array like:
+TIPS: [{"icon":"🫁","text":"4-7-8 breath cycle"},{"icon":"💧","text":"Drink water now"},{"icon":"🧘","text":"60-sec body scan"}]
+
+Be conversational, caring, not clinical. Never use bullet points in your message.`;
+  }
+
+  function buildDashboardPrompt(f, s) {
+    return `You are Nura Watch, an AI wellness monitor. In ONE sentence (max 15 words), give a sharp, insightful observation about this student's current brain state:
+Focus: ${f}% | Stress: ${s}%
+
+Examples of good responses:
+- "Sharp alpha activity — you're in the zone, protect this window."
+- "Cortisol creeping up; a 2-minute walk resets the hypothalamus."
+- "Pre-burnout pattern detected. Your hippocampus needs a recovery break."
+
+Write only the sentence, nothing else. Make it feel like a brilliant neuroscientist is watching over them.`;
+  }
+
+  async function callClaude(prompt) {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await response.json();
+    return data.content?.map(b => b.text || '').join('') || '';
+  }
+
+  async function updateDashboardComment(f, s) {
+    const el = document.getElementById('nwdc-text');
+    if (!el) return;
+    el.classList.add('fading');
+    await new Promise(r => setTimeout(r, 400));
+    try {
+      const reply = await callClaude(buildDashboardPrompt(f, s));
+      el.textContent = '"' + reply.trim().replace(/^["']|["']$/g, '') + '"';
+    } catch(e) {
+      el.textContent = `Focus ${f}% · Stress ${s}% — Nura Watch is monitoring.`;
+    }
+    el.classList.remove('fading');
+  }
+
+  async function triggerAlert(f, s) {
+    if (Date.now() < snoozedUntil) return;
+    if (popupVisible) return;
+    const now = Date.now();
+    if (now - lastAlertTime < ALERT_COOLDOWN) return;
+    lastAlertTime = now;
+
+    // Show alert badge on pill
+    const badge = document.getElementById('nw-alert-badge');
+    if (badge) badge.style.display = 'block';
+
+    // Open popup
+    const popup = document.getElementById('nw-popup');
+    document.getElementById('nw-focus-val').textContent = f + '%';
+    document.getElementById('nw-stress-val').textContent = s + '%';
+    document.getElementById('nw-popup-body').innerHTML = '<div class="nw-loading"><div class="td"></div><div class="td"></div><div class="td"></div></div>';
+    document.getElementById('nw-popup-tips').innerHTML = '';
+    popup.classList.add('show');
+    popupVisible = true;
+
+    // Determine mode label
+    const mode = s > 60 && f < 55 ? 'CRITICAL — High Stress & Low Focus' :
+                 s > 60 ? 'HIGH STRESS' : 'LOW FOCUS';
+
+    try {
+      const reply = await callClaude(buildPrompt(f, s, mode));
+      const tipsSplit = reply.split('TIPS:');
+      const message = tipsSplit[0].trim();
+      let tips = [];
+      if (tipsSplit[1]) {
+        try { tips = JSON.parse(tipsSplit[1].trim()); } catch(e) {}
+      }
+
+      document.getElementById('nw-popup-body').textContent = message;
+
+      if (tips.length) {
+        document.getElementById('nw-popup-tips').innerHTML = tips.map(t =>
+          `<div class="nw-tip"><span class="nw-tip-icon">${t.icon}</span>${t.text}</div>`
+        ).join('');
+      }
+    } catch(e) {
+      document.getElementById('nw-popup-body').textContent =
+        s > 60 ? `Your stress is spiking to ${s}%. Take 3 slow breaths — inhale 4 counts, hold 4, exhale 6.`
+               : `Your focus has dropped to ${f}%. Try the 20-20-20 rule: look 20 feet away for 20 seconds.`;
+      document.getElementById('nw-popup-tips').innerHTML = `
+        <div class="nw-tip"><span class="nw-tip-icon">🫁</span>4-7-8 breathing cycle</div>
+        <div class="nw-tip"><span class="nw-tip-icon">💧</span>Drink a glass of water</div>
+        <div class="nw-tip"><span class="nw-tip-icon">🚶</span>2-minute walk break</div>`;
+    }
+  }
+
+  function dismiss() {
+    document.getElementById('nw-popup').classList.remove('show');
+    document.getElementById('nw-alert-badge').style.display = 'none';
+    popupVisible = false;
+  }
+
+  function snooze() {
+    snoozedUntil = Date.now() + SNOOZE_DURATION;
+    dismiss();
+  }
+
+  function togglePanel() {
+    const popup = document.getElementById('nw-popup');
+    if (popup.classList.contains('show')) {
+      dismiss();
+    } else {
+      const f = Math.round(focusPct), s = Math.round(stressPct);
+      document.getElementById('nw-focus-val').textContent = f + '%';
+      document.getElementById('nw-stress-val').textContent = s + '%';
+      document.getElementById('nw-popup-body').innerHTML = '<div class="nw-loading"><div class="td"></div><div class="td"></div><div class="td"></div></div>';
+      document.getElementById('nw-popup-tips').innerHTML = '';
+      popup.classList.add('show');
+      popupVisible = true;
+      document.getElementById('nw-alert-badge').style.display = 'none';
+      // Load current state commentary
+      callClaude(buildPrompt(f, s, getLightMode(f, s))).then(reply => {
+        const tipsSplit = reply.split('TIPS:');
+        document.getElementById('nw-popup-body').textContent = tipsSplit[0].trim();
+        if (tipsSplit[1]) {
+          try {
+            const tips = JSON.parse(tipsSplit[1].trim());
+            document.getElementById('nw-popup-tips').innerHTML = tips.map(t =>
+              `<div class="nw-tip"><span class="nw-tip-icon">${t.icon}</span>${t.text}</div>`
+            ).join('');
+          } catch(e) {}
+        }
+      }).catch(() => {
+        document.getElementById('nw-popup-body').textContent = `Focus ${f}% · Stress ${s}% — ${f > 80 && s < 25 ? 'You\'re locked in. Keep going.' : 'Monitoring your state.'}`;
+      });
+    }
+  }
+
+  // Main watch loop — checks vitals
+  function check(f, s) {
+    // Trigger alert: stress HIGH (>60) AND focus LOW (<55)
+    if (s > 60 && f < 55) { triggerAlert(f, s); return; }
+    // Also alert on extreme single metric
+    if (s > 68) { triggerAlert(f, s); return; }
+    if (f < 57) { triggerAlert(f, s); return; }
+  }
+
+  // Dashboard comment — update every ~20 vitals ticks
+  let tickCount = 0;
+  function onVitalsUpdate(f, s) {
+    tickCount++;
+    if (tickCount === 1 || tickCount % 7 === 0) {
+      // Debounce rapid calls
+      clearTimeout(dashboardUpdateTimer);
+      dashboardUpdateTimer = setTimeout(() => updateDashboardComment(f, s), 400);
+    }
+    check(f, s);
+  }
+
+  return { onVitalsUpdate, dismiss, snooze, togglePanel };
+})();
+
+function dismissNuraWatch() { NuraWatch.dismiss(); }
+function snoozeNuraWatch() { NuraWatch.snooze(); }
+function toggleNuraWatchPanel() { NuraWatch.togglePanel(); }
+
+function initApp(){
+  renderSubjectFilters();
+  renderNotes('all');
+  buildWeek();
+  startClock();
+  updateVitals();
+  loadLinkHub();
+  loadSavedAudio();
+}
+
+// Boot — no login required
+window.addEventListener('DOMContentLoaded',()=>{
+  applyStoredTheme();
+  renderUserProfile();
+  initApp();
+  // Make both floating popups draggable
+  makeDraggable(document.getElementById('source-popup'),  document.querySelector('#source-popup .sp-header'));
+  makeDraggable(document.getElementById('linkPopup'),     document.querySelector('#linkPopup .popup-header'));
+});
+</script>
+</body>
+</html>
