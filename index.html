@@ -93,6 +93,19 @@ body.glow-active{box-shadow:inset 0 0 80px rgba(var(--accent-rgb),0.06),inset 0 
 .stress-dot{background:var(--gold2)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 .timer-badge{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);background:var(--bg3);border:1px solid var(--border);padding:4px 10px;border-radius:8px;display:flex;align-items:center;gap:5px}
+.ft-preset-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text2);font-family:'Outfit',sans-serif;font-size:10px;padding:3px 8px;border-radius:6px;cursor:pointer;transition:all .2s;letter-spacing:.3px}
+.ft-preset-btn:hover{background:rgba(var(--accent-rgb),0.12);border-color:rgba(var(--accent-rgb),0.3);color:var(--accent2)}
+@keyframes alarmPulse{0%,100%{box-shadow:0 0 60px rgba(var(--accent-rgb),0.3)}50%{box-shadow:0 0 100px rgba(var(--accent-rgb),0.6),0 0 30px rgba(var(--accent-rgb),0.4)}}
+.dash-lm-tab{background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-family:'Outfit',sans-serif;font-size:10px;padding:4px 11px;border-radius:7px;cursor:pointer;transition:all .2s;letter-spacing:.3px}
+.dash-lm-tab.active-tab{background:rgba(var(--accent-rgb),0.12);border-color:rgba(var(--accent-rgb),0.35);color:var(--accent2)}
+.dash-mode-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.dash-mode-card:hover{border-color:rgba(var(--accent-rgb),0.35);transform:translateY(-1px)}
+.dash-mode-card.active-mode{border-color:rgba(var(--accent-rgb),0.5);box-shadow:0 0 16px rgba(var(--accent-rgb),0.1)}
+.dash-mode-card.active-mode::after{content:'✓';position:absolute;top:7px;right:9px;font-size:10px;color:var(--accent2)}
+.dmc-swatch{width:100%;height:28px;border-radius:6px;margin-bottom:8px}
+.dmc-name{font-size:11px;font-weight:600;color:var(--text);margin-bottom:2px;transition:color .3s}
+.dmc-k{font-size:9px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:2px}
+.dmc-cond{font-size:9px;color:var(--text3);line-height:1.4}
 .timer-label{font-size:9px;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;font-family:'Outfit',sans-serif}
 
 /* LIGHT THEME */
@@ -518,11 +531,6 @@ body.light-theme .source-popup,body.light-theme .floating-link-popup{background:
     </nav>
   </div>
   <div class="topbar-right">
-    <!-- Neuro Status Dot -->
-    <div class="neuro-status-wrap" id="neuro-status-wrap" title="Nura Watch hardware link">
-      <div class="neuro-status-dot" id="neuro-status-dot"></div>
-      <span class="neuro-status-label" id="neuro-status-label">RX</span>
-    </div>
     <div class="vital-pill focus-pill"><div class="vital-dot focus-dot"></div>Focus <span id="top-focus">84%</span></div>
     <div class="vital-pill stress-pill"><div class="vital-dot stress-dot"></div>Stress <span id="top-stress">12%</span></div>
     <div class="nura-watch-pill" onclick="toggleNuraWatchPanel()" title="Nura Watch — AI state monitor">
@@ -551,6 +559,15 @@ body.light-theme .source-popup,body.light-theme .floating-link-popup{background:
         <input type="password" class="modal-input" id="api-key-input" placeholder="gsk_..." style="font-size:11px;padding:6px 10px" oninput="saveApiKey()"/>
         <div class="ud-label">Socratic Rigor (<span id="scale-indicator">5</span>/10)</div>
         <input type="range" style="width:100%;accent-color:var(--accent)" id="profile-ai-scale" min="1" max="10" value="5" oninput="saveUserProfile()"/>
+        <div class="ud-label">Light Mode</div>
+        <div style="display:flex;gap:5px">
+          <button id="lm-focus-btn" onclick="setLightModeType('focus')" style="flex:1;font-family:'Outfit',sans-serif;font-size:10px;padding:5px 6px;border-radius:7px;cursor:pointer;border:1px solid rgba(var(--accent-rgb),0.4);background:rgba(var(--accent-rgb),0.12);color:var(--accent2);transition:all .2s;letter-spacing:.3px">🎯 Focus Standard</button>
+          <button id="lm-custom-btn" onclick="setLightModeType('custom')" style="flex:1;font-family:'Outfit',sans-serif;font-size:10px;padding:5px 6px;border-radius:7px;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text2);transition:all .2s;letter-spacing:.3px">🎨 Custom Colour</button>
+        </div>
+        <div id="custom-colour-row" style="display:none;align-items:center;gap:8px;margin-top:4px">
+          <div style="font-size:10px;color:var(--text3);flex:1">Pick UI accent colour</div>
+          <input type="color" id="custom-colour-picker" value="#00e5ff" oninput="applyCustomColour(this.value)" style="width:36px;height:28px;border:1px solid var(--border);border-radius:6px;background:none;cursor:pointer;padding:2px"/>
+        </div>
         <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()" style="width:100%;font-size:11px;padding:6px;text-align:center;background:var(--bg3)">☀️  Switch to Light</button>
         <button class="btn danger" onclick="logOut()" style="width:100%;font-size:11px;padding:6px;text-align:center">Sign Out</button>
       </div>
@@ -593,11 +610,25 @@ body.light-theme .source-popup,body.light-theme .floating-link-popup{background:
     <!-- SESSION CARD -->
     <div class="panel" style="margin-bottom:0">
       <div class="panel-title">Session Control</div>
-      <div class="session-timer" id="main-timer">00:00</div>
-      <div class="session-sub">ELAPSED STUDY TIME</div>
+      <!-- Dual timer display -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <!-- Session clock -->
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px;text-align:center;transition:border-color .5s">
+          <div style="font-size:9px;color:var(--text3);letter-spacing:2px;margin-bottom:5px;font-family:'JetBrains Mono',monospace">SESSION</div>
+          <div class="session-timer" id="main-timer" style="font-size:32px">00:00</div>
+          <div style="font-size:9px;color:var(--text3);letter-spacing:1.5px;margin-top:3px;font-family:'JetBrains Mono',monospace">ELAPSED</div>
+        </div>
+        <!-- Focus timer mirror -->
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px;text-align:center;transition:border-color .5s;cursor:pointer" onclick="openFocusTimer()" title="Click to open Focus Timer">
+          <div style="font-size:9px;color:var(--text3);letter-spacing:2px;margin-bottom:5px;font-family:'JetBrains Mono',monospace">FOCUS TIMER</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:3px;line-height:1;color:var(--accent2);transition:color .5s" id="dash-ft-mirror">--:--</div>
+          <div style="font-size:9px;letter-spacing:1.5px;margin-top:3px;font-family:'JetBrains Mono',monospace;color:var(--text3)" id="dash-ft-label">NOT STARTED</div>
+        </div>
+      </div>
       <div class="session-btns">
         <button class="btn primary" id="start-btn" onclick="toggleSession()">Start Session</button>
         <button class="btn" onclick="resetSession()">Reset</button>
+        <button class="btn" onclick="openFocusTimer()" title="Open Focus Timer" style="padding:8px 12px">⏱ Timer</button>
       </div>
       <div style="margin-top:14px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
@@ -641,10 +672,74 @@ body.light-theme .source-popup,body.light-theme .floating-link-popup{background:
         </div>
       </div>
     </div>
-  </div>
-</div>
+  </div><!-- end dash-top-grid -->
 
-<!-- STATS -->
+  <!-- LIGHT MODE PANEL — switches between Focus Standard (4 modes) and Custom Colour -->
+  <div style="margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="font-size:10px;color:var(--text3);letter-spacing:2.5px;text-transform:uppercase">Light Engine</div>
+      <div style="display:flex;gap:5px">
+        <button id="dash-lm-focus-btn" onclick="setLightModeType('focus')" class="dash-lm-tab active-tab">🎯 Focus Standard</button>
+        <button id="dash-lm-custom-btn" onclick="setLightModeType('custom')" class="dash-lm-tab">🎨 Custom Colour</button>
+      </div>
+    </div>
+
+    <!-- Focus Standard: 4 mode cards -->
+    <div id="dash-focus-modes" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+      <div class="dash-mode-card" id="dmc-deep" onclick="forceLightMode('deep')">
+        <div class="dmc-swatch" style="background:linear-gradient(135deg,#c8e6ff,#6aabff)"></div>
+        <div class="dmc-name">Deep Focus</div>
+        <div class="dmc-k">6500K · Cool White</div>
+        <div class="dmc-cond">Focus ≥80% · Stress ≤30%</div>
+      </div>
+      <div class="dash-mode-card" id="dmc-stable" onclick="forceLightMode('stable')">
+        <div class="dmc-swatch" style="background:linear-gradient(135deg,#00e5ff,#006680)"></div>
+        <div class="dmc-name">Stable Focus</div>
+        <div class="dmc-k">4500K · Neutral</div>
+        <div class="dmc-cond">Focus ≥60%</div>
+      </div>
+      <div class="dash-mode-card" id="dmc-break" onclick="forceLightMode('break')">
+        <div class="dmc-swatch" style="background:linear-gradient(135deg,#ffb050,#a05010)"></div>
+        <div class="dmc-name">Break Mode</div>
+        <div class="dmc-k">3000K · Warm</div>
+        <div class="dmc-cond">Focus &lt;60%</div>
+      </div>
+      <div class="dash-mode-card" id="dmc-calm" onclick="forceLightMode('calm')">
+        <div class="dmc-swatch" style="background:linear-gradient(135deg,#a855f7,#4a1080)"></div>
+        <div class="dmc-name">Calm Down</div>
+        <div class="dmc-k">2200K · Dim Warm</div>
+        <div class="dmc-cond">Stress &gt;60%</div>
+      </div>
+    </div>
+
+    <!-- Custom Colour picker panel -->
+    <div id="dash-custom-colour" style="display:none">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:20px;display:flex;align-items:center;gap:24px;flex-wrap:wrap">
+        <!-- Colour wheel -->
+        <div style="position:relative;flex-shrink:0">
+          <canvas id="colour-wheel" width="140" height="140" style="border-radius:50%;cursor:crosshair;display:block"></canvas>
+          <div id="cw-cursor" style="position:absolute;width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 6px rgba(0,0,0,.6);pointer-events:none;transform:translate(-50%,-50%);top:50%;left:50%"></div>
+        </div>
+        <!-- Brightness slider + preview -->
+        <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:12px">
+          <div>
+            <div style="font-size:10px;color:var(--text3);letter-spacing:1.5px;margin-bottom:6px">BRIGHTNESS</div>
+            <input type="range" id="cw-brightness" min="20" max="100" value="70" oninput="onWheelBrightnessChange(this.value)" style="width:100%;accent-color:var(--accent)"/>
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--text3);letter-spacing:1.5px;margin-bottom:6px">PREVIEW</div>
+            <div id="cw-preview-swatch" style="height:36px;border-radius:8px;background:var(--accent);border:1px solid rgba(255,255,255,.1);transition:background .2s"></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="font-size:10px;color:var(--text3);letter-spacing:1.5px">HEX</div>
+            <input type="text" id="cw-hex-input" value="#00e5ff" maxlength="7" oninput="onHexInput(this.value)" style="flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;padding:5px 8px;border-radius:7px;outline:none"/>
+          </div>
+          <div style="font-size:10px;color:var(--text3);line-height:1.6">Auto-theming disabled. UI will stay in your chosen colour regardless of focus/stress levels.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- end dashboard section -->
 <div class="section" id="stats-panel">
   <div class="page-header">
     <div><div class="page-title">Telemetry &amp; Analysis</div><div class="page-sub">Biological signals, light engine &amp; study metrics</div></div>
@@ -781,7 +876,10 @@ body.light-theme .source-popup,body.light-theme .floating-link-popup{background:
           Files <span class="fsp-file-count" id="fsp-file-count" style="display:none">0</span>
         </button>
         <div class="mode-tag"><div class="mode-dot"></div>SOCRATIC TEACHING PROTOCOL ACTIVE</div>
-        <div style="margin-left:auto;font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace" id="lecture-status">No files loaded</div>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+          <button onclick="startNewConversation()" style="background:rgba(var(--accent-rgb),0.08);border:1px solid rgba(var(--accent-rgb),0.25);color:var(--accent2);font-family:'Outfit',sans-serif;font-size:11px;padding:5px 12px;border-radius:8px;cursor:pointer;letter-spacing:.3px;transition:all .2s" onmouseover="this.style.background='rgba(var(--accent-rgb),0.15)'" onmouseout="this.style.background='rgba(var(--accent-rgb),0.08)'">+ New Conversation</button>
+          <div style="font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace" id="lecture-status">No files loaded</div>
+        </div>
       </div>
       <div class="tutor-chat-area" id="chat-box">
         <div class="chat-welcome-container" id="chat-welcome-screen">
@@ -913,12 +1011,13 @@ body.light-theme .source-popup,body.light-theme .floating-link-popup{background:
   </div>
 </div>
 
-<!-- FOCUS SESSION TIMER — draggable + minimizable -->
-<div class="focus-timer-wrap timer-focus" id="focus-timer-wrap">
+<!-- FOCUS SESSION TIMER — draggable + minimizable + closeable -->
+<div class="focus-timer-wrap timer-focus" id="focus-timer-wrap" style="display:none">
   <div class="ft-handle" id="ft-handle">
     <span class="ft-handle-label">Focus Timer</span>
     <div class="ft-handle-btns">
       <button class="ft-icon-btn" onclick="minimizeFocusTimer()" title="Minimize" id="ft-min-btn">─</button>
+      <button class="ft-icon-btn" onclick="closeFocusTimer()" title="Close" style="color:#ff8080;font-size:13px">✕</button>
     </div>
   </div>
   <div class="ft-body" id="ft-body">
@@ -927,11 +1026,35 @@ body.light-theme .source-popup,body.light-theme .floating-link-popup{background:
       <div class="ft-label" id="ft-label">FOCUS SESSION</div>
       <div class="ft-time" id="ft-time">25:00</div>
     </div>
+    <!-- Preset buttons -->
+    <div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin:4px 0">
+      <button class="ft-preset-btn" onclick="applyFocusPreset(50,'Deep Work')">50m Deep Work</button>
+      <button class="ft-preset-btn" onclick="applyFocusPreset(25,'Focus Regain')">25m Focus Regain</button>
+      <button class="ft-preset-btn" onclick="applyFocusPreset(10,'Breather')">10m Breather</button>
+      <button class="ft-preset-btn" onclick="applyFocusPreset(5,'Calm Down')">5m Calm Down</button>
+    </div>
+    <!-- Custom time input -->
+    <div style="display:flex;align-items:center;gap:5px;justify-content:center;margin-bottom:4px">
+      <input type="number" id="ft-custom-min" min="1" max="180" placeholder="mm" style="width:44px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;padding:4px 6px;border-radius:6px;outline:none;text-align:center"/>
+      <span style="font-size:11px;color:var(--text3)">:</span>
+      <input type="number" id="ft-custom-sec" min="0" max="59" placeholder="ss" style="width:44px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;padding:4px 6px;border-radius:6px;outline:none;text-align:center"/>
+      <button onclick="applyCustomFocusTime()" style="background:rgba(var(--accent-rgb),0.12);border:1px solid rgba(var(--accent-rgb),0.3);color:var(--accent2);font-size:10px;padding:4px 9px;border-radius:6px;cursor:pointer;font-family:'Outfit',sans-serif;letter-spacing:.5px">Set</button>
+    </div>
     <div class="ft-divider"></div>
     <div class="ft-phase" id="ft-phase">FOCUS</div>
     <div class="ft-divider"></div>
     <button class="ft-btn" id="ft-play-btn" onclick="toggleFocusTimer()">▶ Start</button>
-    <button class="ft-skip" onclick="skipFocusPhase()" title="Skip phase">⏭</button>
+    <button class="ft-skip" onclick="resetFocusTimer()" title="Reset timer">↺ Reset</button>
+  </div>
+</div>
+
+<!-- ALARM OVERLAY — rings for 30s until dismissed -->
+<div id="ft-alarm-overlay" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.75);align-items:center;justify-content:center;animation:fadeIn .3s ease">
+  <div id="ft-alarm-card" style="background:var(--bg2);border:2px solid var(--accent);border-radius:20px;padding:32px 40px;text-align:center;box-shadow:0 0 60px rgba(var(--accent-rgb),0.3);max-width:360px;animation:alarmPulse 1s ease infinite">
+    <div style="font-size:40px;margin-bottom:10px">⏰</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--accent2)" id="ft-alarm-title">TIME'S UP!</div>
+    <div style="font-size:13px;color:var(--text2);margin:10px 0 22px" id="ft-alarm-msg">Your focus session has ended.</div>
+    <button onclick="stopAlarm()" style="background:var(--accent-glow);border:1px solid rgba(var(--accent-rgb),0.4);color:var(--accent2);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;padding:11px 32px;border-radius:10px;cursor:pointer;letter-spacing:.5px">Stop Alarm</button>
   </div>
 </div>
 
@@ -1285,50 +1408,385 @@ document.addEventListener('click',()=>document.getElementById('userDropdown')?.c
 // ═══════════════════════════════════════════════
 // DYNAMIC UI COLOUR ENGINE
 // ═══════════════════════════════════════════════
+// ── Scientific color modes ──
+// deep:  6500K Cool White → boosts alertness, mimics daylight, enhances beta wave activity
+// stable: 4500K Neutral White → balances focus & comfort, reduces eye strain during moderate work
+// break:  3000K Warm White → triggers melatonin reduction pause, signals brain to rest/restore
+// calm:   2200K Dim Amber → suppresses cortisol, activates parasympathetic (rest+digest) response
 const COLOR_MODES = {
-  deep:   { r:255, g:255, b:255,  accent:'#ffffff', accent2:'#f0f0f0', glow:'rgba(255,255,255,0.6)', cubeBg:'#1a1a2a', cubeBorder:'rgba(255,255,255,0.4)', barBg:'rgba(255,255,255,0.06)', barText:'rgba(255,255,255,0.7)', barLabel:'DEEP FOCUS — 6500K COOL WHITE' },
-  stable: { r:0,   g:229, b:255,  accent:'#00e5ff', accent2:'#80f0ff', glow:'rgba(0,229,255,0.7)',   cubeBg:'#0a1a20', cubeBorder:'rgba(0,229,255,0.4)',   barBg:'rgba(0,229,255,0.06)',   barText:'rgba(0,229,255,0.7)',   barLabel:'STABLE FOCUS — 4500K NEUTRAL' },
-  break:  { r:255, g:176, b:96,   accent:'#ffb060', accent2:'#ffd090', glow:'rgba(255,176,96,0.7)',  cubeBg:'#201000', cubeBorder:'rgba(255,176,96,0.4)',  barBg:'rgba(255,176,96,0.06)',  barText:'rgba(255,176,96,0.7)',  barLabel:'BREAK MODE — 3000K WARM' },
-  calm:   { r:168, g:85,  b:247,  accent:'#a855f7', accent2:'#c084fc', glow:'rgba(168,85,247,0.7)', cubeBg:'#120820', cubeBorder:'rgba(168,85,247,0.4)', barBg:'rgba(168,85,247,0.06)', barText:'rgba(168,85,247,0.7)', barLabel:'CALM DOWN — 2200K DIM WARM' },
+  deep: {
+    r:200, g:230, b:255,
+    accent:'#c8e6ff', accent2:'#e0f2ff', glow:'rgba(200,230,255,0.7)',
+    cubeBg:'#080e18', cubeBorder:'rgba(200,230,255,0.5)',
+    barBg:'rgba(200,230,255,0.08)', barText:'rgba(200,230,255,0.9)',
+    barLabel:'DEEP FOCUS — 6500K COOL WHITE',
+    bg:'#04080f', bg2:'#07101a', bg3:'#0c1825', bg4:'#111f2e', bg5:'#162639',
+    bodyGrad:'radial-gradient(ellipse at 30% 20%, rgba(60,120,200,0.12) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(100,160,255,0.06) 0%, transparent 50%)',
+    gridColor:'rgba(200,230,255,0.025)',
+    lmLabel:'Deep Focus', lmK:'6500K · Cool White', lmSci:'Boosts alertness +18% · Beta wave activation',
+    description:'Optimal deep learning — cool blue light activates alertness centers'
+  },
+  stable: {
+    r:0, g:229, b:255,
+    accent:'#00e5ff', accent2:'#80f0ff', glow:'rgba(0,229,255,0.7)',
+    cubeBg:'#051518', cubeBorder:'rgba(0,229,255,0.4)',
+    barBg:'rgba(0,229,255,0.07)', barText:'rgba(0,229,255,0.9)',
+    barLabel:'STABLE FOCUS — 4500K NEUTRAL',
+    bg:'#04100f', bg2:'#061614', bg3:'#081e1c', bg4:'#0d2422', bg5:'#112b28',
+    bodyGrad:'radial-gradient(ellipse at 20% 50%, rgba(0,100,120,0.14) 0%, transparent 60%), radial-gradient(ellipse at 85% 20%, rgba(0,229,255,0.06) 0%, transparent 55%)',
+    gridColor:'rgba(0,229,255,0.022)',
+    lmLabel:'Stable Focus', lmK:'4500K · Neutral White', lmSci:'Balanced alertness · Reduces eye strain',
+    description:'Steady cognitive state — neutral light maintains focus without fatigue'
+  },
+  break: {
+    r:255, g:176, b:80,
+    accent:'#ffb050', accent2:'#ffd090', glow:'rgba(255,176,80,0.7)',
+    cubeBg:'#180f02', cubeBorder:'rgba(255,176,80,0.45)',
+    barBg:'rgba(255,176,80,0.08)', barText:'rgba(255,176,80,0.9)',
+    barLabel:'BREAK MODE — 3000K WARM',
+    bg:'#0f0a02', bg2:'#160e03', bg3:'#1e1305', bg4:'#261808', bg5:'#2e1e0b',
+    bodyGrad:'radial-gradient(ellipse at 20% 60%, rgba(180,100,0,0.14) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(255,176,80,0.06) 0%, transparent 50%)',
+    gridColor:'rgba(255,176,80,0.022)',
+    lmLabel:'Break Mode', lmK:'3000K · Warm White', lmSci:'Cortisol reset · Signals rest/restore',
+    description:'Rest & restore — warm light cues your brain to recover and recharge'
+  },
+  calm: {
+    r:168, g:85, b:247,
+    accent:'#a855f7', accent2:'#c084fc', glow:'rgba(168,85,247,0.7)',
+    cubeBg:'#0e0518', cubeBorder:'rgba(168,85,247,0.45)',
+    barBg:'rgba(168,85,247,0.08)', barText:'rgba(168,85,247,0.9)',
+    barLabel:'CALM DOWN — 2200K DIM WARM',
+    bg:'#080410', bg2:'#0e0618', bg3:'#150a22', bg4:'#1c0e2c', bg5:'#221235',
+    bodyGrad:'radial-gradient(ellipse at 25% 40%, rgba(120,40,200,0.16) 0%, transparent 60%), radial-gradient(ellipse at 80% 70%, rgba(168,85,247,0.07) 0%, transparent 50%)',
+    gridColor:'rgba(168,85,247,0.025)',
+    lmLabel:'Calm Down', lmK:'2200K · Dim Amber', lmSci:'Suppresses cortisol · Activates parasympathetic',
+    description:'Stress relief — dim purple/amber light activates your calm response'
+  },
 };
+
+let currentColorMode = 'stable';
 
 function getLightMode(f,s){ if(s>60)return'calm'; if(f>=80&&s<=30)return'deep'; if(f>=60)return'stable'; return'break'; }
 
 function applyColorMode(modeName){
+  if(modeName === currentColorMode && document.body.dataset.colorMode === modeName) return;
+  currentColorMode = modeName;
+  document.body.dataset.colorMode = modeName;
   const m = COLOR_MODES[modeName];
   const root = document.documentElement;
+
+  // Accent colors
   root.style.setProperty('--accent', m.accent);
   root.style.setProperty('--accent2', m.accent2);
   root.style.setProperty('--accent-rgb', `${m.r},${m.g},${m.b}`);
   root.style.setProperty('--accent-glow', `rgba(${m.r},${m.g},${m.b},0.08)`);
-  root.style.setProperty('--border-accent', `rgba(${m.r},${m.g},${m.b},0.15)`);
-  // cube
+  root.style.setProperty('--border-accent', `rgba(${m.r},${m.g},${m.b},0.18)`);
+
+  // Full UI background palette — the whole interface changes color
+  if(!document.body.classList.contains('light-theme')){
+    root.style.setProperty('--bg', m.bg);
+    root.style.setProperty('--bg2', m.bg2);
+    root.style.setProperty('--bg3', m.bg3);
+    root.style.setProperty('--bg4', m.bg4);
+    root.style.setProperty('--bg5', m.bg5);
+  }
+
+  // Update body background gradient (the atmospheric glow)
+  document.body.style.setProperty('--body-bg-override', m.bodyGrad);
+
+  // Update the pseudo-element grid color via a style injection
+  let gridStyle = document.getElementById('__nura-grid-style');
+  if(!gridStyle){ gridStyle=document.createElement('style'); gridStyle.id='__nura-grid-style'; document.head.appendChild(gridStyle); }
+  gridStyle.textContent = `body::before{background-image:linear-gradient(${m.gridColor} 1px,transparent 1px),linear-gradient(90deg,${m.gridColor} 1px,transparent 1px)!important;}
+  body::after{background:${m.bodyGrad}!important;}`;
+
+  // Cube light engine visuals
   if(document.getElementById('cv-glow')){
     document.getElementById('cv-glow').style.background=m.glow;
     ['cv-top','cv-side','cv-front'].forEach(id=>{
-      document.getElementById(id).style.background=m.cubeBg;
-      document.getElementById(id).style.borderColor=m.cubeBorder;
+      const el=document.getElementById(id);
+      if(el){ el.style.background=m.cubeBg; el.style.borderColor=m.cubeBorder; }
     });
     const bar=document.getElementById('light-status-bar');
-    bar.style.background=m.barBg; bar.style.color=m.barText; bar.textContent=m.barLabel;
-    document.getElementById('lm-label').style.color=m.accent2;
+    if(bar){ bar.style.background=m.barBg; bar.style.color=m.barText; bar.textContent=m.barLabel; }
+    const lbl=document.getElementById('lm-label');
+    if(lbl){ lbl.style.color=m.accent2; lbl.textContent=m.lmLabel; }
+    const lmk=document.getElementById('lm-k');
+    if(lmk) lmk.textContent=m.lmK;
+    const lmsci=document.getElementById('lm-science');
+    if(lmsci) lmsci.textContent=m.lmSci;
   }
+
+  // Update mode badge in topbar if present
+  const modeBadge = document.getElementById('color-mode-badge');
+  if(modeBadge){
+    modeBadge.textContent = m.lmLabel;
+    modeBadge.style.color = m.accent2;
+    modeBadge.style.borderColor = `rgba(${m.r},${m.g},${m.b},0.3)`;
+    modeBadge.title = m.description;
+  }
+
   document.body.classList.add('glow-active');
+
+  // Highlight active mode card on dashboard
+  ['deep','stable','break','calm'].forEach(k=>{
+    const card = document.getElementById('dmc-'+k);
+    if(card) card.classList.toggle('active-mode', k===modeName);
+  });
 }
 
 // ═══════════════════════════════════════════════
-// VITALS ENGINE
+// LIGHT MODE TYPE — 'focus' (auto 4-mode) or 'custom' (colour wheel)
 // ═══════════════════════════════════════════════
-let focusPct=84,stressPct=12,focusDir=1,stressDir=1;
+let lightModeType = localStorage.getItem('nura-light-mode-type') || 'focus';
+let customColourHex = localStorage.getItem('nura-custom-colour') || '#00e5ff';
+let forcedMode = null; // when user manually clicks a mode card
+
+function setLightModeType(type){
+  lightModeType = type;
+  localStorage.setItem('nura-light-mode-type', type);
+  forcedMode = null;
+  updateLightModeUI();
+  if(type === 'custom'){
+    applyCustomColour(customColourHex);
+  } else {
+    // Re-enable auto theming
+    const f = Math.round(focusPct), s = Math.round(stressPct);
+    applyColorMode(getLightMode(f, s));
+  }
+}
+
+function forceLightMode(modeName){
+  if(lightModeType !== 'focus') return;
+  forcedMode = modeName;
+  applyColorMode(modeName);
+}
+
+function updateLightModeUI(){
+  const isFocus = lightModeType === 'focus';
+  // Settings dropdown buttons
+  const fb = document.getElementById('lm-focus-btn');
+  const cb = document.getElementById('lm-custom-btn');
+  if(fb){ fb.style.background = isFocus ? 'rgba(var(--accent-rgb),0.12)' : 'var(--bg3)'; fb.style.borderColor = isFocus ? 'rgba(var(--accent-rgb),0.4)' : 'var(--border)'; fb.style.color = isFocus ? 'var(--accent2)' : 'var(--text2)'; }
+  if(cb){ cb.style.background = !isFocus ? 'rgba(var(--accent-rgb),0.12)' : 'var(--bg3)'; cb.style.borderColor = !isFocus ? 'rgba(var(--accent-rgb),0.4)' : 'var(--border)'; cb.style.color = !isFocus ? 'var(--accent2)' : 'var(--text2)'; }
+  const row = document.getElementById('custom-colour-row');
+  if(row) row.style.display = isFocus ? 'none' : 'flex';
+  // Dashboard panel
+  const focusPanel = document.getElementById('dash-focus-modes');
+  const customPanel = document.getElementById('dash-custom-colour');
+  if(focusPanel) focusPanel.style.display = isFocus ? 'grid' : 'none';
+  if(customPanel) customPanel.style.display = isFocus ? 'none' : 'block';
+  // Dashboard tab buttons
+  const dff = document.getElementById('dash-lm-focus-btn');
+  const dcb = document.getElementById('dash-lm-custom-btn');
+  if(dff){ dff.classList.toggle('active-tab', isFocus); }
+  if(dcb){ dcb.classList.toggle('active-tab', !isFocus); }
+}
+
+function applyCustomColour(hex){
+  // Guard against invalid input
+  if(!/^#[0-9a-fA-F]{3,6}$/.test(hex)) return;
+  customColourHex = hex;
+  localStorage.setItem('nura-custom-colour', hex);
+  // Convert hex to r,g,b
+  let r=0,g=0,b=0;
+  if(hex.length===7){ r=parseInt(hex.slice(1,3),16); g=parseInt(hex.slice(3,5),16); b=parseInt(hex.slice(5,7),16); }
+  else if(hex.length===4){ r=parseInt(hex[1]+hex[1],16); g=parseInt(hex[2]+hex[2],16); b=parseInt(hex[3]+hex[3],16); }
+  const accent2 = brightenHex(r,g,b,0.35);
+  const root = document.documentElement;
+  root.style.setProperty('--accent', hex);
+  root.style.setProperty('--accent2', accent2);
+  root.style.setProperty('--accent-rgb', `${r},${g},${b}`);
+  root.style.setProperty('--accent-glow', `rgba(${r},${g},${b},0.09)`);
+  root.style.setProperty('--border-accent', `rgba(${r},${g},${b},0.2)`);
+  // Derive bg from hue
+  if(!document.body.classList.contains('light-theme')){
+    const hueFactor = 0.035;
+    root.style.setProperty('--bg', `rgb(${Math.round(r*hueFactor+3)},${Math.round(g*hueFactor+3)},${Math.round(b*hueFactor+6)})`);
+    root.style.setProperty('--bg2', `rgb(${Math.round(r*hueFactor*1.8+5)},${Math.round(g*hueFactor*1.8+5)},${Math.round(b*hueFactor*1.8+9)})`);
+    root.style.setProperty('--bg3', `rgb(${Math.round(r*hueFactor*2.8+8)},${Math.round(g*hueFactor*2.8+8)},${Math.round(b*hueFactor*2.8+14)})`);
+  }
+  // Update grid style
+  let gridStyle = document.getElementById('__nura-grid-style');
+  if(!gridStyle){ gridStyle=document.createElement('style'); gridStyle.id='__nura-grid-style'; document.head.appendChild(gridStyle); }
+  gridStyle.textContent = `body::before{background-image:linear-gradient(rgba(${r},${g},${b},0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(${r},${g},${b},0.025) 1px,transparent 1px)!important;}
+  body::after{background:radial-gradient(ellipse at 25% 40%,rgba(${r},${g},${b},0.1) 0%,transparent 60%)!important;}`;
+  // Update cube
+  if(document.getElementById('cv-glow')){
+    document.getElementById('cv-glow').style.background=`rgba(${r},${g},${b},0.6)`;
+    ['cv-top','cv-side','cv-front'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.style.borderColor=`rgba(${r},${g},${b},0.4)`; }});
+    const bar=document.getElementById('light-status-bar');
+    if(bar){ bar.style.background=`rgba(${r},${g},${b},0.08)`; bar.style.color=`rgba(${r},${g},${b},0.9)`; bar.textContent='CUSTOM COLOUR MODE'; }
+  }
+  // Update swatch preview
+  const swatch = document.getElementById('cw-preview-swatch');
+  if(swatch) swatch.style.background = hex;
+  const hexInput = document.getElementById('cw-hex-input');
+  if(hexInput && hexInput !== document.activeElement) hexInput.value = hex;
+  // Update colour picker
+  const picker = document.getElementById('custom-colour-picker');
+  if(picker) picker.value = hex;
+  document.body.classList.add('glow-active');
+}
+
+function brightenHex(r,g,b,amount){
+  const mix = v => Math.round(Math.min(255, v + (255-v)*amount));
+  return `rgb(${mix(r)},${mix(g)},${mix(b)})`;
+}
+
+function onHexInput(val){
+  if(/^#[0-9a-fA-F]{6}$/.test(val)){ applyCustomColour(val); updateColourWheelCursor(val); }
+}
+
+// ─── Colour Wheel ───────────────────────────────
+function initColourWheel(){
+  const canvas = document.getElementById('colour-wheel');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const cx = canvas.width/2, cy = canvas.height/2, r = cx - 2;
+  // Draw HSL wheel
+  for(let angle=0; angle<360; angle++){
+    const startAngle = (angle-1) * Math.PI/180;
+    const endAngle = (angle+1) * Math.PI/180;
+    const grad = ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+    grad.addColorStop(0, `hsl(${angle},0%,100%)`);
+    grad.addColorStop(0.5, `hsl(${angle},100%,60%)`);
+    grad.addColorStop(1, `hsl(${angle},100%,30%)`);
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,startAngle,endAngle);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+  }
+  // Dark center circle for brightness
+  const darkGrad = ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+  darkGrad.addColorStop(0.4, 'rgba(0,0,0,0)');
+  darkGrad.addColorStop(1, 'rgba(0,0,0,0.35)');
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fillStyle=darkGrad; ctx.fill();
+
+  // Pick colour on click/drag
+  let picking = false;
+  function pick(e){
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX||e.touches?.[0]?.clientX) - rect.left;
+    const y = (e.clientY||e.touches?.[0]?.clientY) - rect.top;
+    // Scale to canvas coords
+    const sx = x * (canvas.width/rect.width);
+    const sy = y * (canvas.height/rect.height);
+    const pixel = ctx.getImageData(Math.round(sx),Math.round(sy),1,1).data;
+    if(pixel[3] < 10) return;
+    const hex = '#' + [pixel[0],pixel[1],pixel[2]].map(v=>v.toString(16).padStart(2,'0')).join('');
+    applyCustomColour(hex);
+    // Move cursor
+    const cursor = document.getElementById('cw-cursor');
+    if(cursor){ cursor.style.left = (x/rect.width*100)+'%'; cursor.style.top = (y/rect.height*100)+'%'; }
+  }
+  canvas.addEventListener('mousedown', e=>{ picking=true; pick(e); });
+  canvas.addEventListener('mousemove', e=>{ if(picking) pick(e); });
+  document.addEventListener('mouseup', ()=>picking=false);
+  canvas.addEventListener('touchstart', e=>{ picking=true; pick(e); e.preventDefault(); },{passive:false});
+  canvas.addEventListener('touchmove', e=>{ if(picking){ pick(e); e.preventDefault(); } },{passive:false});
+  document.addEventListener('touchend', ()=>picking=false);
+}
+
+function onWheelBrightnessChange(val){
+  // Adjust the brightness of the current custom colour
+  if(!/^#[0-9a-fA-F]{6}$/.test(customColourHex)) return;
+  const r=parseInt(customColourHex.slice(1,3),16);
+  const g=parseInt(customColourHex.slice(3,5),16);
+  const b=parseInt(customColourHex.slice(5,7),16);
+  // Convert to HSL, adjust L, back to hex
+  const factor = val/100;
+  const nr=Math.round(r*factor), ng=Math.round(g*factor), nb=Math.round(b*factor);
+  const newHex = '#'+[nr,ng,nb].map(v=>Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join('');
+  applyCustomColour(newHex);
+}
+
+function updateColourWheelCursor(hex){
+  // Not strictly needed but keep for future extension
+}
+
+// Restore light mode type on load
+function restoreLightModeType(){
+  updateLightModeUI();
+  if(lightModeType === 'custom'){
+    applyCustomColour(customColourHex);
+    const picker = document.getElementById('custom-colour-picker');
+    if(picker) picker.value = customColourHex;
+  }
+  // Init wheel (always, it's hidden until custom mode)
+  setTimeout(initColourWheel, 200);
+}
+// ═══════════════════════════════════════════════
+// Seed from a high-entropy source on every page load so curves never repeat
+const _seed = Date.now() ^ (Math.random() * 0xFFFFFFFF | 0) ^ (performance.now() * 1000 | 0);
+let _rng = _seed;
+function seededRand(){
+  _rng ^= _rng << 13; _rng ^= _rng >> 17; _rng ^= _rng << 5;
+  return ((_rng >>> 0) / 0xFFFFFFFF);
+}
+
+// Random starting points (seeded so they differ every refresh)
+let focusPct  = 45 + seededRand() * 40;   // 45-85
+let stressPct = 5  + seededRand() * 35;   // 5-40
+let focusDir  = seededRand() > 0.5 ? 1 : -1;
+let stressDir = seededRand() > 0.5 ? 1 : -1;
+
+// Perlin-like noise for organic movement
+let focusNoisePhase  = seededRand() * Math.PI * 2;
+let stressNoisePhase = seededRand() * Math.PI * 2;
+let focusNoiseSpeed  = 0.03 + seededRand() * 0.04;
+let stressNoiseSpeed = 0.02 + seededRand() * 0.035;
+
+// Momentum variables for smoother direction changes
+let focusMomentum  = (seededRand() - 0.5) * 2;
+let stressMomentum = (seededRand() - 0.5) * 1.5;
+
+// Track previous stress for Nura Watch notification
+let prevStress = stressPct;
+let stressWasPastThreshold = stressPct > 60;
 
 function updateVitals(){
-  focusPct+=focusDir*(Math.random()*1.5);
-  stressPct+=stressDir*(Math.random()*0.8);
-  if(focusPct>=96||focusPct<=45) focusDir*=-1;
-  if(stressPct>=75||stressPct<=5) stressDir*=-1;
-  focusPct=Math.max(45,Math.min(96,focusPct));
-  stressPct=Math.max(5,Math.min(75,stressPct));
-  const f=Math.round(focusPct),s=Math.round(stressPct);
+  focusNoisePhase  += focusNoiseSpeed  * (0.7 + seededRand() * 0.6);
+  stressNoisePhase += stressNoiseSpeed * (0.7 + seededRand() * 0.6);
+
+  // Multi-layered noise: fast micro-jitter + slow drift + occasional spikes
+  const focusDrift   = Math.sin(focusNoisePhase) * 1.4 + Math.sin(focusNoisePhase * 2.3) * 0.6;
+  const stressDrift  = Math.sin(stressNoisePhase) * 1.1 + Math.sin(stressNoisePhase * 1.7) * 0.5;
+  const focusJitter  = (seededRand() - 0.5) * 2.8;
+  const stressJitter = (seededRand() - 0.5) * 2.0;
+
+  // Momentum: randomly shift direction with variable probability
+  if(seededRand() < 0.08) focusMomentum  += (seededRand() - 0.5) * 4;
+  if(seededRand() < 0.07) stressMomentum += (seededRand() - 0.5) * 3;
+  focusMomentum  = Math.max(-3, Math.min(3, focusMomentum  * 0.92));
+  stressMomentum = Math.max(-2.5, Math.min(2.5, stressMomentum * 0.93));
+
+  // Occasional large swings (8% chance each tick)
+  const focusSpike  = seededRand() < 0.08 ? (seededRand() - 0.45) * 7 : 0;
+  const stressSpike = seededRand() < 0.08 ? (seededRand() - 0.45) * 5 : 0;
+
+  focusPct  += focusDrift + focusJitter  + focusMomentum  * 0.4 + focusSpike;
+  stressPct += stressDrift + stressJitter + stressMomentum * 0.4 + stressSpike;
+
+  // Clamp and bounce
+  if(focusPct  >= 97 || focusPct  <= 38) focusMomentum  *= -0.7;
+  if(stressPct >= 80 || stressPct <= 4)  stressMomentum *= -0.7;
+  focusPct  = Math.max(38, Math.min(97, focusPct));
+  stressPct = Math.max(4,  Math.min(80, stressPct));
+
+  const f = Math.round(focusPct), s = Math.round(stressPct);
+
+  // Nura Watch threshold notification: only when dropping FROM >60% TO ≤60%
+  if(stressWasPastThreshold && s <= 60){
+    stressWasPastThreshold = false;
+    // Trigger the coming-down notification
+    setTimeout(()=> triggerStressComingDownAlert(f, s), 200);
+  } else if(s > 60){
+    stressWasPastThreshold = true;
+  }
+  prevStress = s;
 
   ['top-focus','dash-focus','stats-focus','fe-focus'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=f+'%'; });
   ['top-stress','dash-stress','stats-stress','fe-stress'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=s+'%'; });
@@ -1338,9 +1796,9 @@ function updateVitals(){
   // health text
   const ht=document.getElementById('nura-health-text');
   if(ht){
-    if(s>55) ht.textContent="⚠️ High cortisol detected. Take slow abdominal breaths or activate Calm Down light mode.";
+    if(s>60) ht.textContent="⚠️ High cortisol detected. Take slow abdominal breaths or activate Calm Down light mode.";
     else if(f>80&&s<25) ht.textContent="🧠 Alpha brainwaves peaked. Optimal deep learning window — stay in the zone.";
-    else if(f<60) ht.textContent="📉 Attention dipping below baseline. Try a short stretch or switch to Break Mode lighting.";
+    else if(f<55) ht.textContent="📉 Attention dipping below baseline. Try a short stretch or switch to Break Mode lighting.";
     else ht.textContent="✅ Vitals normalized. Steady homeostatic balance across neural clusters.";
   }
   applyColorMode(getLightMode(f,s));
@@ -1742,10 +2200,40 @@ function loadLinkHub(){
 }
 
 // ═══════════════════════════════════════════════
-// AI TUTOR — improved Socratic + source popup
+// AI TUTOR — Socratic + multilingual + persistent conversation
+// Supported: English, Danish (Dansk), German (Deutsch), Arabic (العربية)
 // ═══════════════════════════════════════════════
-let chatHistory=[];
-const chatBox=document.getElementById('chat-box');
+
+// Persist conversation history in localStorage
+function saveChatHistory(h){ try{ localStorage.setItem('nura-chat-history', JSON.stringify(h)); }catch(e){} }
+function loadChatHistory(){ try{ return JSON.parse(localStorage.getItem('nura-chat-history')||'[]'); }catch(e){ return []; } }
+
+let chatHistory = loadChatHistory();
+const chatBox = document.getElementById('chat-box');
+
+// Restore existing messages in the chat UI on page load
+(function restoreChatUI(){
+  if(chatHistory.length === 0) return;
+  const ws = document.getElementById('chat-welcome-screen');
+  if(ws) ws.remove();
+  for(let i=0; i<chatHistory.length; i++){
+    const h = chatHistory[i];
+    if(h.role==='user') addMsg('user', h.content);
+    else if(h.role==='assistant') addMsg('ai', h.content);
+  }
+})();
+
+function startNewConversation(){
+  chatHistory = [];
+  saveChatHistory(chatHistory);
+  chatBox.innerHTML = '';
+  const welcome = document.createElement('div');
+  welcome.className = 'chat-welcome-container';
+  welcome.id = 'chat-welcome-screen';
+  const p = JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
+  welcome.innerHTML = `<h1 class="chat-welcome-title" id="welcome-user-text">New conversation started, ${p.name||'Student'}!</h1><p style="color:var(--text2);font-size:13px;max-width:480px;margin:0 auto;line-height:1.7">Ask anything in English, Danish, German, or Arabic.</p>`;
+  chatBox.appendChild(welcome);
+}
 
 async function detectSubject(question){
   try{
@@ -1797,6 +2285,16 @@ async function sendMsg(){
 
   const systemPrompt=`You are Nura Mind, an intelligent Socratic AI tutor for ${p.name||'a student'}, age ${p.age||'17'}.
 
+LANGUAGE DETECTION & RESPONSE RULE (CRITICAL):
+- Detect the language of the user's message automatically.
+- You MUST reply in the EXACT SAME language the user wrote in.
+- Supported languages: English, Danish (Dansk), German (Deutsch), Arabic (العربية)
+- If the user writes in Danish → reply entirely in Danish
+- If the user writes in German → reply entirely in German  
+- If the user writes in Arabic → reply entirely in Arabic, use RTL-appropriate phrasing
+- If the user writes in English → reply in English
+- NEVER switch language mid-response. Your ENTIRE response must be in the detected language.
+
 YOUR ABSOLUTE RULE: NEVER give the direct answer to any question. Instead, always guide the student to figure it out themselves.
 
 HOW TO TEACH (always follow these steps in order):
@@ -1836,6 +2334,7 @@ If no specific external source is relevant, write: SOURCES_JSON: []`;
     if(chatBox.contains(typing)) chatBox.removeChild(typing);
     addMsg('ai',fullReply);
     chatHistory.push({role:'assistant',content:fullReply});
+    saveChatHistory(chatHistory);
 
     // Show source popup
     showSourcePopup(sources);
@@ -1927,74 +2426,117 @@ function neuroFlash(){
 }
 
 // ═══════════════════════════════════════════════
-// FOCUS SESSION TIMER — draggable + minimizable + beep
+// FOCUS SESSION TIMER — background-capable + persistent alarm
+// Uses localStorage timestamps so timer survives tab switching
 // ═══════════════════════════════════════════════
-const PHASES = [
-  {name:'FOCUS',    label:'FOCUS SESSION', minutes:25, cls:'timer-focus'},
-  {name:'BREATHER', label:'BREATHER',      minutes:5,  cls:'timer-breather'},
-  {name:'DEEP WORK',label:'DEEP WORK',     minutes:50, cls:'timer-deep'},
-  {name:'BREATHER', label:'BREATHER',      minutes:10, cls:'timer-breather'},
-];
-let ftPhaseIdx=0, ftSecsLeft=PHASES[0].minutes*60, ftRunning=false, ftInterval=null, ftMinimized=false;
+let ftCustomLabel = 'Focus Session';
+let ftTotalSecs   = 25 * 60;   // what the timer was set to
+let ftSecsLeft    = 25 * 60;
+let ftRunning     = false;
+let ftInterval    = null;
+let ftMinimized   = false;
+let ftStartedAt   = null;      // epoch ms when timer last started
+let ftSecsAtStart = 25 * 60;   // ftSecsLeft value when timer last started
+let alarmInterval = null;
+let alarmCtx      = null;
 
-function playBeep(){
+// Save / restore timer state across page reloads
+function ftSaveState(){
+  localStorage.setItem('nura-ft', JSON.stringify({
+    customLabel: ftCustomLabel, totalSecs: ftTotalSecs,
+    secsLeft: ftSecsLeft, running: ftRunning,
+    startedAt: ftStartedAt, secsAtStart: ftSecsAtStart
+  }));
+}
+
+function ftRestoreState(){
   try{
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    const seq = [{f:880,t:0,d:.15},{f:1100,t:.18,d:.15},{f:880,t:.36,d:.3}];
-    seq.forEach(({f,t,d})=>{
-      const o=ctx.createOscillator(), g=ctx.createGain();
-      o.connect(g); g.connect(ctx.destination);
-      o.frequency.value=f; o.type='sine';
-      g.gain.setValueAtTime(0,ctx.currentTime+t);
-      g.gain.linearRampToValueAtTime(.35,ctx.currentTime+t+.02);
-      g.gain.linearRampToValueAtTime(0,ctx.currentTime+t+d);
-      o.start(ctx.currentTime+t); o.stop(ctx.currentTime+t+d+.05);
-    });
-    setTimeout(()=>ctx.close(), 1500);
+    const s = JSON.parse(localStorage.getItem('nura-ft')||'{}');
+    if(!s.totalSecs) return;
+    ftCustomLabel = s.customLabel || 'Focus Session';
+    ftTotalSecs   = s.totalSecs;
+    ftSecsAtStart = s.secsAtStart || s.secsLeft;
+    if(s.running && s.startedAt){
+      // Calculate elapsed while tab was away
+      const elapsed = Math.floor((Date.now() - s.startedAt) / 1000);
+      ftSecsLeft = Math.max(0, s.secsLeft - elapsed);
+      ftStartedAt = s.startedAt;
+      ftRunning = true;
+    } else {
+      ftSecsLeft = s.secsLeft || s.totalSecs;
+      ftRunning = false;
+    }
   } catch(e){}
 }
 
-function setFocusTimerPhase(idx){
-  ftPhaseIdx = idx % PHASES.length;
-  const p = PHASES[ftPhaseIdx];
-  ftSecsLeft = p.minutes * 60;
-  const wrap = document.getElementById('focus-timer-wrap');
-  wrap.className = 'focus-timer-wrap ' + p.cls + (ftMinimized?' ft-minimized':'');
-  document.getElementById('ft-phase').textContent = p.name;
-  document.getElementById('ft-label').textContent = p.label;
-  renderFtTime();
+function applyFocusPreset(minutes, label){
+  if(ftRunning){ clearInterval(ftInterval); ftRunning=false; }
+  ftCustomLabel = label;
+  ftTotalSecs   = minutes * 60;
+  ftSecsLeft    = minutes * 60;
+  ftStartedAt   = null;
+  document.getElementById('ft-play-btn').textContent = '▶ Start';
+  document.getElementById('ft-phase').textContent = label.toUpperCase();
+  document.getElementById('ft-label').textContent  = label.toUpperCase();
+  renderFtTime(); ftSaveState();
+}
+
+function applyCustomFocusTime(){
+  const mEl = document.getElementById('ft-custom-min');
+  const sEl = document.getElementById('ft-custom-sec');
+  const mins = parseInt(mEl.value)||0;
+  const secs = parseInt(sEl.value)||0;
+  const total = mins*60 + secs;
+  if(total <= 0) return;
+  if(ftRunning){ clearInterval(ftInterval); ftRunning=false; }
+  ftCustomLabel = `${mins}:${String(secs).padStart(2,'0')} Custom`;
+  ftTotalSecs   = total;
+  ftSecsLeft    = total;
+  ftStartedAt   = null;
+  document.getElementById('ft-play-btn').textContent = '▶ Start';
+  document.getElementById('ft-phase').textContent = 'CUSTOM';
+  document.getElementById('ft-label').textContent  = 'CUSTOM TIMER';
+  mEl.value=''; sEl.value='';
+  renderFtTime(); ftSaveState();
 }
 
 function renderFtTime(){
   const m = String(Math.floor(ftSecsLeft/60)).padStart(2,'0');
   const s = String(ftSecsLeft%60).padStart(2,'0');
   document.getElementById('ft-time').textContent = m+':'+s;
+  // Update topbar badge too
+  const badge = document.getElementById('top-timer-val');
+  if(badge && ftRunning) badge.textContent = m+':'+s;
 }
 
 function toggleFocusTimer(){
   ftRunning = !ftRunning;
   document.getElementById('ft-play-btn').textContent = ftRunning ? '⏸ Pause' : '▶ Resume';
   if(ftRunning){
+    ftStartedAt   = Date.now();
+    ftSecsAtStart = ftSecsLeft;
     ftInterval = setInterval(()=>{
-      ftSecsLeft--;
-      renderFtTime();
+      // Recompute from wall clock so background drift is corrected
+      const elapsed = Math.floor((Date.now() - ftStartedAt) / 1000);
+      ftSecsLeft = Math.max(0, ftSecsAtStart - elapsed);
+      renderFtTime(); ftSaveState();
       if(ftSecsLeft <= 0){
-        clearInterval(ftInterval);
-        ftRunning = false;
-        playBeep();
-        setFocusTimerPhase(ftPhaseIdx + 1);
-        document.getElementById('ft-play-btn').textContent = '▶ Start';
+        clearInterval(ftInterval); ftRunning = false;
+        ftSaveState();
+        triggerAlarm();
       }
-    }, 1000);
+    }, 500);
   } else {
     clearInterval(ftInterval);
+    ftSaveState();
   }
 }
 
-function skipFocusPhase(){
-  clearInterval(ftInterval); ftRunning = false;
-  document.getElementById('ft-play-btn').textContent = '▶ Start';
-  setFocusTimerPhase(ftPhaseIdx + 1);
+function resetFocusTimer(){
+  clearInterval(ftInterval); ftRunning=false;
+  ftSecsLeft = ftTotalSecs; ftStartedAt=null;
+  document.getElementById('ft-play-btn').textContent='▶ Start';
+  renderFtTime(); ftSaveState();
 }
 
 function minimizeFocusTimer(){
@@ -2002,6 +2544,54 @@ function minimizeFocusTimer(){
   const wrap = document.getElementById('focus-timer-wrap');
   wrap.classList.toggle('ft-minimized', ftMinimized);
   document.getElementById('ft-min-btn').textContent = ftMinimized ? '□' : '─';
+}
+
+function openFocusTimer(){
+  const wrap = document.getElementById('focus-timer-wrap');
+  wrap.style.display = '';
+  if(ftMinimized){ ftMinimized=false; wrap.classList.remove('ft-minimized'); document.getElementById('ft-min-btn').textContent='─'; }
+}
+
+function closeFocusTimer(){
+  clearInterval(ftInterval); ftRunning=false;
+  document.getElementById('focus-timer-wrap').style.display='none';
+  ftSaveState();
+}
+
+// ── Alarm: beeps every 2s for 30s or until stopped ──
+function playBeep(ctx){
+  const seq = [{f:880,t:0,d:.15},{f:1100,t:.18,d:.15},{f:880,t:.36,d:.3}];
+  seq.forEach(({f,t,d})=>{
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value=f; o.type='sine';
+    g.gain.setValueAtTime(0,ctx.currentTime+t);
+    g.gain.linearRampToValueAtTime(.4,ctx.currentTime+t+.02);
+    g.gain.linearRampToValueAtTime(0,ctx.currentTime+t+d);
+    o.start(ctx.currentTime+t); o.stop(ctx.currentTime+t+d+.05);
+  });
+}
+
+let alarmEndTime = 0;
+function triggerAlarm(){
+  const overlay = document.getElementById('ft-alarm-overlay');
+  overlay.style.display = 'flex';
+  document.getElementById('ft-alarm-title').textContent = 'TIME\'S UP!';
+  document.getElementById('ft-alarm-msg').textContent = `"${ftCustomLabel}" timer has ended.`;
+  alarmEndTime = Date.now() + 30000; // beep for 30s
+  try{ alarmCtx = new (window.AudioContext||window.webkitAudioContext)(); } catch(e){}
+  alarmInterval = setInterval(()=>{
+    if(Date.now() >= alarmEndTime){ stopAlarm(); return; }
+    try{ if(alarmCtx) playBeep(alarmCtx); } catch(e){}
+  }, 2000);
+  // First beep immediately
+  try{ if(alarmCtx) playBeep(alarmCtx); } catch(e){}
+}
+
+function stopAlarm(){
+  clearInterval(alarmInterval); alarmInterval=null;
+  if(alarmCtx){ try{alarmCtx.close();}catch(e){} alarmCtx=null; }
+  document.getElementById('ft-alarm-overlay').style.display='none';
 }
 
 // Make focus timer draggable
@@ -2259,16 +2849,26 @@ Write ONLY the sentence, nothing else.`;
     smallPopupVisible = true;
     document.getElementById('nw-alert-badge').style.display = 'none';
 
-    callClaude(buildPrompt(f, s, false)).then(reply => {
-      const {message, tips} = parseReply(reply);
-      document.getElementById('nw-popup-body').textContent = message;
-      if (tips.length) document.getElementById('nw-popup-tips').innerHTML =
-        tips.map(t=>`<div class="nw-tip"><span class="nw-tip-icon">${t.icon}</span>${t.text}</div>`).join('');
+    callClaude(buildSmallPopupContent(f, s)).then(reply => {
+      if(s >= 60){
+        const {message, tips} = parseReply(reply);
+        document.getElementById('nw-popup-body').textContent = message;
+        if (tips.length) document.getElementById('nw-popup-tips').innerHTML =
+          tips.map(t=>`<div class="nw-tip"><span class="nw-tip-icon">${t.icon}</span>${t.text}</div>`).join('');
+      } else {
+        // No exercises below 60% stress
+        document.getElementById('nw-popup-body').textContent = reply.replace(/^"|"$/g,'').trim();
+        document.getElementById('nw-popup-tips').innerHTML = '';
+      }
     }).catch(() => {
       const {message, tips} = fallbackContent(f, s);
       document.getElementById('nw-popup-body').textContent = message;
-      document.getElementById('nw-popup-tips').innerHTML =
-        tips.map(t=>`<div class="nw-tip"><span class="nw-tip-icon">${t.icon}</span>${t.text}</div>`).join('');
+      if(s >= 60){
+        document.getElementById('nw-popup-tips').innerHTML =
+          tips.map(t=>`<div class="nw-tip"><span class="nw-tip-icon">${t.icon}</span>${t.text}</div>`).join('');
+      } else {
+        document.getElementById('nw-popup-tips').innerHTML = '';
+      }
     });
   }
 
@@ -2337,7 +2937,20 @@ Write ONLY the sentence, nothing else.`;
 
   // ── Vitals check loop ──
   function check(f, s) {
-    if (s > 60 || (s > 55 && f < 55)) { triggerBigAlert(f, s); }
+    if (s > 60) { triggerBigAlert(f, s); }
+  }
+
+  // Only show exercises/tips when stress >= 60%
+  function buildSmallPopupContent(f, s) {
+    if(s >= 60){
+      return callClaude(buildPrompt(f, s, false));
+    } else {
+      // No exercises shown below 60% stress — just an observation
+      return callClaude(`You are Nura Watch. In 1-2 sentences, give a calm neuroscience observation about this state:
+Focus: ${f}% | Stress: ${s}%
+No tips, no exercises — just insight. Example: "Your prefrontal cortex is engaged and stress hormones are at baseline — an ideal state for deep encoding."
+Write ONLY the sentences.`);
+    }
   }
 
   let tickCount = 0;
@@ -2350,8 +2963,25 @@ Write ONLY the sentence, nothing else.`;
     check(f, s);
   }
 
-  return { onVitalsUpdate, closeSmallPopup, snoozeBigAlert, dismissBigAlert, minimizeBigAlert, togglePanel };
+  // ── Stress coming down notification ──
+  function triggerComingDownNotif(f, s) {
+    const existing = document.getElementById('nw-coming-down-notif');
+    if(existing) existing.remove();
+    const notif = document.createElement('div');
+    notif.id = 'nw-coming-down-notif';
+    notif.style.cssText = `position:fixed;bottom:20px;right:20px;z-index:8000;background:var(--bg2);border:1px solid rgba(80,200,120,0.4);border-radius:14px;padding:14px 18px;max-width:280px;box-shadow:0 8px 30px rgba(0,0,0,0.5);animation:fadeIn .3s ease`;
+    notif.innerHTML = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:16px">📉</span><span style="font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:#80e8a0">STRESS EASING</span><button onclick="this.closest('#nw-coming-down-notif').remove()" style="margin-left:auto;background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px">✕</button></div><div style="font-size:12px;color:var(--text2);line-height:1.5">Stress dropped to ${s}% ↓ — your cortisol is settling. Exercises hidden, maintain your calm.</div>`;
+    document.body.appendChild(notif);
+    setTimeout(()=>{ if(notif.parentNode) notif.remove(); }, 8000);
+  }
+
+  return { onVitalsUpdate, closeSmallPopup, snoozeBigAlert, dismissBigAlert, minimizeBigAlert, togglePanel, triggerComingDownNotif, buildSmallPopupContent };
 })();
+
+// Wire stress-coming-down alert from vitals engine
+function triggerStressComingDownAlert(f, s){
+  NuraWatch.triggerComingDownNotif(f, s);
+}
 
 // Global helpers
 function dismissNuraWatch(e) { NuraWatch.closeSmallPopup(e); }
@@ -2421,6 +3051,9 @@ document.addEventListener('click', e => {
 })();
 
 async function initApp(){
+  ftRestoreState();
+  renderFtTime();
+  if(ftRunning) toggleFocusTimer(); // re-engage the interval
   renderSubjectFilters();
   renderNotes('all');
   buildWeek();
@@ -2429,6 +3062,29 @@ async function initApp(){
   loadLinkHub();
   await loadSavedAudio();
 }
+
+// When returning to the tab, resync the timer from wall clock
+document.addEventListener('visibilitychange', ()=>{
+  if(!document.hidden && ftRunning && ftStartedAt){
+    clearInterval(ftInterval);
+    const elapsed = Math.floor((Date.now() - ftStartedAt) / 1000);
+    ftSecsLeft = Math.max(0, ftSecsAtStart - elapsed);
+    if(ftSecsLeft <= 0){
+      ftRunning = false; ftSaveState(); triggerAlarm();
+    } else {
+      // Restart interval from current position
+      ftStartedAt   = Date.now();
+      ftSecsAtStart = ftSecsLeft;
+      ftInterval = setInterval(()=>{
+        const el = Math.floor((Date.now() - ftStartedAt) / 1000);
+        ftSecsLeft = Math.max(0, ftSecsAtStart - el);
+        renderFtTime(); ftSaveState();
+        if(ftSecsLeft <= 0){ clearInterval(ftInterval); ftRunning=false; ftSaveState(); triggerAlarm(); }
+      }, 500);
+    }
+    renderFtTime();
+  }
+});
 
 // Boot — no login required
 window.addEventListener('DOMContentLoaded',()=>{
