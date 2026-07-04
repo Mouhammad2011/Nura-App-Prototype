@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>Nura — Focus · Learn · Glow</title>
-<link rel="icon" type="image/png" href="nura-logo.png">
+  <link rel="icon" type="image/png" href="nura-logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
@@ -1228,7 +1228,61 @@ body.light-theme .pi-theme-switch::after{ left:23px; }
 </style>
 
   <!-- Google Identity Services (for OAuth login) -->
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <!-- Google Identity Services (for One Tap) -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script>
+  // ── Firebase init ──
+  const _fbConfig = {
+    apiKey:            "AIzaSyDaIi_A6IYFkowDq-YYcJFGK-eFxbtx0Ds",
+    authDomain:        "nura-c0a40.firebaseapp.com",
+    projectId:         "nura-c0a40",
+    storageBucket:     "nura-c0a40.firebasestorage.app",
+    messagingSenderId: "527486660710",
+    appId:             "1:527486660710:web:90a2acfe973b19e08d7da7"
+  };
+  firebase.initializeApp(_fbConfig);
+  const _auth = firebase.auth();
+  const _db   = firebase.firestore();
+
+  // ── Save user doc to Firestore ──
+  async function _fbSaveProfile(uid, data){
+    try{ await _db.collection('users').doc(uid).set(data, {merge:true}); }catch(e){ console.warn('Firestore write failed',e); }
+  }
+
+  // ── Load user doc from Firestore ──
+  async function _fbLoadProfile(uid){
+    try{
+      const snap = await _db.collection('users').doc(uid).get();
+      return snap.exists ? snap.data() : {};
+    }catch(e){ console.warn('Firestore read failed',e); return {}; }
+  }
+
+  // ── Listen for auth state changes ──
+  _auth.onAuthStateChanged(async function(user){
+    if(user && !user.isAnonymous){
+      // Signed-in real user — load their Firestore profile
+      const remote = await _fbLoadProfile(user.uid);
+      const merged = Object.assign({
+        name:  user.displayName || 'Student',
+        email: user.email || '',
+        avatar: user.photoURL || '',
+        uid:   user.uid
+      }, remote);
+      localStorage.setItem('nura-user-profile', JSON.stringify(merged));
+      localStorage.removeItem('nura-signed-out');
+      if(typeof hideSignOutGate === 'function') hideSignOutGate();
+      if(typeof renderUserProfile === 'function') renderUserProfile();
+      // Restore API key from Firestore into the input
+      if(remote.groqKey && document.getElementById('api-key-input')){
+        document.getElementById('api-key-input').value = remote.groqKey;
+      }
+    }
+  });
+  </script>
 </head>
 <body>
 
@@ -1242,23 +1296,11 @@ body.light-theme .pi-theme-switch::after{ left:23px; }
     <div class="login-logo">NURA</div>
     <div class="login-sub">focus · learn · glow</div>
 
-    <!-- Google One Tap render target -->
-    <div id="g_id_onload"
-      data-client_id="1058365796413-9p8snbh5t7dkq966a3gm3h7u3jmfqse6.apps.googleusercontent.com"
-      data-context="signin"
-      data-ux_mode="popup"
-      data-callback="authGoogleCallback"
-      data-auto_prompt="false">
-    </div>
-    <div class="g_id_signin"
-      data-type="standard"
-      data-shape="rectangular"
-      data-theme="outline"
-      data-text="signin_with"
-      data-size="large"
-      data-logo_alignment="left"
-      style="margin-top:28px;width:100%;display:flex;justify-content:center">
-    </div>
+    <!-- Google Sign-In button — uses Firebase popup -->
+    <button onclick="authGoogleSignIn()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:28px;background:#fff;color:#1f1f1f;border:1px solid #ddd;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;padding:11px 18px;border-radius:10px;cursor:pointer;transition:box-shadow .2s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.15)'" onmouseout="this.style.boxShadow='none'">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.7 2.5 30.2 0 24 0 14.8 0 6.9 5.4 3 13.3l7.8 6C12.7 13 18 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17z"/><path fill="#FBBC05" d="M10.8 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7L2.5 13.3A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.5 10.7l8.3-6z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.7 2.2-7.7 2.2-6 0-11.1-4-12.9-9.5l-7.9 6.1C6.8 42.5 14.8 48 24 48z"/></svg>
+      Sign in with Google
+    </button>
 
     <div class="login-divider">or</div>
 
@@ -2309,10 +2351,23 @@ function icon(name,size=14){ return `<span class="i-wrap" style="display:inline-
 // ═══════════════════════════════════════════════
 // API KEY — stored in localStorage, never hardcoded
 // ═══════════════════════════════════════════════
-function getApiKey(){ return localStorage.getItem('nura-api-key')||''; }
+function getApiKey(){ try{ const p=JSON.parse(localStorage.getItem('nura-user-profile')||'{}'); if(p.groqKey) return p.groqKey; }catch(e){} return localStorage.getItem('nura-api-key')||''; }
 function saveApiKey(){
   const val = document.getElementById('api-key-input').value.trim();
-  if(val) localStorage.setItem('nura-api-key', val);
+  if(val){
+    localStorage.setItem('nura-api-key', val);
+    // Also persist to Firestore so it syncs across devices
+    const user = _auth.currentUser;
+    if(user && typeof _fbSaveProfile === 'function'){
+      _fbSaveProfile(user.uid, { groqKey: val }).catch(()=>{});
+    }
+    // Update local profile cache too
+    try{
+      const p = JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
+      p.groqKey = val;
+      localStorage.setItem('nura-user-profile', JSON.stringify(p));
+    }catch(e){}
+  }
 }
 
 // ═══════════════════════════════════════════════
@@ -2342,46 +2397,62 @@ function hideSignOutGate(){
 
 function logOut(){
   document.getElementById('userDropdown')?.classList.remove('open');
+  _auth.signOut().catch(()=>{});
   localStorage.setItem('nura-signed-out','1');
+  // Clear cached profile but keep local data (notes, music etc)
+  localStorage.removeItem('nura-user-profile');
+  authShowSignIn();
   showSignOutGate();
-  playUiSound('switch');
+  playUiSound && playUiSound('switch');
 }
 
 /* ═══════════════════════════════════════════════
-   AUTH SYSTEM — email/password + Google OAuth
+   AUTH SYSTEM — Firebase Auth (email + Google)
    ═══════════════════════════════════════════════ */
 
-// ── UI helpers ──
 function authShowSignIn(){
   document.getElementById('auth-signin-box').style.display = '';
   document.getElementById('auth-signup-box').style.display = 'none';
-  document.getElementById('auth-error-msg').style.display = 'none';
+  const e = document.getElementById('auth-error-msg');
+  if(e){ e.textContent=''; }
 }
 function authShowSignUp(){
   document.getElementById('auth-signin-box').style.display = 'none';
   document.getElementById('auth-signup-box').style.display = '';
-  document.getElementById('signup-error-msg').style.display = 'none';
+  const e = document.getElementById('signup-error-msg');
+  if(e){ e.textContent=''; }
 }
-
 function _authShowError(id, msg){
   const el = document.getElementById(id);
-  if(el){ el.textContent = msg; el.style.display = 'block'; }
+  if(el){ el.textContent = msg; }
+}
+function _authSetLoading(btnId, loading){
+  const btn = document.getElementById(btnId);
+  if(btn) btn.disabled = loading;
 }
 
-// ── Complete sign-in: load profile into app ──
-function _authComplete(profile){
-  // Merge into nura-user-profile
-  const cur = JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
-  const merged = Object.assign(cur, {
-    name:  profile.name  || cur.name  || 'Student',
-    age:   profile.age   || cur.age   || '',
-    email: profile.email || cur.email || '',
-    avatar: profile.avatar || cur.avatar || ''
-  });
+// ── Called after Firebase confirms sign-in ──
+async function _authComplete(firebaseUser){
+  const uid = firebaseUser.uid;
+  // Load any extra profile data (age, aiScale, groqKey) from Firestore
+  const remote = (typeof _fbLoadProfile === 'function') ? await _fbLoadProfile(uid) : {};
+  const merged = {
+    uid:    uid,
+    name:   remote.name   || firebaseUser.displayName || 'Student',
+    age:    remote.age    || '',
+    email:  firebaseUser.email || '',
+    avatar: firebaseUser.photoURL || '',
+    aiScale: remote.aiScale || '5',
+    groqKey: remote.groqKey || ''
+  };
   localStorage.setItem('nura-user-profile', JSON.stringify(merged));
   localStorage.removeItem('nura-signed-out');
   hideSignOutGate();
   renderUserProfile();
+  // Restore API key into input
+  if(merged.groqKey && document.getElementById('api-key-input')){
+    document.getElementById('api-key-input').value = merged.groqKey;
+  }
   playUiSound && playUiSound('confirm');
 }
 
@@ -2389,13 +2460,19 @@ function _authComplete(profile){
 function authEmailSignIn(){
   const email = (document.getElementById('auth-email')?.value||'').trim();
   const pass  = (document.getElementById('auth-password')?.value||'').trim();
-  if(!email || !pass){ _authShowError('auth-error-msg','Please enter your email and password.'); return; }
-  // Look up local accounts
-  const accounts = JSON.parse(localStorage.getItem('nura-accounts')||'{}');
-  const acct = accounts[email.toLowerCase()];
-  if(!acct){ _authShowError('auth-error-msg','No account found with that email. Sign up first.'); return; }
-  if(acct.password !== btoa(pass)){ _authShowError('auth-error-msg','Incorrect password.'); return; }
-  _authComplete(acct);
+  if(!email || !pass){ _authShowError('auth-error-msg','Enter your email and password.'); return; }
+  _authShowError('auth-error-msg','Signing in...');
+  _auth.signInWithEmailAndPassword(email, pass)
+    .then(cred => _authComplete(cred.user))
+    .catch(err => {
+      const msgs = {
+        'auth/user-not-found':  'No account with that email. Sign up first.',
+        'auth/wrong-password':  'Incorrect password.',
+        'auth/invalid-email':   'Invalid email address.',
+        'auth/too-many-requests': 'Too many attempts. Try again later.'
+      };
+      _authShowError('auth-error-msg', msgs[err.code] || err.message);
+    });
 }
 
 // ── Create account ──
@@ -2404,41 +2481,53 @@ function authCreateAccount(){
   const age   = (document.getElementById('signup-age')?.value||'').trim();
   const email = (document.getElementById('signup-email')?.value||'').trim();
   const pass  = (document.getElementById('signup-password')?.value||'').trim();
-  if(!name)  { _authShowError('signup-error-msg','Please enter your name.'); return; }
-  if(!age)   { _authShowError('signup-error-msg','Please enter your age.'); return; }
-  if(!email || !email.includes('@')){ _authShowError('signup-error-msg','Please enter a valid email.'); return; }
-  if(pass.length < 6){ _authShowError('signup-error-msg','Password must be at least 6 characters.'); return; }
-  const accounts = JSON.parse(localStorage.getItem('nura-accounts')||'{}');
-  if(accounts[email.toLowerCase()]){ _authShowError('signup-error-msg','An account with this email already exists.'); return; }
-  const acct = { name, age, email, password: btoa(pass), avatar: '' };
-  accounts[email.toLowerCase()] = acct;
-  localStorage.setItem('nura-accounts', JSON.stringify(accounts));
-  _authComplete(acct);
+  if(!name)  { _authShowError('signup-error-msg','Enter your name.'); return; }
+  if(!age)   { _authShowError('signup-error-msg','Enter your age.'); return; }
+  if(!email || !email.includes('@')){ _authShowError('signup-error-msg','Enter a valid email.'); return; }
+  if(pass.length < 6){ _authShowError('signup-error-msg','Password needs 6+ characters.'); return; }
+  _authShowError('signup-error-msg','Creating account...');
+  _auth.createUserWithEmailAndPassword(email, pass)
+    .then(async cred => {
+      // Save name + age to Firestore immediately
+      await cred.user.updateProfile({ displayName: name });
+      if(typeof _fbSaveProfile === 'function'){
+        await _fbSaveProfile(cred.user.uid, { name, age, email });
+      }
+      return _authComplete(cred.user);
+    })
+    .catch(err => {
+      const msgs = {
+        'auth/email-already-in-use': 'An account with this email already exists.',
+        'auth/invalid-email':        'Invalid email address.',
+        'auth/weak-password':        'Password is too weak.'
+      };
+      _authShowError('signup-error-msg', msgs[err.code] || err.message);
+    });
 }
 
-// ── Google One Tap callback (called by Google's library after sign-in) ──
-// This function name must match data-callback="authGoogleCallback" on the div
-window.authGoogleCallback = function(response){
-  try{
-    // Decode the JWT credential Google returns (base64url middle segment)
-    const base64 = response.credential.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
-    const payload = JSON.parse(atob(base64));
-    _authComplete({
-      name:   payload.name || payload.given_name || 'Student',
-      email:  payload.email || '',
-      avatar: payload.picture || '',
-      age:    '',
-      provider: 'google'
+// ── Google Sign-In (popup) ──
+function authGoogleSignIn(){
+  const provider = new firebase.auth.GoogleAuthProvider();
+  _auth.signInWithPopup(provider)
+    .then(cred => _authComplete(cred.user))
+    .catch(err => {
+      if(err.code !== 'auth/popup-closed-by-user'){
+        _authShowError('auth-error-msg', 'Google sign-in failed: ' + err.message);
+      }
     });
-  }catch(e){
-    _authShowError('auth-error-msg','Google Sign-In failed — please try Email/Password.');
-  }
+}
+
+// ── Google One Tap callback (fallback for the div-rendered button) ──
+window.authGoogleCallback = function(response){
+  const cred = firebase.auth.GoogleAuthProvider.credential(response.credential);
+  _auth.signInWithCredential(cred)
+    .then(result => _authComplete(result.user))
+    .catch(() => _authShowError('auth-error-msg','Google Sign-In failed.'));
 };
 
 // ── Guest mode ──
 function authContinueAsGuest(){
   const existing = JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
-  // Only set guest flag if there is no real account already
   if(!existing.email){
     localStorage.setItem('nura-user-profile', JSON.stringify({
       name: 'Guest', age: '', email: '', isGuest: true
@@ -2671,6 +2760,11 @@ function saveUserProfile(){
   const cur = JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
   cur.name=name; cur.age=age; cur.aiScale=scale;
   localStorage.setItem('nura-user-profile', JSON.stringify(cur));
+  // Sync to Firestore
+  const user = _auth?.currentUser;
+  if(user && typeof _fbSaveProfile === 'function'){
+    _fbSaveProfile(user.uid, {name, age, aiScale: scale}).catch(()=>{});
+  }
   document.getElementById('scale-indicator').textContent=scale;
   const w=document.getElementById('welcome-user-text');
   if(w) w.textContent=`What do you want to learn today, ${name}?`;
