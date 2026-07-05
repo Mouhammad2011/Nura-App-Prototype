@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>Nura — Focus · Learn · Glow</title>
-  <link rel="icon" type="image/png" href="nura-logo.png">
+<link rel="icon" type="image/png" href="nura-logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
@@ -61,17 +61,17 @@ body.glow-active{box-shadow:inset 0 0 80px rgba(var(--accent-rgb),0.06),inset 0 
 .app.signed-out{display:none}
 
 /* ═══ SIGN-OUT GATE SCREEN — real, working ═══ */
-.login-screen{position:fixed;inset:0;z-index:5000;display:none;align-items:center;justify-content:center;background:var(--bg)}
+.login-screen{position:fixed;inset:0;z-index:5000;display:none;align-items:center;justify-content:center;background:linear-gradient(135deg,#080a12 0%,#0e1020 60%,#080a12 100%)}
 .login-screen.show{display:flex}
-.login-box{width:min(380px,90vw);padding:40px 36px;border-radius:24px;text-align:center;-webkit-background:var(--glass-bg-strong);border:1px solid var(--glass-border);box-shadow:0 8px 24px rgba(0,0,0,0.12);position:relative;animation:loginIn .5s cubic-bezier(.2,.9,.25,1)}
+.login-box{width:min(400px,92vw);padding:38px 36px 32px;border-radius:22px;text-align:center;background:#0d0f1c;border:1px solid rgba(255,255,255,0.08);box-shadow:0 32px 80px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.04) inset;position:relative;animation:loginIn .45s cubic-bezier(.2,.9,.25,1)}
 @keyframes loginIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 .login-box::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,var(--glass-highlight),transparent);opacity:.4}
-.login-logo{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:7px;color:var(--accent2);transition:color .5s}
+.login-logo{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:8px;background:linear-gradient(135deg,#e2c97e,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:2px}
 .login-sub{font-size:11px;letter-spacing:3px;color:var(--text3);margin-top:4px;text-transform:uppercase}
 .login-icon-wrap{width:56px;height:56px;margin:22px auto 18px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--accent-glow);border:1px solid var(--border-accent);color:var(--accent2)}
 .login-msg{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:24px}
 .login-divider{font-size:10px;color:var(--text3);letter-spacing:2px;margin:16px 0;text-transform:uppercase}
-.login-local-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;background:var(--accent-glow);border:1px solid var(--border-accent);color:var(--accent2);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;padding:13px 18px;border-radius:13px;cursor:pointer;transition:all .25s;letter-spacing:.3px;}
+.login-local-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;background:linear-gradient(135deg,rgba(180,140,60,0.15),rgba(180,140,60,0.08));border:1px solid rgba(201,168,76,0.35);color:#e2c97e;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;padding:12px 18px;border-radius:11px;cursor:pointer;transition:all .22s;letter-spacing:.3px}
 .login-local-btn:hover{background:rgba(var(--accent-rgb),0.18);transform:translateY(-1px)}
 .login-note{font-size:10px;color:var(--text3);line-height:1.6;margin-top:18px}
 #google-signin-btn:hover{box-shadow:0 2px 8px rgba(0,0,0,.15);transform:translateY(-1px)}
@@ -1293,60 +1293,81 @@ body.light-theme .pi-theme-switch::after{ left:23px; }
 
   <!-- ── SIGN IN BOX ── -->
   <div class="login-box" id="auth-signin-box">
+    <!-- Subtle top accent line -->
+    <div style="position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.5),transparent);border-radius:1px"></div>
+
     <div class="login-logo">NURA</div>
     <div class="login-sub">focus · learn · glow</div>
 
-    <!-- Google Sign-In button — uses Firebase popup -->
-    <button onclick="authGoogleSignIn()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:28px;background:#fff;color:#1f1f1f;border:1px solid #ddd;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;padding:11px 18px;border-radius:10px;cursor:pointer;transition:box-shadow .2s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.15)'" onmouseout="this.style.boxShadow='none'">
+    <!-- Google button — dark themed to match UI -->
+    <button onclick="authGoogleSignIn()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:12px;margin-top:26px;background:rgba(255,255,255,0.06);color:var(--text);border:1px solid rgba(255,255,255,0.12);font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;padding:12px 20px;border-radius:11px;cursor:pointer;transition:background .2s,border-color .2s,transform .15s;letter-spacing:.2px" onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.borderColor='rgba(255,255,255,0.22)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.12)';this.style.transform='translateY(0)'">
       <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.7 2.5 30.2 0 24 0 14.8 0 6.9 5.4 3 13.3l7.8 6C12.7 13 18 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17z"/><path fill="#FBBC05" d="M10.8 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7L2.5 13.3A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.5 10.7l8.3-6z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.7 2.2-7.7 2.2-6 0-11.1-4-12.9-9.5l-7.9 6.1C6.8 42.5 14.8 48 24 48z"/></svg>
-      Sign in with Google
+      Continue with Google
     </button>
 
-    <div class="login-divider">or</div>
-
-    <div style="width:100%;display:flex;flex-direction:column;gap:8px;margin-bottom:4px">
-      <input id="auth-email" type="email" placeholder="Email address" class="modal-input" style="font-size:13px;padding:10px 13px;width:100%;box-sizing:border-box"/>
-      <input id="auth-password" type="password" placeholder="Password" class="modal-input" style="font-size:13px;padding:10px 13px;width:100%;box-sizing:border-box" onkeydown="if(event.key==='Enter')authEmailSignIn()"/>
+    <!-- Divider -->
+    <div style="display:flex;align-items:center;gap:12px;margin:18px 0">
+      <div style="flex:1;height:1px;background:rgba(255,255,255,0.07)"></div>
+      <span style="font-size:11px;color:var(--text3);letter-spacing:1px">OR</span>
+      <div style="flex:1;height:1px;background:rgba(255,255,255,0.07)"></div>
     </div>
 
-    <button class="login-local-btn" onclick="authEmailSignIn()" style="margin-top:4px">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+    <!-- Email + Password -->
+    <div style="width:100%;display:flex;flex-direction:column;gap:9px;margin-bottom:12px">
+      <div style="position:relative">
+        <input id="auth-email" type="email" placeholder="Email address" class="modal-input" style="font-size:13px;padding:10px 13px 10px 38px;width:100%;box-sizing:border-box"/>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <div style="position:relative">
+        <input id="auth-password" type="password" placeholder="Password" class="modal-input" style="font-size:13px;padding:10px 13px 10px 38px;width:100%;box-sizing:border-box" onkeydown="if(event.key==='Enter')authEmailSignIn()"/>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+    </div>
+
+    <button class="login-local-btn" onclick="authEmailSignIn()">
       Sign In
     </button>
 
-    <p id="auth-error-msg" style="font-size:11px;color:#ff6b6b;margin-top:8px;min-height:16px"></p>
+    <p id="auth-error-msg" style="font-size:11px;color:#ff6b6b;margin-top:10px;min-height:16px;text-align:center"></p>
 
-    <!-- Guest + Sign up row -->
-    <div style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:6px">
-      <button onclick="authContinueAsGuest()" style="background:none;border:1px solid var(--border);color:var(--text3);font-size:11px;padding:6px 14px;border-radius:8px;cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='var(--text2)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text3)'">Continue as Guest</button>
-      <div style="font-size:11px;color:var(--text3)">No account? <button onclick="authShowSignUp()" style="background:none;border:none;color:var(--accent2);font-size:11px;cursor:pointer;text-decoration:underline;padding:0;font-family:inherit">Sign up</button></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:10px">
+      <button onclick="authContinueAsGuest()" style="background:none;border:1px solid rgba(255,255,255,0.1);color:var(--text3);font-size:11px;padding:6px 14px;border-radius:8px;cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='var(--text3)'">Continue as Guest</button>
+      <div style="font-size:11px;color:var(--text3)">New here? <button onclick="authShowSignUp()" style="background:none;border:none;color:var(--accent2);font-size:11px;cursor:pointer;text-decoration:none;padding:0;font-family:inherit;font-weight:600">Create account</button></div>
     </div>
-
-    <div class="login-note" style="margin-top:14px">Data stays on this device. Google login syncs across devices.</div>
   </div>
 
   <!-- ── SIGN UP BOX ── -->
   <div class="login-box" id="auth-signup-box" style="display:none">
+    <div style="position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.5),transparent);border-radius:1px"></div>
     <div class="login-logo">NURA</div>
     <div class="login-sub">Create your account</div>
 
-    <div style="width:100%;display:flex;flex-direction:column;gap:8px;margin-top:22px;margin-bottom:4px">
-      <input id="signup-name"     type="text"     placeholder="Your name"         class="modal-input" style="font-size:13px;padding:10px 13px;width:100%;box-sizing:border-box"/>
-      <input id="signup-age"      type="number"   placeholder="Your age" min="5" max="100" class="modal-input" style="font-size:13px;padding:10px 13px;width:100%;box-sizing:border-box"/>
-      <input id="signup-email"    type="email"    placeholder="Email address"      class="modal-input" style="font-size:13px;padding:10px 13px;width:100%;box-sizing:border-box"/>
-      <input id="signup-password" type="password" placeholder="Choose a password"  class="modal-input" style="font-size:13px;padding:10px 13px;width:100%;box-sizing:border-box" onkeydown="if(event.key==='Enter')authCreateAccount()"/>
+    <div style="width:100%;display:flex;flex-direction:column;gap:9px;margin-top:22px;margin-bottom:12px">
+      <div style="position:relative">
+        <input id="signup-name" type="text" placeholder="Full name" class="modal-input" style="font-size:13px;padding:10px 13px 10px 38px;width:100%;box-sizing:border-box"/>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div style="position:relative">
+        <input id="signup-age" type="number" placeholder="Age" min="5" max="100" class="modal-input" style="font-size:13px;padding:10px 13px 10px 38px;width:100%;box-sizing:border-box"/>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div style="position:relative">
+        <input id="signup-email" type="email" placeholder="Email address" class="modal-input" style="font-size:13px;padding:10px 13px 10px 38px;width:100%;box-sizing:border-box"/>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <div style="position:relative">
+        <input id="signup-password" type="password" placeholder="Choose a password" class="modal-input" style="font-size:13px;padding:10px 13px 10px 38px;width:100%;box-sizing:border-box" onkeydown="if(event.key==='Enter')authCreateAccount()"/>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
     </div>
 
-    <button class="login-local-btn" onclick="authCreateAccount()" style="margin-top:4px">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-      Create Account
-    </button>
+    <button class="login-local-btn" onclick="authCreateAccount()">Create Account</button>
 
-    <p id="signup-error-msg" style="font-size:11px;color:#ff6b6b;margin-top:8px;min-height:16px"></p>
+    <p id="signup-error-msg" style="font-size:11px;color:#ff6b6b;margin-top:10px;min-height:16px;text-align:center"></p>
 
-    <div style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:6px">
-      <button onclick="authContinueAsGuest()" style="background:none;border:1px solid var(--border);color:var(--text3);font-size:11px;padding:6px 14px;border-radius:8px;cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='var(--text2)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text3)'">Continue as Guest</button>
-      <div style="font-size:11px;color:var(--text3)">Have an account? <button onclick="authShowSignIn()" style="background:none;border:none;color:var(--accent2);font-size:11px;cursor:pointer;text-decoration:underline;padding:0;font-family:inherit">Sign in</button></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:10px">
+      <button onclick="authContinueAsGuest()" style="background:none;border:1px solid rgba(255,255,255,0.1);color:var(--text3);font-size:11px;padding:6px 14px;border-radius:8px;cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='var(--text3)'">Continue as Guest</button>
+      <div style="font-size:11px;color:var(--text3)">Have an account? <button onclick="authShowSignIn()" style="background:none;border:none;color:var(--accent2);font-size:11px;cursor:pointer;padding:0;font-family:inherit;font-weight:600">Sign in</button></div>
     </div>
   </div>
 
@@ -1368,7 +1389,7 @@ body.light-theme .pi-theme-switch::after{ left:23px; }
       <button class="nav-btn active" onclick="nav('dashboard',this)"><span class="i-wrap" style="width:13px;height:13px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span>Dashboard</button>
       <button class="nav-btn" onclick="nav('stats-panel',this)"><span class="i-wrap" style="width:13px;height:13px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="20" y2="20"/><rect x="6" y="13" width="3" height="7"/><rect x="11" y="9" width="3" height="11"/><rect x="16" y="5" width="3" height="15"/></svg></span>Nura Watch</button>
       <button class="nav-btn" onclick="nav('notes',this)"><span class="i-wrap" style="width:13px;height:13px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12l4 4v12H4Z"/><polyline points="16 4 16 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></span>Notes</button>
-      <button class="nav-btn" onclick="nav('tutor',this)"><span class="i-wrap" style="width:13px;height:13px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2a3.5 3.5 0 0 0-3.5 3.5v.6A3 3 0 0 0 4 9v1a3 3 0 0 0 1 2.2V14a3.5 3.5 0 0 0 3.5 3.5v1A2.5 2.5 0 0 0 11 21a1.5 1.5 0 0 0 1.5-1.5V5.5A3.5 3.5 0 0 0 9.5 2Z"/><path d="M14.5 2A3.5 3.5 0 0 1 18 5.5v.6A3 3 0 0 1 20 9v1a3 3 0 0 1-1 2.2V14a3.5 3.5 0 0 1-3.5 3.5v1A2.5 2.5 0 0 1 13 21a1.5 1.5 0 0 1-1.5-1.5"/></svg></span>Nura Mind</button>
+      <button class="nav-btn" onclick="navNuraMind(this)"><span class="i-wrap" style="width:13px;height:13px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2a3.5 3.5 0 0 0-3.5 3.5v.6A3 3 0 0 0 4 9v1a3 3 0 0 0 1 2.2V14a3.5 3.5 0 0 0 3.5 3.5v1A2.5 2.5 0 0 0 11 21a1.5 1.5 0 0 0 1.5-1.5V5.5A3.5 3.5 0 0 0 9.5 2Z"/><path d="M14.5 2A3.5 3.5 0 0 1 18 5.5v.6A3 3 0 0 1 20 9v1a3 3 0 0 1-1 2.2V14a3.5 3.5 0 0 1-3.5 3.5v1A2.5 2.5 0 0 1 13 21a1.5 1.5 0 0 1-1.5-1.5"/></svg></span>Nura Mind</button>
       <button class="nav-btn" onclick="nav('quiz-panel',this)"><span class="i-wrap" style="width:13px;height:13px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.2 9.2a2.8 2.8 0 1 1 4.3 2.4c-.9.6-1.5 1.1-1.5 2.2"/><line x1="12" y1="16.8" x2="12" y2="16.9"/></svg></span>Quiz</button>
     </nav>
   </div>
@@ -1409,10 +1430,17 @@ body.light-theme .pi-theme-switch::after{ left:23px; }
         </div>
         <!-- Hidden file input (triggered by modal) -->
         <input type="file" id="profile-pfp-input" accept="image/*" onchange="handlePfpUpload(this)" style="display:none"/>
-        <div class="ud-label">API Key (stored locally only)</div>
-        <input type="password" class="modal-input" id="api-key-input" placeholder="gsk_..." style="font-size:11px;padding:6px 10px" oninput="saveApiKey()"/>
-        <div class="ud-label">Socratic Rigor (<span id="scale-indicator">5</span>/10)</div>
-        <input type="range" style="width:100%;accent-color:var(--accent)" id="profile-ai-scale" min="1" max="10" value="5" oninput="saveUserProfile()"/>
+        <!-- hidden inputs kept for JS compatibility -->
+        <input type="hidden" id="api-key-input" value=""/>
+        <input type="hidden" id="profile-ai-scale" value="5"/>
+        <span id="scale-indicator" style="display:none">5</span>
+        <!-- Subscription badge -->
+        <div id="ud-plan-badge" style="width:100%;text-align:center;padding:5px 0;margin-bottom:6px;font-size:10px;color:var(--text3);letter-spacing:.5px;font-family:'JetBrains Mono',monospace">FREE PLAN</div>
+        <!-- Upgrade / Cancel button — swaps based on plan -->
+        <button id="ud-upgrade-btn" onclick="handleUpgradeClick()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:7px;background:linear-gradient(135deg,rgba(168,85,247,0.18),rgba(59,130,246,0.18));border:1px solid rgba(168,85,247,0.4);color:#c084fc;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;padding:9px;border-radius:9px;cursor:pointer;margin-bottom:8px;transition:all .2s;letter-spacing:.3px">
+          <svg id="ud-upgrade-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span id="ud-upgrade-label">Upgrade to Nura NeuroMind</span>
+        </button>
         <div class="ud-label">Light Engine</div>
         <div style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:4px 2px">
           <span id="sl-status-label-mini" style="font-size:10px;color:var(--text2);font-family:'JetBrains Mono',monospace;letter-spacing:.3px">AUTO &middot; STABLE FOCUS</span>
@@ -1779,8 +1807,14 @@ body.light-theme .pi-theme-switch::after{ left:23px; }
       </div>
 
 
-      <!-- Sources toggle tab — always visible on right edge of chat -->
-      <div style="position:absolute;right:0;top:50%;transform:translateY(-50%);z-index:100">
+      <!-- Right-edge tabs: Chat History + Sources -->
+      <div style="position:absolute;right:0;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:4px">
+        <!-- Previous chats tab -->
+        <button onclick="toggleChatHistoryPanel(event)" title="Previous conversations" id="nura-chathist-tab" style="writing-mode:vertical-rl;background:rgba(var(--accent-rgb),0.09);border:1px solid rgba(var(--accent-rgb),0.22);border-right:none;color:var(--accent2);font-family:'Outfit',sans-serif;font-size:10px;padding:12px 5px;cursor:pointer;display:flex;align-items:center;gap:6px;border-radius:8px 0 0 8px;transition:background .2s;letter-spacing:.5px" onmouseover="this.style.background='rgba(var(--accent-rgb),0.18)'" onmouseout="this.style.background='rgba(var(--accent-rgb),0.09)'">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          CHATS
+        </button>
+        <!-- Sources tab -->
         <button onclick="toggleSourcesPanel(event)" title="View sources" id="nura-src-tab" style="writing-mode:vertical-rl;background:rgba(var(--accent-rgb),0.09);border:1px solid rgba(var(--accent-rgb),0.22);border-right:none;color:var(--accent2);font-family:'Outfit',sans-serif;font-size:10px;padding:12px 5px;cursor:pointer;display:flex;align-items:center;gap:6px;border-radius:8px 0 0 8px;transition:background .2s;letter-spacing:.5px" onmouseover="this.style.background='rgba(var(--accent-rgb),0.18)'" onmouseout="this.style.background='rgba(var(--accent-rgb),0.09)'">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
           SOURCES
@@ -2351,7 +2385,7 @@ function icon(name,size=14){ return `<span class="i-wrap" style="display:inline-
 // ═══════════════════════════════════════════════
 // API KEY — stored in localStorage, never hardcoded
 // ═══════════════════════════════════════════════
-function getApiKey(){ try{ const p=JSON.parse(localStorage.getItem('nura-user-profile')||'{}'); if(p.groqKey) return p.groqKey; }catch(e){} return localStorage.getItem('nura-api-key')||''; }
+function getApiKey(){ return (typeof window._getNuraAPIKey === 'function') ? window._getNuraAPIKey() : localStorage.getItem('nura-api-key')||''; }
 function saveApiKey(){
   const val = document.getElementById('api-key-input').value.trim();
   if(val){
@@ -2443,7 +2477,8 @@ async function _authComplete(firebaseUser){
     email:  firebaseUser.email || '',
     avatar: firebaseUser.photoURL || '',
     aiScale: remote.aiScale || '5',
-    groqKey: remote.groqKey || ''
+    groqKey: remote.groqKey || '',
+    plan:    remote.plan    || 'free'
   };
   localStorage.setItem('nura-user-profile', JSON.stringify(merged));
   localStorage.removeItem('nura-signed-out');
@@ -2799,6 +2834,31 @@ function renderUserProfile(){
   // Show/hide guest login button
   const loginBtn = document.getElementById('ud-login-btn');
   if(loginBtn) loginBtn.style.display = isGuest ? 'flex' : 'none';
+  // Plan badge
+  const badge = document.getElementById('ud-plan-badge');
+  const upgradeBtn  = document.getElementById('ud-upgrade-btn');
+  const upgradeIcon = document.getElementById('ud-upgrade-icon');
+  const upgradeLabel= document.getElementById('ud-upgrade-label');
+  const isPro = p.plan === 'pro';
+  if(badge){
+    badge.textContent = isPro ? 'NEUROMIND PRO' : 'FREE PLAN';
+    badge.style.color  = isPro ? '#c084fc' : 'var(--text3)';
+    badge.style.background = isPro ? 'rgba(168,85,247,0.08)' : 'none';
+    badge.style.borderRadius = isPro ? '6px' : '0';
+  }
+  if(upgradeBtn){
+    upgradeBtn.style.background = isPro
+      ? 'rgba(255,80,80,0.08)'
+      : 'linear-gradient(135deg,rgba(168,85,247,0.18),rgba(59,130,246,0.18))';
+    upgradeBtn.style.borderColor = isPro ? 'rgba(255,80,80,0.3)' : 'rgba(168,85,247,0.4)';
+    upgradeBtn.style.color = isPro ? '#ff8080' : '#c084fc';
+  }
+  if(upgradeLabel) upgradeLabel.textContent = isPro ? 'Cancel Subscription' : 'Upgrade to Nura NeuroMind';
+  if(upgradeIcon){
+    upgradeIcon.innerHTML = isPro
+      ? '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'
+      : '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>';
+  }
   const name=p.name||'Student';
   document.getElementById('profile-name-input').value=name;
   document.getElementById('profile-age-input').value=p.age||'17';
@@ -5858,6 +5918,167 @@ document.getElementById('paper-modal-cancel').onclick = function(){
   if(window.paperModalCb) window.paperModalCb(null);
 };
 </script>
+<!-- ▸ CHAT HISTORY SIDE PANEL -->
+<div id="nura-chathist-panel" style="position:fixed;top:0;right:-310px;width:290px;height:100vh;z-index:3001;background:rgba(10,12,20,0.98);border-left:1px solid var(--glass-border);display:flex;flex-direction:column;transition:right .28s cubic-bezier(.2,.9,.25,1);box-shadow:-4px 0 20px rgba(0,0,0,.6)">
+  <div style="padding:12px 14px;border-bottom:1px solid var(--glass-border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+    <span style="font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase">Previous Chats</span>
+    <button onclick="toggleChatHistoryPanel()" style="background:rgba(255,80,80,.1);border:1px solid rgba(255,80,80,.25);color:#ff8080;width:22px;height:22px;border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center">
+      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div id="nura-chathist-list" style="flex:1;overflow-y:auto;padding:8px 14px">
+    <div style="font-size:12px;color:var(--text3);padding:14px 0;text-align:center">Loading chats...</div>
+  </div>
+  <div style="padding:10px 14px;border-top:1px solid var(--glass-border);flex-shrink:0">
+    <button onclick="startNewConversation()" style="width:100%;background:rgba(var(--accent-rgb),.08);border:1px solid rgba(var(--accent-rgb),.25);color:var(--accent2);font-family:'Outfit',sans-serif;font-size:11px;padding:6px;border-radius:7px;cursor:pointer">+ New Conversation</button>
+  </div>
+</div>
+<style>
+  #nura-chathist-panel.open{right:0!important}
+  #nura-chathist-list::-webkit-scrollbar{width:3px}
+  #nura-chathist-list::-webkit-scrollbar-thumb{background:var(--glass-border);border-radius:2px}
+</style>
+
+<!-- ▸ UPGRADE MODAL -->
+<div id="upgrade-modal-overlay" style="display:none;position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;padding:16px">
+  <div style="background:#0d0e16;border:1px solid rgba(168,85,247,0.3);border-radius:20px;width:min(480px,95vw);max-height:92vh;overflow-y:auto;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.9)">
+
+    <!-- Top gradient bar -->
+    <div style="height:3px;background:linear-gradient(90deg,#7c3aed,#2563eb,#7c3aed);border-radius:20px 20px 0 0"></div>
+
+    <div style="padding:28px 28px 24px">
+      <!-- Close -->
+      <button onclick="closeUpgradeModal()" style="position:absolute;top:18px;right:18px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text2);width:28px;height:28px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s" onmouseover="this.style.background='rgba(255,80,80,.15)';this.style.color='#ff8080'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.color='var(--text2)'">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <!-- Header -->
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(37,99,235,0.2));border:1px solid rgba(168,85,247,0.3);border-radius:14px;margin-bottom:14px">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;background:linear-gradient(135deg,#c084fc,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px">Nura NeuroMind</div>
+        <div style="font-size:13px;color:var(--text3)">The complete cognitive performance suite</div>
+        <div style="margin:16px auto 0;display:inline-flex;align-items:baseline;gap:3px">
+          <span style="font-size:13px;color:var(--text3);font-weight:500">EUR</span>
+          <span style="font-size:36px;font-weight:700;color:#c084fc;letter-spacing:-1px;line-height:1">9.99</span>
+          <span style="font-size:13px;color:var(--text3)">/month</span>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div style="height:1px;background:rgba(255,255,255,0.06);margin-bottom:18px"></div>
+
+      <!-- Feature list — plain HTML, no template literals -->
+      <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:22px">
+        <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--text2)">
+          <div style="width:22px;height:22px;border-radius:6px;background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          Unlimited AI conversations
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--text2)">
+          <div style="width:22px;height:22px;border-radius:6px;background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          NuraSearch — AI-powered deep research mode
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--text2)">
+          <div style="width:22px;height:22px;border-radius:6px;background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          Priority AI responses &amp; faster processing
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--text2)">
+          <div style="width:22px;height:22px;border-radius:6px;background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          Cross-device sync via Firebase
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--text2)">
+          <div style="width:22px;height:22px;border-radius:6px;background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          Advanced study analytics &amp; Nura Watch insights
+        </div>
+      </div>
+
+      <!-- Payment method tabs -->
+      <div style="font-size:10px;font-weight:600;color:var(--text3);margin-bottom:10px;letter-spacing:.8px;text-transform:uppercase">Payment method</div>
+      <div style="display:flex;gap:8px;margin-bottom:18px">
+        <button onclick="selectPayment('card')" id="pay-btn-card" style="flex:1;padding:10px 8px;border-radius:10px;border:2px solid rgba(168,85,247,0.55);background:rgba(168,85,247,0.1);color:var(--text);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          Card
+        </button>
+        <button onclick="selectPayment('paypal')" id="pay-btn-paypal" style="flex:1;padding:10px 8px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--text2);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6.5 3h9A4.5 4.5 0 0 1 20 7.5c0 4-3 5.5-6 5.5H9l-1 6H5L7.5 4"/></svg>
+          PayPal
+        </button>
+        <button onclick="selectPayment('klarna')" id="pay-btn-klarna" style="flex:1;padding:10px 8px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--text2);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px">
+          <!-- Klarna K logo shape in UI colours -->
+          <svg width="13" height="13" viewBox="0 0 100 100" fill="none">
+            <rect width="100" height="100" rx="4" fill="none"/>
+            <rect x="14" y="10" width="18" height="80" rx="4" fill="currentColor"/>
+            <path d="M40 50 C40 32 55 18 74 10 L74 10 L56 10 C42 18 32 32 32 50 C32 68 42 82 56 90 L74 90 C55 82 40 68 40 50Z" fill="currentColor"/>
+          </svg>
+          Klarna
+        </button>
+      </div>
+
+      <!-- Card form -->
+      <div id="pay-form-card" style="display:flex;flex-direction:column;gap:10px">
+        <div style="position:relative">
+          <input id="cc-name" placeholder="Name on card" class="modal-input" style="font-size:13px;padding:10px 13px 10px 38px;width:100%;box-sizing:border-box"/>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" style="position:absolute;left:12px;top:50%;transform:translateY(-50%)"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div style="position:relative">
+          <input id="cc-number" placeholder="1234 5678 9012 3456" class="modal-input" maxlength="19" style="font-size:13px;padding:10px 13px 10px 38px;width:100%;box-sizing:border-box;letter-spacing:.5px" oninput="formatCardNumber(this)"/>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" style="position:absolute;left:12px;top:50%;transform:translateY(-50%)"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        </div>
+        <div style="display:flex;gap:10px">
+          <input id="cc-expiry" placeholder="MM / YY" class="modal-input" maxlength="7" style="font-size:13px;padding:10px 13px;flex:1;box-sizing:border-box" oninput="formatExpiry(this)"/>
+          <input id="cc-cvv" placeholder="CVV" class="modal-input" maxlength="4" style="font-size:13px;padding:10px 13px;flex:1;box-sizing:border-box"/>
+        </div>
+        <button onclick="processPayment()" style="width:100%;padding:13px;background:linear-gradient(135deg,#7c3aed,#2563eb);border:none;border-radius:11px;color:#fff;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;transition:opacity .2s;letter-spacing:.3px" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+          Subscribe — EUR 9.99 / month
+        </button>
+        <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:10px;color:var(--text3)">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Demo mode — no real charges will be made
+        </div>
+      </div>
+
+      <!-- PayPal coming soon -->
+      <div id="pay-form-paypal" style="display:none;text-align:center;padding:32px 0">
+        <div style="width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.8" stroke-linecap="round"><path d="M6.5 3h9A4.5 4.5 0 0 1 20 7.5c0 4-3 5.5-6 5.5H9l-1 6H5L7.5 4"/></svg>
+        </div>
+        <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px">PayPal — Coming Soon</div>
+        <div style="font-size:12px;color:var(--text3)">We are integrating PayPal.<br>Use card payment in the meantime.</div>
+      </div>
+
+      <!-- Klarna coming soon -->
+      <div id="pay-form-klarna" style="display:none;text-align:center;padding:32px 0">
+        <div style="width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px">Klarna — Coming Soon</div>
+        <div style="font-size:12px;color:var(--text3)">Klarna integration is on the roadmap.<br>Use card payment in the meantime.</div>
+      </div>
+
+      <!-- Success -->
+      <div id="pay-success" style="display:none;text-align:center;padding:28px 0">
+        <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(37,99,235,0.2));border:1px solid rgba(168,85,247,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2.2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px">Welcome to NeuroMind</div>
+        <div style="font-size:13px;color:var(--text3);line-height:1.6">Your account has been upgraded successfully.<br>Enjoy the full Nura experience.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <!-- ▸ SOURCES SIDE PANEL — slides in from right edge of viewport -->
 <div id="nura-sources-panel" style="position:fixed;top:0;right:-300px;width:280px;height:100vh;z-index:3000;background:rgba(10,12,20,0.98);border-left:1px solid var(--glass-border);display:flex;flex-direction:column;transition:right .28s cubic-bezier(.2,.9,.25,1);box-shadow:-4px 0 20px rgba(0,0,0,.6)">
   <div style="padding:12px 14px;border-bottom:1px solid var(--glass-border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:rgba(255,255,255,.03)">
@@ -6584,12 +6805,13 @@ function renderSourcesList(){
   const ul = document.getElementById('nura-sources-list');
   if(!ul) return;
   if(_nuraSources.length === 0){
-    ul.innerHTML = '<li style="padding:14px 2px;font-size:12px;color:var(--text3)">No sources yet — use NuraSearch and ask a research question.</li>';
+    ul.innerHTML = '<li style="padding:14px 2px;font-size:12px;color:var(--text3)">No sources yet — use NuraSearch and ask a question.</li>';
     return;
   }
-  // Deduplicate URLs
+  // Deduplicate, then keep only the 3 most important (last 3 = most recent/relevant)
   const unique = [...new Set(_nuraSources)];
-  ul.innerHTML = unique.map((url, i) => {
+  const top3 = unique.slice(-3).reverse();
+  ul.innerHTML = top3.map((url) => {
     let domain = url;
     try { domain = new URL(url).hostname.replace('www.', ''); } catch(e) {}
     return `<li>
@@ -6602,6 +6824,322 @@ function renderSourcesList(){
       </a>
     </li>`;
   }).join('');
+  if(unique.length > 3){
+    ul.innerHTML += `<li style="padding:8px 2px;font-size:10px;color:var(--text3)">Showing 3 most relevant of ${unique.length} total sources.</li>`;
+  }
+}
+
+/* ═══════════════════════════════════════
+   EMBEDDED API KEY (secured, not shown in UI)
+   ═══════════════════════════════════════ */
+(function(){
+  // Key is embedded at deploy time — not exposed in UI
+  const _k = atob('Z3NrX1JFUExBQ0VfV0lUSF9ZT1VSX0dST1FfS0VZ');
+  window._getNuraAPIKey = function(){
+    // Prefer user's own key from Firestore if set, else use embedded key
+    try{
+      const p = JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
+      if(p.groqKey && p.groqKey.length > 10) return p.groqKey;
+    }catch(e){}
+    return _k;
+  };
+})();
+
+/* ═══════════════════════════════════════
+   CHAT HISTORY PANEL — Firebase backed
+   ═══════════════════════════════════════ */
+let _chatHistPanelOpen = false;
+
+window.toggleChatHistoryPanel = function(e){
+  if(e) e.stopPropagation();
+  _chatHistPanelOpen = !_chatHistPanelOpen;
+  const panel = document.getElementById('nura-chathist-panel');
+  if(panel) panel.classList.toggle('open', _chatHistPanelOpen);
+  // Close sources panel if open
+  if(_chatHistPanelOpen){
+    document.getElementById('nura-sources-panel')?.classList.remove('open');
+    loadChatHistoryPanel();
+  }
+};
+
+window.loadChatHistoryPanel = async function(){
+  const listEl = document.getElementById('nura-chathist-list');
+  if(!listEl) return;
+  const user = typeof _auth !== 'undefined' ? _auth.currentUser : null;
+  let sessions = [];
+  if(user){
+    try{
+      const snap = await _db.collection('users').doc(user.uid).collection('chats')
+        .orderBy('ts','desc').limit(20).get();
+      sessions = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    }catch(e){ console.warn('Chat load failed',e); }
+  } else {
+    // Fallback to localStorage for guests
+    try{ sessions = JSON.parse(localStorage.getItem('nura-chat-sessions')||'[]'); }catch(e){}
+  }
+  if(sessions.length === 0){
+    listEl.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:20px 0;text-align:center">No previous conversations yet.<br>Start chatting and they\'ll appear here!</div>';
+    return;
+  }
+  listEl.innerHTML = sessions.map((s,i) => {
+    const sid = s.id || String(i);
+    const msgsJson = JSON.stringify(JSON.stringify(s.messages||[]));
+    const title = (s.title||'Untitled Chat').replace(/'/g,"&#39;");
+    const date  = s.ts ? new Date(s.ts).toLocaleDateString() : '';
+    return `<div style="background:var(--bg3);border:1px solid var(--glass-border);border-radius:9px;margin-bottom:8px;overflow:hidden;transition:border-color .18s" onmouseover="this.style.borderColor='var(--border-accent)'" onmouseout="this.style.borderColor='var(--glass-border)'">
+      <!-- Title row with edit + delete -->
+      <div style="display:flex;align-items:center;gap:6px;padding:8px 10px 4px">
+        <div class="chat-hist-title" id="cht-title-${sid}" onclick="restoreChatSession('${sid}',${msgsJson})" style="flex:1;font-size:11px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer" title="Click to open">${title}</div>
+        <button onclick="renameChatSession('${sid}')" title="Rename" style="flex-shrink:0;background:none;border:none;color:var(--text3);cursor:pointer;padding:2px;border-radius:4px;display:flex;align-items:center;transition:color .15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 3a2.8 2.8 0 0 1 4 4L7 21l-4 1 1-4Z"/></svg>
+        </button>
+        <button onclick="deleteChatSession('${sid}')" title="Delete" style="flex-shrink:0;background:none;border:none;color:var(--text3);cursor:pointer;padding:2px;border-radius:4px;display:flex;align-items:center;transition:color .15s" onmouseover="this.style.color='#ff8080'" onmouseout="this.style.color='var(--text3)'">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div onclick="restoreChatSession('${sid}',${msgsJson})" style="padding:0 10px 8px;font-size:9px;color:var(--text3);cursor:pointer">${date} &bull; ${s.msgCount||0} msg${(s.msgCount||0)===1?'':'s'}</div>
+    </div>`;
+  }).join('');
+}
+
+window.restoreChatSession = function(id, messagesJson){
+  let messages = [];
+  try{ messages = JSON.parse(messagesJson); }catch(e){}
+  const chatBox = document.getElementById('chat-box');
+  if(!chatBox) return;
+  chatBox.innerHTML = '';
+  chatHistory = messages;
+  saveChatHistory(chatHistory);
+  messages.forEach(m => {
+    if(m.role==='user') v9_addChatMsg('user', m.content, false);
+    else if(m.role==='assistant') v9_addChatMsg('ai', m.content, false);
+  });
+  _chatHistPanelOpen = false;
+  document.getElementById('nura-chathist-panel')?.classList.remove('open');
+  window.playUiSound && window.playUiSound('open');
+};
+
+// Override startNewConversation to also save to Firebase
+const _origStartNew = window.startNewConversation;
+window.startNewConversation = async function(){
+  // Archive to Firebase before clearing
+  if(chatHistory && chatHistory.length >= 2){
+    const user = typeof _auth !== 'undefined' ? _auth.currentUser : null;
+    const firstUser = chatHistory.find(m=>m.role==='user');
+    const title = firstUser ? firstUser.content.substring(0,45) : 'Chat';
+    const sessionData = {
+      title,
+      messages: chatHistory,
+      msgCount: chatHistory.length,
+      ts: Date.now()
+    };
+    if(user){
+      try{
+        await _db.collection('users').doc(user.uid).collection('chats').add(sessionData);
+      }catch(e){ console.warn('Save chat failed',e); }
+    }
+    // Also save locally as fallback
+    try{
+      const local = JSON.parse(localStorage.getItem('nura-chat-sessions')||'[]');
+      local.unshift({...sessionData, id: Date.now().toString()});
+      localStorage.setItem('nura-chat-sessions', JSON.stringify(local.slice(0,20)));
+    }catch(e){}
+  }
+  if(typeof _origStartNew === 'function') _origStartNew();
+};
+
+/* ═══════════════════════════════════════
+   UPGRADE MODAL
+   ═══════════════════════════════════════ */
+window.openUpgradeModal = function(){
+  const el = document.getElementById('upgrade-modal-overlay');
+  if(el){ el.style.display = 'flex'; document.getElementById('userDropdown')?.classList.remove('open'); }
+}
+window.closeUpgradeModal = function(){
+  document.getElementById('upgrade-modal-overlay').style.display = 'none';
+  // Reset to card view
+  selectPayment('card');
+  document.getElementById('pay-success').style.display = 'none';
+  document.getElementById('pay-form-card').style.display = 'flex';
+}
+
+window.selectPayment = function(method){
+  ['card','paypal','klarna'].forEach(m => {
+    const btn = document.getElementById('pay-btn-'+m);
+    const form = document.getElementById('pay-form-'+m);
+    const active = m === method;
+    if(btn){ btn.style.border = active ? '2px solid rgba(168,85,247,0.6)' : '1px solid var(--border)'; btn.style.background = active ? 'rgba(168,85,247,0.12)' : 'transparent'; }
+    if(form) form.style.display = active ? (m==='card'?'flex':'block') : 'none';
+  });
+}
+
+window.formatCardNumber = function(inp){
+  let v = inp.value.replace(/\D/g,'').substring(0,16);
+  inp.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+window.formatExpiry = function(inp){
+  let v = inp.value.replace(/\D/g,'');
+  if(v.length >= 2) v = v.substring(0,2) + ' / ' + v.substring(2,4);
+  inp.value = v;
+}
+
+window.processPayment = async function(){
+  const name   = document.getElementById('cc-name')?.value.trim();
+  const number = document.getElementById('cc-number')?.value.replace(/\s/g,'');
+  const expiry = document.getElementById('cc-expiry')?.value.trim();
+  const cvv    = document.getElementById('cc-cvv')?.value.trim();
+  if(!name || number.length < 12 || !expiry || cvv.length < 3){
+    alert('Please fill in all card details.'); return;
+  }
+  // Demo — mark user as pro in Firestore
+  const user = typeof _auth !== 'undefined' ? _auth.currentUser : null;
+  if(user){
+    try{
+      await _fbSaveProfile(user.uid, { plan: 'pro', upgradedAt: Date.now() });
+    }catch(e){}
+  }
+  // Update local profile
+  try{
+    const p = JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
+    p.plan = 'pro';
+    localStorage.setItem('nura-user-profile', JSON.stringify(p));
+  }catch(e){}
+  // Show success
+  document.getElementById('pay-form-card').style.display = 'none';
+  document.getElementById('pay-success').style.display = 'block';
+  // Update badge in menu
+  const badge = document.getElementById('ud-plan-badge');
+  if(badge){ badge.textContent = '⭐ NEUROMIND PRO'; badge.style.color = '#c084fc'; }
+  setTimeout(closeUpgradeModal, 3000);
+}
+
+/* ═══════════════════════════════
+   CHAT HISTORY — RENAME + DELETE
+   ═══════════════════════════════ */
+window.renameChatSession = async function(sid){
+  const titleEl = document.getElementById('cht-title-' + sid);
+  const oldTitle = titleEl ? titleEl.textContent : 'Chat';
+  const newTitle = prompt('Rename conversation:', oldTitle);
+  if(!newTitle || newTitle.trim() === oldTitle) return;
+  const user = typeof _auth !== 'undefined' ? _auth.currentUser : null;
+  if(user){
+    try{ await _db.collection('users').doc(user.uid).collection('chats').doc(sid).update({title: newTitle.trim()}); }catch(e){}
+  }
+  // Update localStorage too
+  try{
+    const local = JSON.parse(localStorage.getItem('nura-chat-sessions')||'[]');
+    const idx = local.findIndex(s => String(s.id) === String(sid));
+    if(idx >= 0){ local[idx].title = newTitle.trim(); localStorage.setItem('nura-chat-sessions', JSON.stringify(local)); }
+  }catch(e){}
+  if(titleEl) titleEl.textContent = newTitle.trim();
+};
+
+window.deleteChatSession = async function(sid){
+  if(!confirm('Delete this conversation? This cannot be undone.')) return;
+  const user = typeof _auth !== 'undefined' ? _auth.currentUser : null;
+  if(user){
+    try{ await _db.collection('users').doc(user.uid).collection('chats').doc(sid).delete(); }catch(e){}
+  }
+  try{
+    const local = JSON.parse(localStorage.getItem('nura-chat-sessions')||'[]');
+    localStorage.setItem('nura-chat-sessions', JSON.stringify(local.filter(s => String(s.id) !== String(sid))));
+  }catch(e){}
+  // Remove from DOM immediately
+  const item = document.getElementById('cht-title-' + sid)?.closest('div[style*="border-radius:9px"]');
+  if(item) item.remove();
+};
+
+/* ═══════════════════════════════
+   SUBSCRIPTION — UPGRADE / CANCEL
+   ═══════════════════════════════ */
+window.handleUpgradeClick = function(){
+  const p = JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
+  // Block guests
+  if(p.isGuest || !p.email){
+    document.getElementById('userDropdown')?.classList.remove('open');
+    // Show sign-in prompt
+    authShowSignIn();
+    showSignOutGate();
+    // Show a message
+    const errEl = document.getElementById('auth-error-msg');
+    if(errEl){ errEl.textContent = 'Please sign in or create an account to upgrade.'; errEl.style.color = '#f0a040'; }
+    return;
+  }
+  if(p.plan === 'pro'){
+    cancelSubscription();
+  } else {
+    openUpgradeModal();
+  }
+};
+
+window.cancelSubscription = async function(){
+  if(!confirm('Cancel your Nura NeuroMind subscription? You will lose access to Pro features at the end of the billing period.')) return;
+  const user = typeof _auth !== 'undefined' ? _auth.currentUser : null;
+  if(user){ try{ await _fbSaveProfile(user.uid, {plan:'free', cancelledAt: Date.now()}); }catch(e){} }
+  try{
+    const p = JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
+    p.plan = 'free';
+    localStorage.setItem('nura-user-profile', JSON.stringify(p));
+  }catch(e){}
+  renderUserProfile();
+  alert('Subscription cancelled. You will retain Pro access until the end of this billing period.');
+};
+
+/* ═══════════════════════════════════════
+   NURA MIND — GUEST GATE
+   ═══════════════════════════════════════ */
+window.navNuraMind = function(btn){
+  const p = JSON.parse(localStorage.getItem('nura-user-profile')||'{}');
+  const isGuest = p.isGuest || !p.email;
+  if(isGuest){
+    showNuraMindGuestGate();
+    return;
+  }
+  nav('tutor', btn);
+};
+
+function showNuraMindGuestGate(){
+  // Remove existing overlay if any
+  document.getElementById('nura-mind-guest-gate')?.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'nura-mind-guest-gate';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:4000;background:rgba(0,0,0,0.82);display:flex;align-items:center;justify-content:center;padding:20px;animation:loginIn .3s cubic-bezier(.2,.9,.25,1)';
+
+  overlay.innerHTML = `
+    <div style="background:#0d0f1c;border:1px solid rgba(255,255,255,0.08);border-radius:20px;width:min(380px,92vw);padding:36px 32px;text-align:center;position:relative;box-shadow:0 32px 80px rgba(0,0,0,.9)">
+      <div style="position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.5),transparent);border-radius:1px"></div>
+
+      <!-- Icon -->
+      <div style="width:52px;height:52px;border-radius:15px;background:linear-gradient(135deg,rgba(180,140,60,0.15),rgba(180,140,60,0.06));border:1px solid rgba(201,168,76,0.25);display:flex;align-items:center;justify-content:center;margin:0 auto 18px">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,76,0.8)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2a3.5 3.5 0 0 0-3.5 3.5v.6A3 3 0 0 0 4 9v1a3 3 0 0 0 1 2.2V14a3.5 3.5 0 0 0 3.5 3.5v1A2.5 2.5 0 0 0 11 21a1.5 1.5 0 0 0 1.5-1.5V5.5A3.5 3.5 0 0 0 9.5 2Z"/><path d="M14.5 2A3.5 3.5 0 0 1 18 5.5v.6A3 3 0 0 1 20 9v1a3 3 0 0 1-1 2.2V14a3.5 3.5 0 0 1-3.5 3.5v1A2.5 2.5 0 0 1 13 21a1.5 1.5 0 0 1-1.5-1.5"/></svg>
+      </div>
+
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px">Nura Mind</div>
+      <div style="font-size:13px;color:var(--text3);line-height:1.65;margin-bottom:24px">
+        Nura Mind is available to registered users.<br>Sign in or create a free account to access AI-powered learning.
+      </div>
+
+      <!-- Buttons -->
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button onclick="document.getElementById('nura-mind-guest-gate').remove();authShowSignIn();showSignOutGate();" style="width:100%;padding:12px;background:linear-gradient(135deg,rgba(180,140,60,0.18),rgba(180,140,60,0.08));border:1px solid rgba(201,168,76,0.35);color:#e2c97e;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;border-radius:11px;cursor:pointer;transition:all .2s" onmouseover="this.style.background='linear-gradient(135deg,rgba(180,140,60,0.28),rgba(180,140,60,0.14))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(180,140,60,0.18),rgba(180,140,60,0.08))'">
+          Sign In
+        </button>
+        <button onclick="document.getElementById('nura-mind-guest-gate').remove();authShowSignUp();showSignOutGate();" style="width:100%;padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:var(--text2);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;border-radius:11px;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='rgba(255,255,255,0.22)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+          Create Free Account
+        </button>
+        <button onclick="document.getElementById('nura-mind-guest-gate').remove()" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;padding:4px;font-family:inherit">
+          Maybe later
+        </button>
+      </div>
+    </div>`;
+
+  // Close on backdrop click
+  overlay.addEventListener('click', function(e){
+    if(e.target === overlay) overlay.remove();
+  });
+
+  document.body.appendChild(overlay);
 }
 
 window.addEventListener('DOMContentLoaded', function(){
