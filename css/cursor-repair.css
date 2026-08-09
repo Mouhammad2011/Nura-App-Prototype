@@ -1,0 +1,27 @@
+@media (pointer: fine) {
+  html, body, button, a, input, textarea, select, [role='button'], [onclick], .sidebar-btn, .nura-utility-tab, * { cursor: none !important; }
+  .v2-cursor { display: none !important; }
+  #nura-hover-cursor {
+    position: fixed;
+    z-index: 2147483647;
+    left: 0;
+    top: 0;
+    width: 14px;
+    height: 14px;
+    border: 1px solid rgba(255,255,255,.92);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+    background: rgba(171,140,255,.73);
+    box-shadow: 0 0 0 4px rgba(124,92,252,.18), 0 3px 10px rgba(0,0,0,.42);
+    backdrop-filter: blur(7px);
+    transition: opacity .12s ease, transform .12s ease, width .12s ease, height .12s ease, background .12s ease;
+  }
+  /* Base (idle) state is now always shown once the pointer has moved, instead of only over clickable elements. */
+  #nura-hover-cursor.ready { opacity: 1; }
+  #nura-hover-cursor.hover { width: 26px; height: 26px; background: rgba(171,140,255,.4); box-shadow: 0 0 0 5px rgba(124,92,252,.14), 0 4px 14px rgba(0,0,0,.42); }
+  #nura-hover-cursor.pressed { width: 12px; height: 12px; background: rgba(245,241,255,.95); }
+  /* Thin caret over text fields, keeping the same purple/glass language instead of the OS I-beam. */
+  #nura-hover-cursor.text-mode { width: 2px; height: 20px; border-radius: 2px; background: rgba(245,241,255,.92); box-shadow: 0 0 6px rgba(124,92,252,.35); backdrop-filter: none; }
+}

@@ -1,0 +1,47 @@
+/* Keep the NuraMind utility menu text-only and inside its floating top bar. */
+#nura-utility-menu {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  gap: 5px !important;
+}
+
+#nura-utility-menu .nura-utility-icon,
+#nura-utility-menu #nura-results-tab::before {
+  display: none !important;
+  content: none !important;
+}
+
+#nura-utility-menu .nura-utility-tab {
+  min-height: 28px !important;
+  padding: 0 11px !important;
+  gap: 0 !important;
+  font-size: 9px !important;
+  letter-spacing: .7px !important;
+}
+
+/* The fallback script moves the original rail buttons into this menu if needed. */
+#nura-utility-menu #nura-results-tab,
+#nura-utility-menu #nura-chathist-tab,
+#nura-utility-menu #nura-src-tab {
+  writing-mode: horizontal-tb !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 28px !important;
+  padding: 0 11px !important;
+  border: 1px solid rgba(203,192,255,.20) !important;
+  border-radius: 10px !important;
+  background: rgba(25,23,51,.52) !important;
+  color: var(--accent2) !important;
+  font: 600 9px 'Outfit',sans-serif !important;
+  letter-spacing: .7px !important;
+  cursor: pointer !important;
+}
+
+/* Results specifically gets extra width so its label has more breathing room than Chats/Sources. */
+#nura-utility-menu #nura-results-tab {
+  min-width: 76px !important;
+  padding: 0 18px !important;
+}

@@ -1,0 +1,70 @@
+/* Compact drop-downs sit directly beneath the NuraMind floating bar, and stay behind it (lower z-index). */
+.tutor-topbar { position: relative !important; z-index: 650 !important; }
+
+/* The "body" prefix bumps specificity above the panels' own inline .open{right:0} rules further down
+   the page, which were previously winning the cascade and pinning these to the viewport edge instead
+   of letting them drop down under the bar. */
+body #nura-chathist-panel,body #nura-sources-panel,body #nura-results-panel {
+  top: var(--nura-utility-top, 86px) !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  z-index: 610 !important;
+  transform: translate(-50%, -15px) !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: transform .24s cubic-bezier(.2,.9,.25,1),opacity .2s ease,visibility .24s !important;
+}
+body #nura-chathist-panel.open,body #nura-sources-panel.open,body #nura-results-panel.open {
+  left: 50% !important;
+  right: auto !important;
+  transform: translate(-50%, 0) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+body #nura-chathist-panel,body #nura-sources-panel,body #nura-results-panel { width:min(760px,calc(100vw - 48px)) !important; height:158px !important; max-height:158px !important; }
+
+/* Results now uses the exact same horizontal card-tray layout as Chats/Sources, instead of the
+   old vertical row list — same scroll behaviour, same card sizing, same feel. */
+#nura-results-list {
+  display: flex !important;
+  align-items: stretch;
+  gap: 9px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  min-width: max-content;
+  padding: 10px 14px 14px !important;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(203,192,255,.42) transparent;
+}
+#nura-results-list::-webkit-scrollbar { height: 4px; }
+#nura-results-list::-webkit-scrollbar-thumb { background: rgba(203,192,255,.42); border-radius: 999px; }
+#nura-results-list .nura-result-row {
+  flex: 0 0 calc((100% - 18px) / 3) !important;
+  width: calc((100% - 18px) / 3) !important;
+  border: 1px solid rgba(220,213,255,.12) !important;
+  border-bottom: 1px solid rgba(220,213,255,.12) !important;
+  border-radius: 10px !important;
+  background: rgba(255,255,255,.035) !important;
+  padding: 12px 10px !important;
+  margin-bottom: 0 !important;
+  box-sizing: border-box;
+}
+#nura-results-list .nura-result-empty { flex: 1 0 100%; }
+/* The old score-history bar chart doesn't fit the compact horizontal-card format anymore. */
+#nura-results-chart, #nura-results-summary { display: none !important; }
+
+/* Remove mojibake/stray characters and draw a crisp X with CSS instead. */
+#nura-results-panel .nura-utility-close { font-size:0 !important; position:relative; }
+#nura-results-panel .nura-utility-close::before,#nura-results-panel .nura-utility-close::after { content:''; position:absolute; left:5px; top:10px; width:10px; height:1px; background:currentColor; border-radius:2px; }
+#nura-results-panel .nura-utility-close::before { transform:rotate(45deg); }
+#nura-results-panel .nura-utility-close::after { transform:rotate(-45deg); }
+
+/* Legacy quiz-result card: keep it readable until the newer Results tray takes over. */
+.v10-results-card { width:min(720px,calc(100vw - 48px)) !important; }
+.v10-results-card button { font-size:0 !important; position:relative !important; width:22px !important; height:22px !important; border-radius:50% !important; border:1px solid rgba(255,140,150,.34) !important; background:rgba(255,80,80,.12) !important; color:#ff9aa4 !important; }
+.v10-results-card button::before,.v10-results-card button::after { content:''; position:absolute; left:5px; top:10px; width:10px; height:1px; border-radius:2px; background:currentColor; }
+.v10-results-card button::before { transform:rotate(45deg); }
+.v10-results-card button::after { transform:rotate(-45deg); }

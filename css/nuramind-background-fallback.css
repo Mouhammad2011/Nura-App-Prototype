@@ -1,0 +1,5 @@
+/* A real image layer remains visible while the MP4 loads or if it cannot play. */
+html, body { background: #090817 url('../assets/purple-desert.jpg') center / cover fixed no-repeat !important; }
+#nura-desert-fallback { position:fixed; inset:0; z-index:-3; pointer-events:none; background:#090817 url('../assets/purple-desert.jpg') center / cover no-repeat; }
+#nura-desert-video { z-index:-2 !important; opacity:0; transition:opacity .35s ease; }
+#nura-desert-video.nura-video-ready { opacity:.72 !important; }
