@@ -1,0 +1,7 @@
+/* Nura V8: initials profile and no light/dark controls. */
+(()=>{
+  function initials(name){const parts=(name||'Nura User').trim().split(/\s+/).filter(Boolean);return (parts[0]?.[0]||'N')+(parts[1]?.[0]||'')}
+  function setAvatar(){const button=document.querySelector('#main-topbar .user-badge');const img=document.getElementById('user-badge-img');if(!button||!img)return;let profile={};try{profile=JSON.parse(localStorage.getItem('nura-user-profile')||'{}')}catch{}const source=profile.pfp||profile.avatar||img.getAttribute('src')||'';let fallback=button.querySelector('.v8-initials-avatar');if(source){img.src=source;img.style.display='block';button.classList.remove('has-initials');fallback?.remove()}else{img.removeAttribute('src');button.classList.add('has-initials');if(!fallback){fallback=document.createElement('span');fallback.className='v8-initials-avatar';button.prepend(fallback)}fallback.textContent=initials(profile.name||document.getElementById('ud-name-display')?.textContent)} }
+  function removeThemeControls(){document.querySelectorAll('#spanel-ui .s-row').forEach(row=>{const label=row.querySelector('.s-label')?.textContent.trim().toLowerCase();if(label==='theme'||label==='match device')row.remove()})}
+  document.addEventListener('DOMContentLoaded',()=>{removeThemeControls();setAvatar();setTimeout(setAvatar,300);setTimeout(setAvatar,1000);const old=window.renderUserProfile;if(typeof old==='function')window.renderUserProfile=function(...args){const out=old.apply(this,args);setTimeout(setAvatar,0);return out}});
+})();

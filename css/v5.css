@@ -1,0 +1,22 @@
+/* Nura V5 — lean navigation and stable light-mode contrast. */
+.sidebar{width:86px!important;padding-top:12px!important}.sidebar-profile{height:58px!important;margin-bottom:8px!important}.sidebar-nav{gap:7px!important}.sidebar-btn{min-height:57px!important;width:64px!important}.sidebar-btn .v4-chevron{display:none!important}
+#v4-stats-toggle,#v4-stats-menu,.sidebar-bottom>.sidebar-language-btn,.sidebar-bottom>button[title="Calendar"]{display:none!important}
+.sidebar-bottom{margin-top:auto!important}.sidebar-settings-btn{margin:0!important}
+.sidebar-logo{background:transparent!important;padding:0!important;mix-blend-mode:normal!important;filter:none!important}.sidebar-logo[src]{object-fit:contain!important}
+/* Keep page text readable over the photo in light mode. */
+body.light-theme .content-col>.main>.section:not(#tutor) :is(.page-title,.page-sub,.panel-title,.s-label,.vb-lbl,.vs-label,.dmc-name,.dmc-k,.dmc-cond,.clock-date,.timer-label),
+body.light-theme .chat-welcome-container :is(h1,p),body.light-theme #welcome-user-text{color:#fff!important;text-shadow:0 2px 16px rgba(4,5,15,.9)!important}
+body.light-theme .content-col{--text:#fff;--text2:rgba(255,255,255,.84);--text3:rgba(255,255,255,.64)}
+/* No solid white fill under text-only controls. */
+body.light-theme .content-col :is(.nav-btn,.hint,.filter-chip,.mode-tag,.dmc-name,.dmc-k,.dmc-cond,.panel-title,.page-title,.page-sub,.s-label,.vb-lbl,.vs-label){background:transparent!important;box-shadow:none!important}
+/* Restore an expressive, compact V3-like Light Machine. */
+#dashboard .dash-mode-card{background:linear-gradient(140deg,rgba(29,26,57,.88),rgba(var(--accent-rgb),.18))!important;border:1px solid rgba(210,202,255,.28)!important;min-height:102px!important;padding:13px!important;border-radius:15px!important}
+#dashboard .dash-mode-card .dmc-name{color:#fff!important;font-size:12px!important}#dashboard .dash-mode-card .dmc-k{color:var(--accent2)!important}#dashboard .dash-mode-card .dmc-cond{color:rgba(255,255,255,.72)!important}
+#dashboard .dash-mode-card:hover{background:linear-gradient(140deg,rgba(51,43,98,.93),rgba(var(--accent-rgb),.3))!important;transform:translateY(-2px)!important}
+#dashboard .dash-mode-card.active-mode{box-shadow:0 0 0 1px var(--accent2),0 14px 30px rgba(var(--accent-rgb),.24)!important}
+/* NuraQuiz sits in Nura Mind, not as a dashboard page. */
+#quiz-panel{display:none!important}.nuraquiz-pane{display:none;height:100%;overflow:auto;padding:20px 22px}.nuraquiz-pane.active{display:block}.nuraquiz-pane #quiz-panel{display:block!important;padding:0!important}.nuraquiz-pane .page-header{margin-bottom:10px!important}.nuraquiz-pane .panel{background:var(--v4-surface)!important}
+.nura-mode-switcher{display:flex;align-items:center;gap:5px;margin-left:6px}.nura-mode-switcher button{font:600 10px Outfit,sans-serif;letter-spacing:.7px;padding:6px 9px;border-radius:8px;background:transparent!important;color:var(--text3)!important;border:1px solid transparent!important;box-shadow:none!important}.nura-mode-switcher button.active{color:var(--accent2)!important;border-color:var(--border-accent)!important;background:var(--accent-glow)!important}
+.nura-quiz-result{position:fixed;inset:0;z-index:1100;display:none;align-items:center;justify-content:center;background:rgba(5,6,15,.72);backdrop-filter:blur(7px)}.nura-quiz-result.show{display:flex}.nura-quiz-result-card{width:min(390px,92vw);padding:28px;border-radius:22px;background:linear-gradient(145deg,#252043,#101426);border:1px solid rgba(210,198,255,.36);box-shadow:0 28px 80px rgba(0,0,0,.55);text-align:center}.nura-quiz-result-card h2{color:#fff;margin-bottom:8px}.nura-quiz-result-score{font:42px 'Bebas Neue',sans-serif;letter-spacing:2px;color:var(--accent2);margin:14px 0 4px}
+.nura-guest-message{position:fixed;inset:0;z-index:2200;display:none;align-items:center;justify-content:center;background:rgba(5,6,15,.66);backdrop-filter:blur(7px)}.nura-guest-message.show{display:flex}.nura-guest-card{width:min(360px,90vw);padding:26px;border-radius:18px;background:#17142b;border:1px solid rgba(208,197,255,.26);text-align:center;color:#fff}.nura-guest-card p{color:rgba(255,255,255,.72);line-height:1.55;margin:8px 0 18px}
+@media(max-width:700px){.sidebar{width:62px!important}.sidebar-btn{width:50px!important;min-height:52px!important}.sidebar-profile{height:50px!important}.sidebar-logo{width:38px!important;height:38px!important}}

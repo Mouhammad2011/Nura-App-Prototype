@@ -1,0 +1,6 @@
+/* V12 — V10 layout, English-only, with concise NuraMind refinements. */
+.sidebar-logo{position:absolute!important;top:16px!important;left:23px!important;width:40px!important;height:40px!important;margin:0!important;background:transparent!important;padding:0!important}.sidebar-nav{margin-top:52px!important}
+.sidebar button[title="Calendar"],.sidebar [onclick*="openCalendar"],.sidebar-bottom>button[title="Calendar"]{display:none!important}
+#quiz-panel{display:none!important}.sidebar-nav button[onclick*="quiz-panel"]{display:none!important}
+.tutor-topbar{margin:10px 14px 0!important;border:1px solid rgba(194,180,255,.20)!important;border-radius:15px!important;background:rgba(13,13,28,.72)!important;backdrop-filter:blur(18px)!important}.tutor-topbar .mode-tag{display:none!important}.tutor-input-area{padding-top:30px!important}
+#nura-results-tab{writing-mode:vertical-rl!important;transform:rotate(180deg)!important;width:30px!important;min-width:30px!important;padding:8px 4px!important;font-size:9px!important}
