@@ -1,6 +1,0 @@
-/* Nura V8 — rounded controls and a reliable profile fallback. */
-:is(.pi-theme-switch,.pi-feature-switch,.s-toggle,.s-toggle-knob,.s-toggle::after,.pi-theme-switch::after,.pi-feature-switch::after){border-radius:999px!important}
-.pi-theme-switch::after,.pi-feature-switch::after{height:calc(100% - 4px)!important;top:2px!important;bottom:auto!important}
-.s-toggle{overflow:hidden!important}.s-toggle-knob{border-radius:50%!important}
-.v8-initials-avatar{width:31px;height:31px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#7c5cfc,#c084fc 55%,#f1c75b);color:#fff;font:700 11px Outfit,sans-serif;letter-spacing:.4px;box-shadow:0 2px 10px rgba(124,92,252,.42)}
-.topbar-right .user-badge.has-initials{justify-content:center!important}.topbar-right .user-badge.has-initials .user-badge-avatar{display:none!important}

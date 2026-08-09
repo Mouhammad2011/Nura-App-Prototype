@@ -1,6 +1,0 @@
-/* Final override: the switch thumb is always circular, never squared. */
-.pi-theme-switch,.pi-feature-switch,.s-toggle{border-radius:999px!important;overflow:hidden!important}
-.pi-theme-switch::before{display:none!important}
-.pi-theme-switch::after,.pi-feature-switch::after{border-radius:50%!important;width:14px!important;height:14px!important;top:1px!important;bottom:auto!important;clip-path:none!important;transform:none!important}
-.pi-theme-switch::after{left:2px!important}.pi-feature-switch::after{left:2px!important}.pi-feature-switch.on::after{left:17px!important}
-.s-toggle-knob{border-radius:50%!important}
