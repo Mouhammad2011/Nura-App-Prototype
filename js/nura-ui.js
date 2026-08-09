@@ -11,7 +11,7 @@
   function icon(path){return `<span class="i-wrap" style="width:18px;height:18px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${path}</svg></span>`}
   function openCalendar(){if(typeof window.openCalendar==='function')window.openCalendar();else document.querySelector('[onclick*="openCalendar"]')?.click()}
   function init(){
-    document.title='Nura App V4';
+    document.title='Nura App';
     const originalSetLanguage=window.nuraSetLanguage;
     window.nuraSetLanguage=(lang)=>{originalSetLanguage?.(lang);translateAll(lang)};
     const sidebar=document.getElementById('main-sidebar'), nav=sidebar?.querySelector('.sidebar-nav'), profile=document.querySelector('.user-menu-container');
